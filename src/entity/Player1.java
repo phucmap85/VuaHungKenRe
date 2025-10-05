@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 import static utilz.Constants.PlayerConstants.*;
+import ui.UIManager;
 
 import utilz.LoadSave;
 
@@ -14,6 +15,11 @@ public class Player1 extends Entity {
     private boolean moving = false;
     private boolean inAir = false;
     private int direction = RIGHT; // Lưu hướng mặt cuối cùng
+
+    //health
+    private UIManager ui;
+    private int health = 100;
+    private int maxHealth = 100;
     
     // Animation
     private int playerAction = IDLE_RIGHT;
@@ -31,6 +37,7 @@ public class Player1 extends Entity {
     public Player1(float x, float y, float width, float height) {
         super(x, y, width, height);
         this.groundY = y;
+        this.ui = new UIManager(100, true);
         loadAnimation();
     }
     
@@ -138,6 +145,26 @@ public class Player1 extends Entity {
         right = false;
         jump = false;
         defense = false;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    // Gây sát thương
+    public void takeDamage(int dmg) {
+        health -= dmg;
+        if (health < 0) health = 0;
+    }
+
+    // Hồi máu
+    public void heal(int amount) {
+        health += amount;
+        if (health > maxHealth) health = maxHealth;
     }
 
     // Setters
