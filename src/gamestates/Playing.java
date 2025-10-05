@@ -2,16 +2,22 @@ package gamestates;
 
 import main.Game;
 import map.Map;
+import ui.UIManager;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import entity.Player1;
+import entity.Player2;
 
 public class Playing extends State implements Statemethods {
     private Map map;
 	private Player1 player1;
+    private Player2 player2;
+
+    private UIManager uiPlayer1;
+    private UIManager uiPlayer2;
     
     public Playing(Game game) {
         super(game);
@@ -21,25 +27,37 @@ public class Playing extends State implements Statemethods {
     private void initClasses() {
 		map = new Map(game);
 		player1 = new Player1(200f, 485f, 128f, 128f);
+        player2 = new Player2(200f, 485f, 128f, 128f);
+        uiPlayer1 = new UIManager(100, true);
+        uiPlayer2 = new UIManager(100, false);
 	}
 
     public void windowFocusLost() {
 		player1.resetDirBooleans();
+        player2.resetDirBooleans();
 	}
 
 	public Player1 getPlayer1() {
         return player1;
 	}
 
+    public Player2 getPlayer2() {
+        return player2;
+    }
+
     @Override
     public void update() {
         player1.update();
+        player2.update();
     }
 
     @Override
     public void draw(Graphics g) {
         map.draw(g);
 		player1.render(g);
+        player2.render(g);
+        uiPlayer1.draw(g, Game.GAME_WIDTH);
+        uiPlayer2.draw(g, Game.GAME_WIDTH);
     }
 
     @Override
