@@ -2,7 +2,7 @@ package ui;
 
 import java.awt.*;
 
-public class UIManager {
+public class HealthMana {
     private int health;
     private int maxHealth;
     private int mana;
@@ -17,7 +17,7 @@ public class UIManager {
     private long blinkTimer;
     private boolean blinkState;
 
-    public UIManager(int maxHealth, boolean leftSide) {
+    public HealthMana(int maxHealth, boolean leftSide) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.maxMana = 100;

@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 import static utilz.Constants.PlayerConstants.*;
-import ui.UIManager;
+import ui.HealthMana;
 
 import utilz.LoadSave;
 
@@ -17,7 +17,7 @@ public class Player2 extends Entity {
     private int direction = LEFT; // Lưu hướng mặt cuối cùng
 
     //health
-    private UIManager ui;
+    private HealthMana healthMana;
     private int health = 100;
     private int maxHealth = 100;
 
@@ -37,7 +37,7 @@ public class Player2 extends Entity {
     public Player2(float x, float y, float width, float height) {
         super(x, y, width, height);
         this.groundY = y;
-        this.ui = new UIManager(100, false);
+        this.healthMana = new HealthMana(100, false);
         loadAnimation();
     }
 

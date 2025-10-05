@@ -2,7 +2,7 @@ package gamestates;
 
 import main.Game;
 import map.Map;
-import ui.UIManager;
+import ui.HealthMana;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -16,8 +16,8 @@ public class Playing extends State implements Statemethods {
 	private Player1 player1;
     private Player2 player2;
 
-    private UIManager uiPlayer1;
-    private UIManager uiPlayer2;
+    private HealthMana uiPlayer1;
+    private HealthMana uiPlayer2;
     
     public Playing(Game game) {
         super(game);
@@ -28,8 +28,8 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game);
 		player1 = new Player1(200f, 485f, 128f, 128f);
         player2 = new Player2(200f, 485f, 128f, 128f);
-        uiPlayer1 = new UIManager(100, true);
-        uiPlayer2 = new UIManager(100, false);
+        uiPlayer1 = new HealthMana(100, true);
+        uiPlayer2 = new HealthMana(100, false);
 	}
 
     public void windowFocusLost() {
