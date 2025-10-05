@@ -1,5 +1,5 @@
 package main;
-
+import static utilz.Constants.GameConstants.*;
 import java.awt.Graphics;
 import map.Map;
 
@@ -10,16 +10,11 @@ public class Game implements Runnable {
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Thread gameThread;
-
-	private final int FPS_SET = 120;
-	private final int UPS_SET = 200;
-	
 	private Map map;
 	private Player1 player1;
 
 
-	public final static int GAME_WIDTH = 1097;
-	public final static int GAME_HEIGHT = 768;
+	
 
 	public Game() {
 		initClasses();
@@ -33,7 +28,7 @@ public class Game implements Runnable {
 
 	private void initClasses() {
 		map = new Map(this);
-		player1 = new Player1(200f, 485f, 128f, 128f);
+		player1 = new Player1(200f, 530f, 55f, 95f,35f,20f);
 	}
 
 	private void startGameLoop() {

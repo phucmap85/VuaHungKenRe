@@ -4,7 +4,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
+import static utilz.HelpMethods.*;
+
 import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.GameConstants.*;
 
 import utilz.LoadSave;
 
@@ -18,19 +21,21 @@ public class Player1 extends Entity {
     // Animation
     private int playerAction = IDLE_RIGHT;
     private BufferedImage[][] animations = null;
-    private int framesCounter = 0, framesIndex = 0, animationSpeed = 15;
+    private int framesCounter = 0, framesIndex = 0, animationSpeed = 20;
     private int jumpAnimationSpeed = 15; // Animation nhảy chậm hơn để thấy rõ
     
     // Physics
     private float speed = 2.0f;
-    private float jumpStrength = -6.0f; // 
+    private float jumpStrength = -6.5f; // 
     private float gravity = 0.1f;
     private float velocityY = 0;
-    private float groundY; // Vị trí mặt đất
+    private float groundY;
 
-    public Player1(float x, float y, float width, float height) {
-        super(x, y, width, height);
-        this.groundY = y;
+
+    public Player1(float x, float y, float width, float height,float xOffSet,float yOffSet) {
+        super(x, y, width, height, xOffSet, yOffSet);
+        initHitbox();
+        groundY = y;
         loadAnimation();
     }
     
@@ -46,6 +51,15 @@ public class Player1 extends Entity {
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(animations[playerAction][framesIndex], 
                     (int) x, (int) y, 128, 128, null);
+       // drawHitbox(g); de fix bug 
+       // renderPlatForm(g); ham de fix bug 
+        
+    }
+
+    public void renderPlatForm(Graphics g){
+        Graphics2D g2 = (Graphics2D) g;
+        g2.drawRect((int)platFormX1,(int)platFormY,(int)(platFormX2-platFormX1),10);
+     
     }
 
     // Cập nhật vị trí dựa trên input
@@ -54,26 +68,35 @@ public class Player1 extends Entity {
         
         // Di chuyển ngang
         if (left && !right) {
-            x -= speed;
+            if(hitbox.x - speed >=0) x-=speed;
             moving = true;
             direction = LEFT; // Cập nhật hướng sang trái
         } else if (right && !left) {
-            x += speed;
+            if(hitbox.x + hitbox.width + speed <= GAME_WIDTH) x+=speed;
             moving = true;
             direction = RIGHT; // Cập nhật hướng sang phải
         }
+        updateHitbox();
         
         // Nhảy
+        if(isInAir(y,hitbox,groundY)){
+            inAir = true;
+        }
         if (jump && !inAir) {
             velocityY = jumpStrength;
             inAir = true;
         }
+       
         
         // Áp dụng trọng lực
         if (inAir) {
             velocityY += gravity;
-            y += velocityY;
-            
+            if(isOnPlatForm(hitbox, velocityY)){
+                y = platFormY - yOffSet - height;
+                velocityY = 0;
+                inAir = false;
+            }
+            else y+=velocityY;
             // Kiểm tra chạm đất
             if (y >= groundY) {
                 y = groundY;
@@ -81,6 +104,7 @@ public class Player1 extends Entity {
                 inAir = false;
             }
         }
+        updateHitbox();
     }
 
     // Cập nhật frame animation

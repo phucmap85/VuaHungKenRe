@@ -1,5 +1,5 @@
 package main;
-
+import static utilz.Constants.GameConstants.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -7,8 +7,6 @@ import javax.swing.JPanel;
 
 import inputs.KeyHandler;
 
-import static main.Game.GAME_HEIGHT;
-import static main.Game.GAME_WIDTH;
 
 public class GamePanel extends JPanel {
 
