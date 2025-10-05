@@ -18,8 +18,8 @@ public class Game implements Runnable {
 	private Player1 player1;
 
 
-	public final static int GAME_WIDTH = 1143;
-	public final static int GAME_HEIGHT = 800;
+	public final static int GAME_WIDTH = 1097;
+	public final static int GAME_HEIGHT = 768;
 
 	public Game() {
 		initClasses();
