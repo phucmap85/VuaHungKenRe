@@ -1,27 +1,27 @@
 package main;
 
 import java.awt.Graphics;
+import map.Map;
 
-import entities.Player;
-import levels.LevelManager;
+import entity.Player1;
+
+
 
 public class Game implements Runnable {
 
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Thread gameThread;
+
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 200;
-	private Player player;
-	private LevelManager levelManager;
+	
+	private Map map;
+	private Player1 player1;
 
-	public final static int TILES_DEFAULT_SIZE = 32;
-	public final static float SCALE = 2f;
-	public final static int TILES_IN_WIDTH = 26;
-	public final static int TILES_IN_HEIGHT = 14;
-	public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
-	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
-	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+
+	public final static int GAME_WIDTH = 1143;
+	public final static int GAME_HEIGHT = 800;
 
 	public Game() {
 		initClasses();
@@ -34,9 +34,8 @@ public class Game implements Runnable {
 	}
 
 	private void initClasses() {
-		levelManager = new LevelManager(this);
-		player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
-		player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+		map = new Map(this);
+		player1 = new Player1(200f, 485f, 128f, 128f);
 
 	}
 
@@ -45,14 +44,13 @@ public class Game implements Runnable {
 		gameThread.start();
 	}
 
-	public void update() {
-		levelManager.update();
-		player.update();
+	public void update() { // hàm update về thông số
+		player1.update();
 	}
 
 	public void render(Graphics g) {
-		levelManager.draw(g);
-		player.render(g);
+		map.draw(g);
+		player1.render(g);
 	}
 
 	@Override
@@ -101,11 +99,12 @@ public class Game implements Runnable {
 	}
 
 	public void windowFocusLost() {
-		player.resetDirBooleans();
+		player1.resetDirBooleans();
 	}
 
-	public Player getPlayer() {
-		return player;
+	public Player1 getPlayer1() {
+        return player1;
+		
 	}
 
 }

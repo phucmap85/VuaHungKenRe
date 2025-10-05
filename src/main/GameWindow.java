@@ -9,14 +9,15 @@ public class GameWindow {
 	private JFrame jframe;
 
 	public GameWindow(GamePanel gamePanel) {
-
+        // thủ tục tạo khung 
 		jframe = new JFrame();
 
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.setTitle("VUA HUNG KEN RE");
 		jframe.add(gamePanel);
-		jframe.setLocationRelativeTo(null);
+		jframe.pack(); // pack trước 
+        jframe.setLocationRelativeTo(null);
 		jframe.setResizable(false);
-		jframe.pack();
 		jframe.setVisible(true);
 		jframe.addWindowFocusListener(new WindowFocusListener() {
 
