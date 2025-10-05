@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 
 import main.Game;
 
-
 public class Map {
     private Game game;
     private BufferedImage img;

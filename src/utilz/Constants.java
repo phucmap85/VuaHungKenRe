@@ -1,7 +1,7 @@
 package utilz;
 
 public class Constants {
-    public static class PlayerConstants{
+    public static class PlayerConstants {
         public static final int RIGHT = 0;
         public static final int LEFT = 1;
 
@@ -12,7 +12,7 @@ public class Constants {
         public static final int JUMP_RIGHT= 4;
         public static final int JUMP_LEFT = 5;
         
-        public static int getFramesAmount(int player_action){
+        public static int getFramesAmount(int player_action) {
             switch (player_action) {
                 case IDLE_LEFT:
                 case IDLE_RIGHT:
@@ -22,8 +22,7 @@ public class Constants {
                 return 4;
                 case JUMP_LEFT:
                 case JUMP_RIGHT:
-                return 9; 
-                
+                return 9;
             
                 default:
                     return 0;
