@@ -8,21 +8,21 @@ import java.awt.image.BufferedImage;
 
 import main.Game;
 
-
 public class Map {
     private Game game;
     private BufferedImage img;
 
-    public Map(Game game){
+    public Map(Game game) {
         this.game = game;
         importMap();
     }
 
-    private void importMap(){
+    private void importMap() {
         img = GetMap(BattleMap);
     }
-    public void draw(Graphics g){
+
+    public void draw(Graphics g) {
         Graphics g2 = (Graphics2D) g;
-        g2.drawImage(img, 0, 0,Game.GAME_WIDTH,Game.GAME_HEIGHT, null); 
+        g2.drawImage(img, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null); 
     }
 }

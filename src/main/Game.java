@@ -2,28 +2,20 @@ package main;
 
 import java.awt.Graphics;
 
-import entity.Player2;
-import ui.UIManager;
-import map.Map;
-
-import entity.Player1;
+import gamestates.Gamestate;
+import gamestates.Menu;
+import gamestates.Playing;
 
 public class Game implements Runnable {
-
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Thread gameThread;
-    private UIManager uiPlayer1;
-    private UIManager uiPlayer2;
-    private long lastDamageTime = 0;
+
+	private Playing playing;
+	private Menu menu;
 
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 200;
-	
-	private Map map;
-	private Player1 player1;
-    private Player2 player2;
-
 
 	public final static int GAME_WIDTH = 1097;
 	public final static int GAME_HEIGHT = 768;
@@ -39,11 +31,8 @@ public class Game implements Runnable {
 	}
 
 	private void initClasses() {
-		map = new Map(this);
-		player1 = new Player1(200f, 485f, 128f, 128f);
-        player2 = new Player2(200f, 485f, 128f, 128f);
-        uiPlayer1 = new UIManager(100, true);
-        uiPlayer2 = new UIManager(100, false);
+		menu = new Menu(this);
+		playing = new Playing(this);
 	}
 
 	private void startGameLoop() {
@@ -51,17 +40,30 @@ public class Game implements Runnable {
 		gameThread.start();
 	}
 
-	public void update() { // hàm update về thông số
-		player1.update();
-        player2.update();
-    }
+	public void update() {
+		switch (Gamestate.state) {
+			case MENU:
+				menu.update();
+				break;
+			case PLAYING:
+				playing.update();
+				break;
+			default:
+				break;
+		}
+	}
 
 	public void render(Graphics g) {
-		map.draw(g);
-		player1.render(g);
-        player2.render(g);
-        uiPlayer1.draw(g,GAME_WIDTH);
-        uiPlayer2.draw(g,GAME_WIDTH);
+		switch (Gamestate.state) {
+			case MENU:
+				menu.draw(g);
+				break;
+			case PLAYING:
+				playing.draw(g);
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
@@ -108,10 +110,16 @@ public class Game implements Runnable {
 	}
 
 	public void windowFocusLost() {
-		player1.resetDirBooleans();
+		if (Gamestate.state == Gamestate.PLAYING) {
+			playing.windowFocusLost();
+		}
 	}
 
-	public Player1 getPlayer1() {
-        return player1;
+	public Menu getMenu() {
+		return menu;
+	}
+
+	public Playing getPlaying() {
+		return playing;
 	}
 }
