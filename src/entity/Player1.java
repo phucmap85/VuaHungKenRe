@@ -8,10 +8,6 @@ import static utilz.Constants.PlayerConstants.*;
 
 import utilz.LoadSave;
 
-
-
-
-
 public class Player1 extends Entity {
     // Movement states
     private boolean left, right, jump, defense; 

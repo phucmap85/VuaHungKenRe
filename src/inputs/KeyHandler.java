@@ -9,7 +9,6 @@ import main.GamePanel;
 public class KeyHandler implements KeyListener {
     private GamePanel gamePanel;
 
-
     public KeyHandler(GamePanel gamePanel) {this.gamePanel = gamePanel;}
     @Override
     public void keyTyped(KeyEvent e) {
@@ -31,9 +30,6 @@ public class KeyHandler implements KeyListener {
             case KeyEvent.VK_K:
             gamePanel.getGame().getPlayer1().setJump(true);
                 break;
-
-
-            
             default:
                 break;
         }
@@ -54,9 +50,6 @@ public class KeyHandler implements KeyListener {
             case KeyEvent.VK_K:
             gamePanel.getGame().getPlayer1().setJump(false);
                 break;
-
-
-            
             default:
                 break;
         }

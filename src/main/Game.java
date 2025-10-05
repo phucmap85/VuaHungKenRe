@@ -5,8 +5,6 @@ import map.Map;
 
 import entity.Player1;
 
-
-
 public class Game implements Runnable {
 
 	private GameWindow gameWindow;
@@ -36,7 +34,6 @@ public class Game implements Runnable {
 	private void initClasses() {
 		map = new Map(this);
 		player1 = new Player1(200f, 485f, 128f, 128f);
-
 	}
 
 	private void startGameLoop() {
@@ -55,7 +52,6 @@ public class Game implements Runnable {
 
 	@Override
 	public void run() {
-
 		double timePerFrame = 1000000000.0 / FPS_SET;
 		double timePerUpdate = 1000000000.0 / UPS_SET;
 
@@ -92,7 +88,6 @@ public class Game implements Runnable {
 				System.out.println("FPS: " + frames + " | UPS: " + updates);
 				frames = 0;
 				updates = 0;
-
 			}
 		}
 
@@ -104,7 +99,5 @@ public class Game implements Runnable {
 
 	public Player1 getPlayer1() {
         return player1;
-		
 	}
-
 }

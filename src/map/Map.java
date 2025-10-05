@@ -12,8 +12,6 @@ import main.Game;
 public class Map {
     private Game game;
     private BufferedImage img;
-    
-
 
     public Map(Game game){
         this.game = game;

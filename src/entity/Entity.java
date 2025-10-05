@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
-
 	protected float x, y;
 	protected float width, height;
 	protected Rectangle2D.Float hitbox;
@@ -15,14 +14,12 @@ public abstract class Entity {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-
 	}
 
 	protected void drawHitbox(Graphics g) {
 		// For debugging the hitbox
 		g.setColor(Color.PINK);
 		g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
-
 	}
 
 	protected void initHitbox(float x, float y, float width, float height) {
@@ -37,5 +34,4 @@ public abstract class Entity {
 	public Rectangle2D.Float getHitbox() {
 		return hitbox;
 	}
-
 }
