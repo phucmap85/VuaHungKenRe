@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import entity.Player1;
 
 public class Playing extends State implements Statemethods {
+    private boolean[] keysPressed = new boolean[256];
+
     private Map map;
 	private Player1 player1;
     private HealthMana uiPlayer1;
@@ -74,30 +76,40 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                player1.setLeft(true);
-                break;
-            case KeyEvent.VK_D:
-                player1.setRight(true);
-                break;
-            case KeyEvent.VK_S:
-                player1.setDefense(true);
-                break;
-            case KeyEvent.VK_K:
-                player1.setJump(true);
-                break;
-            case KeyEvent.VK_ESCAPE:
-                Gamestate.state = Gamestate.MENU;
-                break;
-            default:
-                break;
+        int keyCode = e.getKeyCode();
+
+        if (keyCode < keysPressed.length && !keysPressed[keyCode]) {
+            keysPressed[keyCode] = true;
+
+            switch (keyCode) {
+                case KeyEvent.VK_A:
+                    player1.setLeft(true);
+                    break;
+                case KeyEvent.VK_D:
+                    player1.setRight(true);
+                    break;
+                case KeyEvent.VK_S:
+                    player1.setDefense(true);
+                    break;
+                case KeyEvent.VK_K:
+                    player1.setJump(true);
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    Gamestate.state = Gamestate.MENU;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
+        int keyCode = e.getKeyCode();
+        
+        if (keyCode < keysPressed.length) keysPressed[keyCode] = false;
+
+        switch (keyCode) {
             case KeyEvent.VK_A:
                 player1.setLeft(false);
                 break;
