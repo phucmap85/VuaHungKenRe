@@ -9,7 +9,6 @@ public class GameWindow {
 	private JFrame jframe;
 
 	public GameWindow(GamePanel gamePanel) {
-        // thủ tục tạo khung 
 		jframe = new JFrame();
 
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,8 +18,10 @@ public class GameWindow {
         jframe.setLocationRelativeTo(null);
 		jframe.setResizable(false);
 		jframe.setVisible(true);
-		jframe.addWindowFocusListener(new WindowFocusListener() {
 
+		gamePanel.requestFocusInWindow();
+
+		jframe.addWindowFocusListener(new WindowFocusListener() {
 			@Override
 			public void windowLostFocus(WindowEvent e) {
 				gamePanel.getGame().windowFocusLost();
@@ -28,8 +29,7 @@ public class GameWindow {
 
 			@Override
 			public void windowGainedFocus(WindowEvent e) {
-				// TODO Auto-generated method stub
-
+				gamePanel.requestFocusInWindow();
 			}
 		});
 

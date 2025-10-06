@@ -1,5 +1,7 @@
 package gamestates;
 
+import static utilz.Constants.GameConstants.*;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -21,7 +23,7 @@ public class Menu extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
-        g.drawString("MENU", Game.GAME_WIDTH / 2, Game.GAME_HEIGHT / 2);
+        g.drawString("MENU", GAME_WIDTH / 2, GAME_HEIGHT / 2);
     }
 
     @Override

@@ -144,13 +144,6 @@ public class HealthMana {
         }
     }
 
-    // === Khi dùng ulti ===
-    public void useUlti() {
-        if(this.getMana() == this.maxMana) {
-            mana = 0;
-        }
-    }
-
     // ===== Setter / Getter =====
     public void takeDamage(int amount) {
         health -= amount;

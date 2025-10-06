@@ -2,6 +2,8 @@ package main;
 
 import java.awt.Graphics;
 
+import static utilz.Constants.GameConstants.*;
+
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
@@ -13,12 +15,6 @@ public class Game implements Runnable {
 
 	private Playing playing;
 	private Menu menu;
-
-	private final int FPS_SET = 120;
-	private final int UPS_SET = 200;
-
-	public final static int GAME_WIDTH = 1097;
-	public final static int GAME_HEIGHT = 768;
 
 	public Game() {
 		initClasses();

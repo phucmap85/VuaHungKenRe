@@ -16,17 +16,25 @@ public class Constants {
             switch (player_action) {
                 case IDLE_LEFT:
                 case IDLE_RIGHT:
-                return 8;
+                    return 8;
                 case MOVE_LEFT:
                 case MOVE_RIGHT:
-                return 4;
+                    return 4;
                 case JUMP_LEFT:
                 case JUMP_RIGHT:
-                return 9;
-            
+                    return 9; 
                 default:
                     return 0;
             }
         }
+    }
+    public static class GameConstants {
+        public final static int FPS_SET = 120;
+	    public final static int UPS_SET = 200;
+        public final static int GAME_WIDTH = 1097;
+	    public final static int GAME_HEIGHT = 768;
+
+        // đây là thông số của cái bậc và thông số map
+        public final static float platFormX1 = 320f, platFormX2 = 755f, platFormY = 465f;
     }
 }

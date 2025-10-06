@@ -12,14 +12,15 @@ public class LoadSave {
     public static BufferedImage GetMap(String name) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream(name);
-        try {
+        try{
             img = ImageIO.read(is);
-        } catch(IOException e){
+
+        }catch(IOException e){
             e.printStackTrace();
-        } finally {
-            try {
+        }finally{
+            try{
                 is.close();
-            } catch(IOException e) {
+            }catch(IOException e){
                 e.printStackTrace();
             }
         }
