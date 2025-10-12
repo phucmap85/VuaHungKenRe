@@ -40,7 +40,9 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
+
         player1.update();
+        uiPlayer1.update();
     }
 
     @Override

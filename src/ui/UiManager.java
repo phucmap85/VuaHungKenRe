@@ -13,6 +13,11 @@ public class UiManager {
         this.manaBar = new ManaBar(leftSide);
     }
 
+    public void update() {
+        healthBar.update();
+        manaBar.update();
+    }
+
     public void draw(Graphics g, int screenWidth) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

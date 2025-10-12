@@ -51,7 +51,6 @@ public class ManaBar {
         g2.setStroke(new BasicStroke(1.5f));
         g2.drawRoundRect(x, y, barWidth, barHeight, 10, 10);
 
-        regen();
     }
 
     private void handleBlink() {
@@ -66,7 +65,7 @@ public class ManaBar {
         }
     }
 
-    private void regen() {
+    public void update() {
         long now = System.currentTimeMillis();
         if (now - lastRegenTime >= 1000) {
             mana = Math.min(maxMana, mana + 5);
