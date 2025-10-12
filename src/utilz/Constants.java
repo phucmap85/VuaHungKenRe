@@ -1,6 +1,13 @@
 package utilz;
 
 public class Constants {
+    public static class UI {
+		public static class MenuButton {
+			public static final int B_WIDTH = 140;
+			public static final int B_HEIGHT = 56;
+		}
+	}
+
     public static class PlayerConstants {
         public static final int RIGHT = 0;
         public static final int LEFT = 1;

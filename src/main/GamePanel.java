@@ -9,14 +9,22 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import inputs.KeyHandler;
+import inputs.MouseHandler;
 
 public class GamePanel extends JPanel {
 	private Game game;
+	private MouseHandler mouseHandler;
 
 	public GamePanel(Game game) {
 		this.game = game;
 		setPanelSize();
+		
+		// Keyboard
 		addKeyListener(new KeyHandler(this));
+		// Mouse
+		mouseHandler = new MouseHandler(this);
+		addMouseListener(mouseHandler);
+		addMouseMotionListener(mouseHandler);
 
 		setFocusable(true);
         requestFocusInWindow();

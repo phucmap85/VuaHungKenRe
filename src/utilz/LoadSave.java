@@ -7,25 +7,27 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 public class LoadSave {
-    public static String BattleMap = "/image/map.png";
+    public static String BattleMap = "map.png";
+    public static String MenuButton = "menu_button_atlas.png";
+    public static String MenuBackground = "menu_background.png";
 
-    public static BufferedImage GetMap(String name) {
-        BufferedImage img = null;
-        InputStream is = LoadSave.class.getResourceAsStream(name);
-        try{
-            img = ImageIO.read(is);
+    public static BufferedImage GetSpriteAtlas(String fileName) {
+		BufferedImage img = null;
+		InputStream is = LoadSave.class.getResourceAsStream("/image/" + fileName);
 
-        }catch(IOException e){
-            e.printStackTrace();
-        }finally{
-            try{
-                is.close();
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-        return img;
-    }
+		try {
+			img = ImageIO.read(is);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return img;
+	}
 
     public static BufferedImage[][] GetAnimation() {
         BufferedImage[][] animations = new BufferedImage[12][9];
@@ -55,7 +57,8 @@ public class LoadSave {
                     animations[i][j] = ImageIO.read(LoadSave.class.getResourceAsStream(path));
                 }
             }
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             e.printStackTrace();
         }
         
