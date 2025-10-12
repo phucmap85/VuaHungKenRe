@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 
-import ui.UiManager;
+import ui.PlayerUI;
 
 import static utilz.HelpMethods.*;
 
@@ -35,9 +35,6 @@ public class Player1 extends Entity {
     private float gravity = 0.1f;
     private float velocityY = 0;
     private float groundY;
-
-
-
 
     public Player1(float x, float y, float width, float height,float xOffSet,float yOffSet) {
         super(x, y, width, height, xOffSet, yOffSet);

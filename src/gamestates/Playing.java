@@ -4,7 +4,7 @@ import static utilz.Constants.GameConstants.*;
 
 import main.Game;
 import map.Map;
-import ui.UiManager;
+import ui.PlayerUI;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -17,7 +17,7 @@ public class Playing extends State implements Statemethods {
 
     private Map map;
 	private Player1 player1;
-    private UiManager uiPlayer1;
+    private PlayerUI uiPlayer1;
     
     public Playing(Game game) {
         super(game);
@@ -27,7 +27,7 @@ public class Playing extends State implements Statemethods {
     private void initClasses() {
 		map = new Map(game);
 		player1 = new Player1(200f, 530f, 55f, 95f, 35f, 20f);
-        uiPlayer1 = new UiManager(100, true);
+        uiPlayer1 = new PlayerUI(100, true);
 	}
 
     public void windowFocusLost() {
@@ -40,7 +40,6 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
-
         player1.update();
         uiPlayer1.update();
     }
