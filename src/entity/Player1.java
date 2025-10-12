@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 
-import ui.HealthMana;
+import ui.UiManager;
 
 import static utilz.HelpMethods.*;
 
@@ -36,16 +36,14 @@ public class Player1 extends Entity {
     private float velocityY = 0;
     private float groundY;
 
-    // Health And Mana
-    private HealthMana healthMana;
-    private int health = 100;
-    private int maxHealth = 100;
+
+
 
     public Player1(float x, float y, float width, float height,float xOffSet,float yOffSet) {
         super(x, y, width, height, xOffSet, yOffSet);
         initHitbox();
         groundY = y;
-        this.healthMana = new HealthMana(100, true);
+        
         loadAnimation();
     }
     
