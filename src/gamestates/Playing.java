@@ -94,6 +94,15 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_K:
                     player1.setJump(true);
                     break;
+                case KeyEvent.VK_J:
+                    player1.setPunching(true);
+                    break;
+                case KeyEvent.VK_L:
+                    player1.setRoundhouse(true);
+                    break;
+                case KeyEvent.VK_I:
+                    player1.setFlyingkick(true);
+                    break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
                     break;

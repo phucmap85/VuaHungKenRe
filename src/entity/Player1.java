@@ -20,6 +20,8 @@ public class Player1 extends Entity {
     private boolean moving = false;
     private boolean inAir = false;
     private int direction = RIGHT; // Lưu hướng mặt cuối cùng
+    private boolean punching, roundhouse, flyingkick;
+
     
     // Animation
     private int playerAction = IDLE_RIGHT;
@@ -67,7 +69,6 @@ public class Player1 extends Entity {
     public void renderPlatForm(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         g2.drawRect((int)platFormX1,(int)platFormY,(int)(platFormX2-platFormX1),10);
-     
     }
 
     // Cập nhật vị trí dựa trên input
@@ -103,7 +104,7 @@ public class Player1 extends Entity {
                 y = platFormY - yOffSet - height;
                 velocityY = 0;
                 inAir = false;
-            }
+            }               
             else y+=velocityY;
             // Kiểm tra chạm đất
             if (y >= groundY) {
@@ -131,19 +132,48 @@ public class Player1 extends Entity {
             // Reset về frame 0 khi hết animation
             if (framesIndex >= getFramesAmount(playerAction)) {
                 framesIndex = 0;
+                if (playerAction == PUNCHING_LEFT || playerAction == PUNCHING_RIGHT)
+                    punching = false;
+                if (playerAction == ROUNDHOUSE_LEFT || playerAction == ROUNDHOUSE_RIGHT)
+                    roundhouse = false;
+                if (playerAction == FLYING_KICK_LEFT || playerAction == FLYING_KICK_RIGHT)
+                    flyingkick = false;
+
             }
         }
     }
 
     // Xác định animation nào sẽ chạy
-    private void setAnimation() {
+   private void setAnimation() {
         int startAnim = playerAction;
-        
-        if (inAir) {
-            playerAction = (direction == LEFT) ? JUMP_LEFT : JUMP_RIGHT;
-        } else if (moving) {
+        if(moving){
             playerAction = (direction == LEFT) ? MOVE_LEFT : MOVE_RIGHT;
-        } else {
+            // hủy trạng thái tấn công khi di chuyển
+            punching = false;
+            roundhouse = false;
+            flyingkick = false;
+
+        }
+        else if (inAir) {
+            if (flyingkick) {
+                playerAction = (direction == LEFT) ? FLYING_KICK_LEFT : FLYING_KICK_RIGHT;
+            } else {
+                playerAction = (direction == LEFT) ? JUMP_LEFT : JUMP_RIGHT;
+            }
+            punching = false;
+            roundhouse = false;
+        }
+        else if (punching) {
+            playerAction = (direction == LEFT) ? PUNCHING_LEFT : PUNCHING_RIGHT;
+            x += 0.2;
+        }else if (roundhouse) {
+            playerAction = (direction == LEFT) ? ROUNDHOUSE_LEFT : ROUNDHOUSE_RIGHT;
+            x+=1;
+        }else if (flyingkick) {
+            playerAction = (direction == LEFT) ? FLYING_KICK_LEFT : FLYING_KICK_RIGHT;
+            x+=1;
+        } 
+        else {
             playerAction = (direction == LEFT) ? IDLE_LEFT : IDLE_RIGHT;
         }
         
@@ -152,6 +182,7 @@ public class Player1 extends Entity {
             resetAnimationTick();
         }
     }
+
 
     // Reset animation về frame đầu
     private void resetAnimationTick() {
@@ -177,6 +208,9 @@ public class Player1 extends Entity {
     public void setRight(boolean right) { this.right = right; }
     public void setJump(boolean jump) { this.jump = jump; }
     public void setDefense(boolean defense) { this.defense = defense; }
+    public void setPunching(boolean punching) { this.punching = punching; }
+    public void setRoundhouse(boolean roundhouse) { this.roundhouse = roundhouse; }
+    public void setFlyingkick(boolean flyingkick) { this.flyingkick = flyingkick; }
     
     // Getters
     public boolean isLeft() { return left; }

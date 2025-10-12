@@ -28,7 +28,7 @@ public class LoadSave {
     }
 
     public static BufferedImage[][] GetAnimation() {
-        BufferedImage[][] animations = new BufferedImage[6][9];
+        BufferedImage[][] animations = new BufferedImage[12][9];
         
         String[][] animConfig = {
             {"IDLE_right", "8"},   // animations[0] - 8 frames
@@ -36,7 +36,13 @@ public class LoadSave {
             {"MOVE_right", "4"},   // animations[2] - 4 frames
             {"MOVE_left", "4"},    // animations[3] - 4 frames
             {"JUMP_right", "9"},   // animations[4] - 9 frames
-            {"JUMP_left", "9"}     // animations[5] - 9 frames
+            {"JUMP_left", "9"},    // animations[5] - 9 frames
+            {"PUNCH_right", "6"},
+            {"PUNCH_left", "6"},
+            {"ROUNDHOUSE_right", "7"},
+            {"ROUNDHOUSE_left", "7"},
+            {"FLYING_right", "6"},
+            {"FLYING_left", "6"}
         };
         
         try {

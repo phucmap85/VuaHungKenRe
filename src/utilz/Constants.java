@@ -5,12 +5,21 @@ public class Constants {
         public static final int RIGHT = 0;
         public static final int LEFT = 1;
 
+        // moving
         public static final int IDLE_RIGHT = 0;
         public static final int IDLE_LEFT = 1;
         public static final int MOVE_RIGHT = 2;
         public static final int MOVE_LEFT = 3;
         public static final int JUMP_RIGHT= 4;
         public static final int JUMP_LEFT = 5;
+        
+        // combat
+        public static final int PUNCHING_RIGHT = 6;
+        public static final int PUNCHING_LEFT = 7;
+        public static final int ROUNDHOUSE_RIGHT = 8;
+        public static final int ROUNDHOUSE_LEFT = 9;
+        public static final int FLYING_KICK_RIGHT = 10;
+        public static final int FLYING_KICK_LEFT = 11;
         
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
@@ -22,7 +31,16 @@ public class Constants {
                     return 4;
                 case JUMP_LEFT:
                 case JUMP_RIGHT:
-                    return 9; 
+                    return 9;
+                case PUNCHING_LEFT:
+                case PUNCHING_RIGHT:
+                    return 6;
+                case ROUNDHOUSE_LEFT:
+                case ROUNDHOUSE_RIGHT:
+                    return 7;
+                case FLYING_KICK_LEFT:
+                case FLYING_KICK_RIGHT:
+                    return 6;
                 default:
                     return 0;
             }
