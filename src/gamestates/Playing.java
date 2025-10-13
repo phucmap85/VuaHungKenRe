@@ -26,7 +26,7 @@ public class Playing extends State implements Statemethods {
     
     private void initClasses() {
 		map = new Map(game);
-		player1 = new Player1(200f, 530f, 55f, 95f, 35f, 20f);
+		player1 = new Player1(200f, 535f, 55f, 95f, 35f, 20f);
         uiPlayer1 = new UiManager(100, true);
 	}
 
@@ -95,13 +95,7 @@ public class Playing extends State implements Statemethods {
                     player1.setJump(true);
                     break;
                 case KeyEvent.VK_J:
-                    player1.setPunching(true);
-                    break;
-                case KeyEvent.VK_L:
-                    player1.setRoundhouse(true);
-                    break;
-                case KeyEvent.VK_I:
-                    player1.setFlyingkick(true);
+                    player1.setPunch(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
@@ -130,6 +124,9 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_K:
                 player1.setJump(false);
+                break;
+            case KeyEvent.VK_J:
+                player1.setPunch(false);
                 break;
             default:
                 break;

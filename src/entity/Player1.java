@@ -2,203 +2,298 @@ package entity;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
 import java.awt.image.BufferedImage;
-
-import ui.UiManager;
-
 import static utilz.HelpMethods.*;
-
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.GameConstants.*;
-
 import utilz.LoadSave;
 
 public class Player1 extends Entity {
     // Movement states
-    private boolean left, right, jump, defense; 
+    private boolean left, right, jump, defense, punch;
     private boolean moving = false;
     private boolean inAir = false;
-    private int direction = RIGHT; // Lưu hướng mặt cuối cùng
-    private boolean punching, roundhouse, flyingkick;
-
+    private boolean defending = false;
+    private int direction = RIGHT;
     
-    // Animation
+    // ===== PUNCH STATE (Tách riêng) =====
+    private boolean punching = false;
+    private int punchFrameIndex = 0;        // Frame hiện tại của punch animation
+    private int punchFrameCounter = 0;       // Counter để control tốc độ
+    private long lastPunchTime = 0;          // Thời điểm punch cuối
+    private final long PUNCH_RESET_TIME = 300; // 0.3 giây = 300ms
+    private final int MAX_PUNCH_FRAMES = 19;   // Tổng 19 frames
+    
+    // Animation (cho các action khác)
     private int playerAction = IDLE_RIGHT;
     private BufferedImage[][] animations = null;
-    private int framesCounter = 0, framesIndex = 0, animationSpeed = 20;
-    private int jumpAnimationSpeed = 15; // Animation nhảy chậm hơn để thấy rõ
+    private int framesCounter = 0, framesIndex = 0;
+    private int animationSpeed = 20;
+    private int jumpAnimationSpeed = 15;
+    private int punchAnimationSpeed = 25; // Tốc độ animation punch (2 = nhanh)
     
     // Physics
     private float speed = 2.0f;
-    private float jumpStrength = -6.5f; // 
+    private float punchSpeed = 0.3f;
+    private float jumpStrength = -6.5f;
     private float gravity = 0.1f;
     private float velocityY = 0;
     private float groundY;
 
-
-
-
-    public Player1(float x, float y, float width, float height,float xOffSet,float yOffSet) {
+    public Player1(float x, float y, float width, float height, float xOffSet, float yOffSet) {
         super(x, y, width, height, xOffSet, yOffSet);
         initHitbox();
         groundY = y;
-        
         loadAnimation();
     }
     
-    // Hàm chính: cập nhật logic
     public void update() { 
+        updatePunchState();    // Update punch state TRƯỚC
         updateAnimationTick();
         setAnimation();
         updatePos();
     }
     
-    // Hàm chính: vẽ nhân vật
     public void render(Graphics g) { 
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(animations[playerAction][framesIndex], 
-                    (int) x, (int) y, 128, 128, null);
-       // drawHitbox(g); de fix bug 
-       // renderPlatForm(g); ham de fix bug 
         
+        // Nếu đang punch, vẽ punch animation
+        if (punching) {
+            int punchAction = (direction == LEFT) ? PUNCH_LEFT : PUNCH_RIGHT;
+            g2.drawImage(animations[punchAction][punchFrameIndex], 
+                        (int) x, (int) y, 128, 128, null);
+        } 
+        // Không punch, vẽ animation bình thường
+        else {
+            g2.drawImage(animations[playerAction][framesIndex], 
+                        (int) x, (int) y, 128, 128, null);
+        }
     }
 
-    public void renderPlatForm(Graphics g){
-        Graphics2D g2 = (Graphics2D) g;
-        g2.drawRect((int)platFormX1,(int)platFormY,(int)(platFormX2-platFormX1),10);
+    // ===== PUNCH STATE MANAGEMENT =====
+    private void updatePunchState() {
+        long currentTime = System.currentTimeMillis();
+        
+        // Nếu đang punch
+        if (punching) {
+            // Update frame animation
+            punchFrameCounter++;
+            if (punchFrameCounter >= punchAnimationSpeed) {
+                punchFrameCounter = 0;
+                punchFrameIndex++;
+       
+                
+                // Đã chạy hết animation
+                if (punchFrameIndex >= MAX_PUNCH_FRAMES) {
+                    punchFrameIndex = 0; // Giữ ở frame cuối
+                }
+            }
+            
+            // Kiểm tra timeout - Reset về IDLE nếu quá lâu không nhấn J
+            if (currentTime - lastPunchTime > PUNCH_RESET_TIME) {
+                System.out.println("Punch timeout - Reset to IDLE");
+                resetPunchState();
+            }
+        }
+    }
+    
+    // Reset punch state về đầu
+    private void resetPunchState() {
+        punching = false;
+        punchFrameIndex = 0;
+        punchFrameCounter = 0;
+    }
+    
+    // Setter cho punch - QUAN TRỌNG
+    public void setPunch(boolean punch) {
+        this.punch = punch;
+        
+        if (punch && !inAir) { // Chỉ punch khi không trong không khí
+            // Nếu chưa đang punch → Bắt đầu mới
+            if (!punching) {
+                punching = true;
+                punchFrameIndex = 0;
+                punchFrameCounter = 0;
+                System.out.println("Start punching from frame 0");
+            } 
+            // Nếu đang punch → Tiếp tục combo (không reset frame)
+            else {
+                System.out.println("Continue combo at frame " + punchFrameIndex);
+            }
+            
+            // Cập nhật thời gian punch cuối
+            lastPunchTime = System.currentTimeMillis();
+        }
     }
 
-    // Cập nhật vị trí dựa trên input
     private void updatePos() {
         moving = false;
         
-        // Di chuyển ngang
-        if (left && !right) {
-            if(hitbox.x - speed >=0) x-=speed;
-            moving = true;
-            direction = LEFT; // Cập nhật hướng sang trái
-        } else if (right && !left) {
-            if(hitbox.x + hitbox.width + speed <= GAME_WIDTH) x+=speed;
-            moving = true;
-            direction = RIGHT; // Cập nhật hướng sang phải
-        }
-        updateHitbox();
-        
-        // Nhảy
-        if(isInAir(y,hitbox,groundY)){
-            inAir = true;
-        }
-        if (jump && !inAir) {
-            velocityY = jumpStrength;
-            inAir = true;
-        }
-       
-        
-        // Áp dụng trọng lực
-        if (inAir) {
-            velocityY += gravity;
-            if(isOnPlatForm(hitbox, velocityY)){
-                y = platFormY - yOffSet - height;
-                velocityY = 0;
-                inAir = false;
-            }               
-            else y+=velocityY;
-            // Kiểm tra chạm đất
-            if (y >= groundY) {
-                y = groundY;
-                velocityY = 0;
-                inAir = false;
+        // ===== XỬ LÝ PUNCH =====
+        if (punching) {
+            defending = false;
+            
+             if(punchFrameIndex % 3 == 0){ // update theo frames cho nó mượt hơn 
+ 
+            if (direction == RIGHT) {
+                if (hitbox.x + hitbox.width + punchSpeed <= GAME_WIDTH) 
+                    x += punchSpeed;
+            } else {
+                if (hitbox.x - punchSpeed >= 0) 
+                    x -= punchSpeed;
+            }
+            updateHitbox();
+            
+                }
+            if (isInAir(y, hitbox, groundY)) {
+                inAir = true;
+            }
+            
+            // Áp dụng trọng lực
+            if (inAir) {
+                velocityY += gravity;
+                if (isOnPlatForm(hitbox, velocityY)) {
+                    y = platFormY - yOffSet - height;
+                    velocityY = 0;
+                    inAir = false;
+                } else {
+                    y += velocityY;
+                }
+                
+                if (y >= groundY) {
+                    y = groundY;
+                    velocityY = 0;
+                    inAir = false;
+                }
+                
+                // Hủy punch khi rơi
+                resetPunchState();
             }
         }
+        // ===== XỬ LÝ DEFENSE =====
+        else if (defense && !punch) {
+            defending = true;
+        }
+        // ===== XỬ LÝ DI CHUYỂN BÌNH THƯỜNG =====
+        else {
+            defending = false;
+            
+            if (left && !right) {
+                if (hitbox.x - speed >= 0) {
+                    x -= speed;
+                    moving = true;
+                }
+                direction = LEFT;
+            } else if (right && !left) {
+                if (hitbox.x + hitbox.width + speed <= GAME_WIDTH) {
+                    x += speed;
+                    moving = true;
+                }
+                direction = RIGHT;
+            }
+            
+            updateHitbox();
+            
+            // Kiểm tra rơi
+            if (isInAir(y, hitbox, groundY)) {
+                inAir = true;
+            }
+            
+            // Nhảy
+            if (jump && !inAir) {
+                velocityY = jumpStrength;
+                inAir = true;
+            }
+            
+            // Áp dụng trọng lực
+            if (inAir) {
+                velocityY += gravity;
+                if (isOnPlatForm(hitbox, velocityY)) {
+                    y = platFormY - yOffSet - height;
+                    velocityY = 0;
+                    inAir = false;
+                } else {
+                    y += velocityY;
+                }
+                
+                if (y >= groundY) {
+                    y = groundY;
+                    velocityY = 0;
+                    inAir = false;
+                }
+            }
+        }
+        
         updateHitbox();
     }
 
-    // Cập nhật frame animation
     private void updateAnimationTick() {
+        // Không update animation tick nếu đang punch
+        // (Punch có animation riêng)
+        if (punching) return;
+        
         framesCounter++;
         
-        // Animation nhảy chậm hơn các animation khác
-        int currentSpeed = (playerAction == JUMP_LEFT || playerAction == JUMP_RIGHT) 
-                          ? jumpAnimationSpeed 
-                          : animationSpeed;
+        int currentSpeed = animationSpeed;
+        if (playerAction == JUMP_LEFT || playerAction == JUMP_RIGHT) {
+            currentSpeed = jumpAnimationSpeed;
+        }
         
         if (framesCounter >= currentSpeed) {
             framesCounter = 0;
-            framesIndex++;
             
-            // Reset về frame 0 khi hết animation
-            if (framesIndex >= getFramesAmount(playerAction)) {
-                framesIndex = 0;
-                if (playerAction == PUNCHING_LEFT || playerAction == PUNCHING_RIGHT)
-                    punching = false;
-                if (playerAction == ROUNDHOUSE_LEFT || playerAction == ROUNDHOUSE_RIGHT)
-                    roundhouse = false;
-                if (playerAction == FLYING_KICK_LEFT || playerAction == FLYING_KICK_RIGHT)
-                    flyingkick = false;
-
+            // Defense animation (giữ frame cuối)
+            if (playerAction == DEFEND_LEFT || playerAction == DEFEND_RIGHT) {
+                if (framesIndex < getFramesAmount(playerAction) - 1) {
+                    framesIndex++;
+                }
+            } 
+            // Các animation khác (loop)
+            else {
+                framesIndex++;
+                if (framesIndex >= getFramesAmount(playerAction)) {
+                    framesIndex = 0;
+                }
             }
         }
     }
 
-    // Xác định animation nào sẽ chạy
-   private void setAnimation() {
+    private void setAnimation() {
+        // Không set animation nếu đang punch
+        if (punching) return;
+        
         int startAnim = playerAction;
-        if(moving){
+        
+        if (inAir) {
+            playerAction = (direction == LEFT) ? JUMP_LEFT : JUMP_RIGHT;
+        } else if (defending) {
+            playerAction = (direction == LEFT) ? DEFEND_LEFT : DEFEND_RIGHT;
+        } else if (moving) {
             playerAction = (direction == LEFT) ? MOVE_LEFT : MOVE_RIGHT;
-            // hủy trạng thái tấn công khi di chuyển
-            punching = false;
-            roundhouse = false;
-            flyingkick = false;
-
-        }
-        else if (inAir) {
-            if (flyingkick) {
-                playerAction = (direction == LEFT) ? FLYING_KICK_LEFT : FLYING_KICK_RIGHT;
-            } else {
-                playerAction = (direction == LEFT) ? JUMP_LEFT : JUMP_RIGHT;
-            }
-            punching = false;
-            roundhouse = false;
-        }
-        else if (punching) {
-            playerAction = (direction == LEFT) ? PUNCHING_LEFT : PUNCHING_RIGHT;
-            x += 0.2;
-        }else if (roundhouse) {
-            playerAction = (direction == LEFT) ? ROUNDHOUSE_LEFT : ROUNDHOUSE_RIGHT;
-            x+=1;
-        }else if (flyingkick) {
-            playerAction = (direction == LEFT) ? FLYING_KICK_LEFT : FLYING_KICK_RIGHT;
-            x+=1;
-        } 
-        else {
+        } else {
             playerAction = (direction == LEFT) ? IDLE_LEFT : IDLE_RIGHT;
         }
         
-        // Reset frame khi đổi animation
         if (startAnim != playerAction) {
             resetAnimationTick();
         }
     }
 
-
-    // Reset animation về frame đầu
     private void resetAnimationTick() {
         framesCounter = 0;
         framesIndex = 0;
     }
 
-    // Load animation từ file
     private void loadAnimation() {
         animations = LoadSave.GetAnimation();
     }
 
-    // Dừng tất cả khi mất focus window
     public void resetDirBooleans() {
         left = false;
         right = false;
         jump = false;
         defense = false;
+        punch = false;
     }
 
     // Setters
@@ -206,13 +301,58 @@ public class Player1 extends Entity {
     public void setRight(boolean right) { this.right = right; }
     public void setJump(boolean jump) { this.jump = jump; }
     public void setDefense(boolean defense) { this.defense = defense; }
-    public void setPunching(boolean punching) { this.punching = punching; }
-    public void setRoundhouse(boolean roundhouse) { this.roundhouse = roundhouse; }
-    public void setFlyingkick(boolean flyingkick) { this.flyingkick = flyingkick; }
+    // setPunch đã được định nghĩa ở trên
     
     // Getters
     public boolean isLeft() { return left; }
     public boolean isRight() { return right; }
     public boolean isJump() { return jump; }
     public boolean isDefense() { return defense; }
+    public boolean isPunch() { return punch; }
+    public boolean isPunching() { return punching; }
+    public int getPunchFrame() { return punchFrameIndex; }
 }
+
+// ============================================
+// HƯỚNG DẪN ĐIỀU CHỈNH
+// ============================================
+
+/*
+ * 1. THAY ĐỔI THỜI GIAN RESET:
+ * -----------------------------
+ * private final long PUNCH_RESET_TIME = 300; // 0.3 giây
+ * 
+ * - Nhỏ hơn (200-250ms) = Phải nhấn nhanh hơn
+ * - Lớn hơn (400-500ms) = Dễ combo hơn
+ * 
+ * 
+ * 2. THAY ĐỔI TỐC ĐỘ ANIMATION:
+ * ------------------------------
+ * private int punchAnimationSpeed = 2;
+ * 
+ * - Nhỏ hơn (1) = Animation rất nhanh
+ * - Lớn hơn (3-4) = Animation chậm hơn
+ * 
+ * 
+ * 3. CHIA COMBO THEO FRAME:
+ * -------------------------
+ * Trong setPunch(), có thể thêm:
+ * 
+ * if (punchFrameIndex >= 0 && punchFrameIndex < 6) {
+ *     // Đang ở combo 1 (đấm)
+ * } else if (punchFrameIndex >= 6 && punchFrameIndex < 12) {
+ *     // Đang ở combo 2 (đá)
+ * } else {
+ *     // Đang ở combo 3 (đạp)
+ * }
+ * 
+ * 
+ * 4. FORCE RESET KHI NHẤN DEFENSE:
+ * --------------------------------
+ * public void setDefense(boolean defense) {
+ *     this.defense = defense;
+ *     if (defense && punching) {
+ *         resetPunchState(); // Cancel punch
+ *     }
+ * }
+ */

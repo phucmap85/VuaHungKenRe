@@ -13,13 +13,17 @@ public class Constants {
         public static final int JUMP_RIGHT= 4;
         public static final int JUMP_LEFT = 5;
         
-        // combat
-        public static final int PUNCHING_RIGHT = 6;
-        public static final int PUNCHING_LEFT = 7;
-        public static final int ROUNDHOUSE_RIGHT = 8;
-        public static final int ROUNDHOUSE_LEFT = 9;
-        public static final int FLYING_KICK_RIGHT = 10;
-        public static final int FLYING_KICK_LEFT = 11;
+        // combat 
+        public static final int PUNCH_RIGHT = 6;
+        public static final int PUNCH_LEFT = 7;
+
+        public static final int DEFEND_RIGHT = 8;
+        public static final int DEFEND_LEFT = 9;
+
+        // public static final int ROUNDHOUSE_RIGHT = 8;
+        // public static final int ROUNDHOUSE_LEFT = 9;
+        // public static final int FLYING_KICK_RIGHT = 10;
+        // public static final int FLYING_KICK_LEFT = 11;
         
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
@@ -32,15 +36,18 @@ public class Constants {
                 case JUMP_LEFT:
                 case JUMP_RIGHT:
                     return 9;
-                case PUNCHING_LEFT:
-                case PUNCHING_RIGHT:
-                    return 6;
-                case ROUNDHOUSE_LEFT:
-                case ROUNDHOUSE_RIGHT:
-                    return 7;
-                case FLYING_KICK_LEFT:
-                case FLYING_KICK_RIGHT:
-                    return 6;
+                case PUNCH_LEFT:
+                case PUNCH_RIGHT:
+                    return 19;
+                case DEFEND_LEFT:
+                case DEFEND_RIGHT:
+                    return 3;
+                // case ROUNDHOUSE_LEFT:
+                // case ROUNDHOUSE_RIGHT:
+                //     return 7;
+                // case FLYING_KICK_LEFT:
+                // case FLYING_KICK_RIGHT:
+                //     return 6;
                 default:
                     return 0;
             }
@@ -53,6 +60,6 @@ public class Constants {
 	    public final static int GAME_HEIGHT = 768;
 
         // đây là thông số của cái bậc và thông số map
-        public final static float platFormX1 = 320f, platFormX2 = 755f, platFormY = 465f;
+        public final static float platFormX1 = 320f, platFormX2 = 755f, platFormY = 475f;
     }
 }
