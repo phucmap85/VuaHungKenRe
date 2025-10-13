@@ -3,6 +3,9 @@ package entity;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import ui.PlayerUI;
+
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.GameConstants.*;
@@ -40,7 +43,7 @@ public class Player1 extends Entity {
     private float velocityY = 0;
     private float groundY;
 
-    public Player1(float x, float y, float width, float height, float xOffSet, float yOffSet) {
+    public Player1(float x, float y, float width, float height,float xOffSet,float yOffSet) {
         super(x, y, width, height, xOffSet, yOffSet);
         initHitbox();
         groundY = y;

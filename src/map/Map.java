@@ -20,7 +20,7 @@ public class Map {
     }
 
     private void importMap() {
-        img = GetMap(BattleMap);
+        img = GetSpriteAtlas(BattleMap);
     }
 
     public void draw(Graphics g) {

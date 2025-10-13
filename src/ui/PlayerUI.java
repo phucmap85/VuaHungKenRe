@@ -2,15 +2,20 @@ package ui;
 
 import java.awt.*;
 
-public class UiManager {
+public class PlayerUI {
     private HealthBar healthBar;
     private ManaBar manaBar;
     private boolean leftSide;
 
-    public UiManager(int maxHealth, boolean leftSide) {
+    public PlayerUI(int maxHealth, boolean leftSide) {
         this.leftSide = leftSide;
         this.healthBar = new HealthBar(maxHealth, leftSide);
         this.manaBar = new ManaBar(leftSide);
+    }
+
+    public void update() {
+        healthBar.update();
+        manaBar.update();
     }
 
     public void draw(Graphics g, int screenWidth) {
