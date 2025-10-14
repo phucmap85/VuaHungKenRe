@@ -288,9 +288,8 @@ public class Player1 extends Entity {
     }
 
     private void loadAnimation() {
-        animations = LoadSave.GetAnimation();
+        animations = LoadSave.GetAnimation("ThuyTinh");
     }
-
     public void resetDirBooleans() {
         left = false;
         right = false;

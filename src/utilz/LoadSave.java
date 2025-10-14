@@ -1,5 +1,7 @@
 package utilz;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,21 +30,28 @@ public class LoadSave {
 		return img;
 	}
 
-    public static BufferedImage[][] GetAnimation() {
+    public static BufferedImage flipHorizontally(BufferedImage img){
+        AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+        tx.translate(-img.getWidth(), 0);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        BufferedImage flippedHorizontally = op.filter(img, null);
+        return flippedHorizontally;
+    }
+    public static BufferedImage[][] GetAnimation(String player) {
         // FIXED: Mảng có 10 animations, không phải 12
         BufferedImage[][] animations = new BufferedImage[10][20];
         
         String[][] animConfig = {
-            {"IDLE_right", "8"},      // animations[0]
-            {"IDLE_left", "8"},       // animations[1]
-            {"MOVE_right", "4"},      // animations[2]
-            {"MOVE_left", "4"},       // animations[3]
-            {"JUMP_right", "9"},      // animations[4]
-            {"JUMP_left", "9"},       // animations[5]
-            {"PUNCH_right", "19"},    // animations[6]
-            {"PUNCH_left", "19"},     // animations[7]
-            {"DEFENSE_right", "3"},   // animations[8]
-            {"DEFENSE_left", "3"}     // animations[9]
+            {"IDLE", "8"},      // animations[0]
+            //{"IDLE_left", "8"},       // animations[1]
+            {"MOVE", "4"},      // animations[2]
+            //{"MOVE_left", "4"},       // animations[3]
+            {"JUMP", "9"},      // animations[4]
+            //{"JUMP_left", "9"},       // animations[5]
+            {"PUNCH", "19"},    // animations[6]
+            //{"PUNCH_left", "19"},     // animations[7]
+            {"DEFENSE", "3"},   // animations[8]
+            //{"DEFENSE_left", "3"}     // animations[9]
             // Tổng: 10 animations
         };
         
@@ -54,7 +63,7 @@ public class LoadSave {
                 System.out.println("Loading: " + animName + " (" + frameCount + " frames)");
                 
                 for (int j = 0; j < frameCount; j++) {
-                    String path = String.format("/image/%s_%04d.png", animName, j + 1);
+                    String path = String.format("/image/%s/%s_%04d.png", player, animName, j + 1);
                     
                     InputStream is = LoadSave.class.getResourceAsStream(path);
                     
@@ -67,8 +76,9 @@ public class LoadSave {
                         System.err.println("  3. Check uppercase/lowercase");
                         throw new RuntimeException("Missing animation file: " + path);
                     }
-                    
-                    animations[i][j] = ImageIO.read(is);
+                    BufferedImage img = ImageIO.read(is);
+                    animations[i * 2][j] = img;
+                    animations[i * 2 + 1][j] = flipHorizontally(img);
                     is.close(); // Đóng stream sau khi đọc
                 }
                 
