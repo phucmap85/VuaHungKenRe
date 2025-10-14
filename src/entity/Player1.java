@@ -93,7 +93,7 @@ public class Player1 extends Entity {
             }
             
             // Kiểm tra timeout - Reset về IDLE nếu quá lâu không nhấn J
-            if (currentTime - lastPunchTime > PUNCH_RESET_TIME) {
+            if ((currentTime - lastPunchTime > PUNCH_RESET_TIME) && !punch) {
                 System.out.println("Punch timeout - Reset to IDLE");
                 resetPunchState();
             }
@@ -110,7 +110,7 @@ public class Player1 extends Entity {
     // Setter cho punch - QUAN TRỌNG
     public void setPunch(boolean punch) {
         this.punch = punch;
-        
+        System.out.println(punch);
         if (punch && !inAir) { // Chỉ punch khi không trong không khí
             // Nếu chưa đang punch → Bắt đầu mới
             if (!punching) {
@@ -174,7 +174,7 @@ public class Player1 extends Entity {
             }
         }
         // ===== XỬ LÝ DEFENSE =====
-        else if (defense && !punch) {
+        else if (defense && !punch && !inAir) {
             defending = true;
         }
         // ===== XỬ LÝ DI CHUYỂN BÌNH THƯỜNG =====
@@ -210,6 +210,8 @@ public class Player1 extends Entity {
             
             // Áp dụng trọng lực
             if (inAir) {
+                defending = false;
+
                 velocityY += gravity;
                 if (isOnPlatForm(hitbox, velocityY)) {
                     y = platFormY - yOffSet - height;
