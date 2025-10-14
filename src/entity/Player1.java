@@ -24,7 +24,7 @@ public class Player1 extends Entity {
     private int punchFrameIndex = 0;        // Frame hiện tại của punch animation
     private int punchFrameCounter = 0;       // Counter để control tốc độ
     private long lastPunchTime = 0;          // Thời điểm punch cuối
-    private final long PUNCH_RESET_TIME = 200; // 0.3 giây = 300ms
+    private final long PUNCH_RESET_TIME = 300; // 0.3 giây = 300ms
     private final int MAX_PUNCH_FRAMES = 19;   // Tổng 19 frames
     
     // Animation (cho các action khác)
@@ -93,7 +93,7 @@ public class Player1 extends Entity {
             }
             
             // Kiểm tra timeout - Reset về IDLE nếu quá lâu không nhấn J
-            if (currentTime - lastPunchTime > PUNCH_RESET_TIME) {
+            if ((currentTime - lastPunchTime > PUNCH_RESET_TIME) && !punch) {
                 System.out.println("Punch timeout - Reset to IDLE");
                 resetPunchState();
             }
@@ -110,7 +110,7 @@ public class Player1 extends Entity {
     // Setter cho punch - QUAN TRỌNG
     public void setPunch(boolean punch) {
         this.punch = punch;
-        
+        System.out.println(punch);
         if (punch && !inAir) { // Chỉ punch khi không trong không khí
             // Nếu chưa đang punch → Bắt đầu mới
             if (!punching) {
