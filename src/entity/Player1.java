@@ -24,7 +24,7 @@ public class Player1 extends Entity {
     private int punchFrameIndex = 0;        // Frame hiện tại của punch animation
     private int punchFrameCounter = 0;       // Counter để control tốc độ
     private long lastPunchTime = 0;          // Thời điểm punch cuối
-    private final long PUNCH_RESET_TIME = 300; // 0.3 giây = 300ms
+    private final long PUNCH_RESET_TIME = 200; // 0.3 giây = 300ms
     private final int MAX_PUNCH_FRAMES = 19;   // Tổng 19 frames
     
     // Animation (cho các action khác)
@@ -174,7 +174,7 @@ public class Player1 extends Entity {
             }
         }
         // ===== XỬ LÝ DEFENSE =====
-        else if (defense && !punch) {
+        else if (defense && !punch && !inAir) {
             defending = true;
         }
         // ===== XỬ LÝ DI CHUYỂN BÌNH THƯỜNG =====
@@ -210,6 +210,8 @@ public class Player1 extends Entity {
             
             // Áp dụng trọng lực
             if (inAir) {
+                defending = false;
+
                 velocityY += gravity;
                 if (isOnPlatForm(hitbox, velocityY)) {
                     y = platFormY - yOffSet - height;
