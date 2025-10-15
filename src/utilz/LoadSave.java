@@ -38,8 +38,8 @@ public class LoadSave {
         return flippedHorizontally;
     }
     public static BufferedImage[][] GetAnimation(String player) {
-        // FIXED: Mảng có 10 animations, không phải 12
-        BufferedImage[][] animations = new BufferedImage[10][20];
+        // FIXED: Mảng có 12 animations
+        BufferedImage[][] animations = new BufferedImage[15][20];
         
         String[][] animConfig = {
             {"IDLE", "8"},      // animations[0]
@@ -52,7 +52,9 @@ public class LoadSave {
             //{"PUNCH_left", "19"},     // animations[7]
             {"DEFENSE", "3"},   // animations[8]
             //{"DEFENSE_left", "3"}     // animations[9]
-            // Tổng: 10 animations
+            {"SUMMONTORNADO", "6"}    // animations[10] - New animation
+            //{"TORNADO_left", "6"}     // animations[11] - New animation
+            // Tổng: 12 animations
         };
         
         try {
@@ -88,7 +90,17 @@ public class LoadSave {
         catch (IOException e) {
             e.printStackTrace();
         }
+        try{
+            BufferedImage tornadoImg = ImageIO.read(LoadSave.class.getResourceAsStream("/image/ThuyTinh/TORNADO_0001.png"));
+            animations[12][0] = tornadoImg;
+            tornadoImg = ImageIO.read(LoadSave.class.getResourceAsStream("/image/ThuyTinh/TORNADO_0002.png"));
+            animations[12][1] = tornadoImg;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         
         return animations;
     }
+
 }

@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import entity.Player1;
+import entity.Tornado;
 
 public class Playing extends State implements Statemethods {
     private boolean[] keysPressed = new boolean[256];
@@ -18,7 +19,7 @@ public class Playing extends State implements Statemethods {
     private Map map;
 	private Player1 player1;
     private PlayerUI uiPlayer1;
-    
+    private Tornado tornado;
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -28,6 +29,7 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game);
 		player1 = new Player1(200f, 530f, 55f, 95f, 35f, 20f);
         uiPlayer1 = new PlayerUI(100, true);
+        tornado = new Tornado(player1);
 	}
 
     public void windowFocusLost() {
@@ -42,6 +44,7 @@ public class Playing extends State implements Statemethods {
     public void update() {
         player1.update();
         uiPlayer1.update();
+        tornado.update();
     }
 
     @Override
@@ -49,6 +52,7 @@ public class Playing extends State implements Statemethods {
         map.draw(g);
 		player1.render(g);
         uiPlayer1.draw(g, GAME_WIDTH);
+        tornado.render(g);
     }
 
     @Override
@@ -98,6 +102,9 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_J:
                     player1.setPunch(true);
                     break;
+                case KeyEvent.VK_U:
+                    player1.setTornado(true);
+                    break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
                     break;
@@ -128,6 +135,9 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_J:
                 player1.setPunch(false);
+                break;
+            case KeyEvent.VK_U:
+                player1.setTornado(false);  
                 break;
             default:
                 break;

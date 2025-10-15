@@ -27,10 +27,9 @@ public class Constants {
         public static final int DEFEND_RIGHT = 8;
         public static final int DEFEND_LEFT = 9;
 
-        // public static final int ROUNDHOUSE_RIGHT = 8;
-        // public static final int ROUNDHOUSE_LEFT = 9;
-        // public static final int FLYING_KICK_RIGHT = 10;
-        // public static final int FLYING_KICK_LEFT = 11;
+        public static final int TORNADO_RIGHT = 10;
+        public static final int TORNADO_LEFT = 11;
+
         
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
@@ -49,12 +48,9 @@ public class Constants {
                 case DEFEND_LEFT:
                 case DEFEND_RIGHT:
                     return 3;
-                // case ROUNDHOUSE_LEFT:
-                // case ROUNDHOUSE_RIGHT:
-                //     return 7;
-                // case FLYING_KICK_LEFT:
-                // case FLYING_KICK_RIGHT:
-                //     return 6;
+                case TORNADO_LEFT:
+                case TORNADO_RIGHT:
+                    return 6;
                 default:
                     return 0;
             }
