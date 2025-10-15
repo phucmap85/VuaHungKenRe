@@ -13,27 +13,33 @@ import utilz.LoadSave;
 
 public class Player1 extends Entity {
     // Movement states
-    private boolean left, right, jump, defense, punch;
+    protected boolean left, right, jump, defense, punch, tornado;
     private boolean moving = false;
-    private boolean inAir = false;
+    protected boolean inAir = false;
     private boolean defending = false;
-    private int direction = RIGHT;
+    protected boolean tornadoing = false;
+    protected int direction = RIGHT;
     
     // ===== PUNCH STATE (Tách riêng) =====
     private boolean punching = false;
-    private int punchFrameIndex = 0;        // Frame hiện tại của punch animation
-    private int punchFrameCounter = 0;       // Counter để control tốc độ
+    protected int punchFrameIndex = 0;        // Frame hiện tại của punch animation
+    protected int punchFrameCounter = 0;       // Counter để control tốc độ
     private long lastPunchTime = 0;          // Thời điểm punch cuối
     private final long PUNCH_RESET_TIME = 300; // 0.3 giây = 300ms
     private final int MAX_PUNCH_FRAMES = 19;   // Tổng 19 frames
     
+    protected int tornadoFrameIndex = 0;       // Frame hiện tại của tornado animation
+    protected int tornadoFrameCounter = 0;     // Counter để control tốc độ
+    protected final int MAX_TORNADO_FRAMES = 6;  // TỔNG SỐ FRAME CỦA TORNADO
+    private int tornadoAnimationSpeed = 25;  // Tốc độ animation (càng lớn càng chậm)
+
     // Animation (cho các action khác)
     private int playerAction = IDLE_RIGHT;
-    private BufferedImage[][] animations = null;
+    protected BufferedImage[][] animations = null;
     private int framesCounter = 0, framesIndex = 0;
     private int animationSpeed = 20;
     private int jumpAnimationSpeed = 15;
-    private int punchAnimationSpeed = 25; // Tốc độ animation punch (2 = nhanh)
+    private int punchAnimationSpeed = 20; // Tốc độ animation punch (2 = nhanh)
     
     // Physics
     private float speed = 2.0f;
@@ -52,6 +58,7 @@ public class Player1 extends Entity {
     
     public void update() { 
         updatePunchState();    // Update punch state TRƯỚC
+        updateTornadoState();
         updateAnimationTick();
         setAnimation();
         updatePos();
@@ -67,12 +74,37 @@ public class Player1 extends Entity {
                         (int) x, (int) y, 128, 128, null);
         } 
         // Không punch, vẽ animation bình thường
+        else if(tornadoing){
+            int tornadoAction = (direction == LEFT) ? TORNADO_LEFT : TORNADO_RIGHT;
+            g2.drawImage(animations[tornadoAction][tornadoFrameIndex], 
+                        (int) x, (int) y, 128, 128, null);      
+        }
         else {
             g2.drawImage(animations[playerAction][framesIndex], 
                         (int) x, (int) y, 128, 128, null);
         }
     }
+    private void updateTornadoState() {
+        // Chỉ chạy khi đang trong trạng thái tornadoing
+        if (!tornadoing) return;
+        
+        tornadoFrameCounter++;
+        if (tornadoFrameCounter >= tornadoAnimationSpeed) {
+            tornadoFrameCounter = 0;
+            tornadoFrameIndex++;
+            
+            // KHI ANIMATION CHẠY XONG -> TỰ ĐỘNG RESET
+            if (tornadoFrameIndex >= MAX_TORNADO_FRAMES) {
+                resetTornadoState(); // Tự động kết thúc chiêu
+            }
+        }
+    }
 
+    private void resetTornadoState() {
+        tornadoing = false;
+        tornadoFrameIndex = 0;
+        tornadoFrameCounter = 0;
+    }
     // ===== PUNCH STATE MANAGEMENT =====
     private void updatePunchState() {
         long currentTime = System.currentTimeMillis();
@@ -111,7 +143,7 @@ public class Player1 extends Entity {
     public void setPunch(boolean punch) {
         this.punch = punch;
         System.out.println(punch);
-        if (punch && !inAir) { // Chỉ punch khi không trong không khí
+        if (punch && !inAir && !tornadoing) { // Chỉ punch khi không trong không khí
             // Nếu chưa đang punch → Bắt đầu mới
             if (!punching) {
                 punching = true;
@@ -131,9 +163,12 @@ public class Player1 extends Entity {
 
     private void updatePos() {
         moving = false;
-        
+        if(tornado && !inAir)  {
+            tornadoing = true;
+        }
+        else if(tornadoing == true) return;
         // ===== XỬ LÝ PUNCH =====
-        if (punching) {
+        else if (punching) {
             defending = false;
             
              if(punchFrameIndex % 3 == 0){ // update theo frames cho nó mượt hơn 
@@ -236,7 +271,7 @@ public class Player1 extends Entity {
         // Không update animation tick nếu đang punch
         // (Punch có animation riêng)
         if (punching) return;
-        
+        if(tornadoing) return;
         framesCounter++;
         
         int currentSpeed = animationSpeed;
@@ -266,7 +301,7 @@ public class Player1 extends Entity {
     private void setAnimation() {
         // Không set animation nếu đang punch
         if (punching) return;
-        
+        if(tornadoing) return;
         int startAnim = playerAction;
         
         if (inAir) {
@@ -305,6 +340,7 @@ public class Player1 extends Entity {
     public void setRight(boolean right) { this.right = right; }
     public void setJump(boolean jump) { this.jump = jump; }
     public void setDefense(boolean defense) { this.defense = defense; }
+    public void setTornado(boolean tornado) { this.tornado = tornado; }
     // setPunch đã được định nghĩa ở trên
     
     // Getters
@@ -314,7 +350,9 @@ public class Player1 extends Entity {
     public boolean isDefense() { return defense; }
     public boolean isPunch() { return punch; }
     public boolean isPunching() { return punching; }
+    public boolean isTornadoing() { return tornadoing; }    
     public int getPunchFrame() { return punchFrameIndex; }
+
 }
 
 // ============================================
