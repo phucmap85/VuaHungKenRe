@@ -15,7 +15,7 @@ public class Tornado {
     BufferedImage tornadoImage[];
     int framesIndex = 0;
     int framesCounter = 0;
-    int animationSpeed = 20;
+    int animationSpeed = 10;
     public Tornado(Player1 thuytinh) {
         this.thuytinh = thuytinh;
         initClasses();
@@ -39,16 +39,16 @@ public class Tornado {
     }
     public void update() {
         if(!isRender){
-            if(thuytinh.tornado && thuytinh.direction == RIGHT && !thuytinh.inAir){
-                x = thuytinh.x;
+            if(thuytinh.tornadoing && thuytinh.tornadoFrameIndex == thuytinh.MAX_TORNADO_FRAMES-1 && thuytinh.direction == RIGHT && !thuytinh.inAir){
+                x = thuytinh.x + thuytinh.xOffSet + thuytinh.width;
                 y = thuytinh.y;
-                speed = 3.0f;
+                speed = 3.5f;
                 isRender = true;
             }
-            else if(thuytinh.tornado && thuytinh.direction == LEFT && !thuytinh.inAir){
-                x = thuytinh.x;
+            else if(thuytinh.tornadoing && thuytinh.tornadoFrameIndex == thuytinh.MAX_TORNADO_FRAMES-1 && thuytinh.direction == LEFT && !thuytinh.inAir){
+                x = thuytinh.x- 120 + thuytinh.xOffSet; // 120 để chiêu phát ra sát người
                 y = thuytinh.y;
-                speed = -3.0f;
+                speed = -3.5f;
                 isRender = true;
             }
             

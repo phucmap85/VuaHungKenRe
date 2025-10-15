@@ -22,15 +22,15 @@ public class Player1 extends Entity {
     
     // ===== PUNCH STATE (Tách riêng) =====
     private boolean punching = false;
-    private int punchFrameIndex = 0;        // Frame hiện tại của punch animation
-    private int punchFrameCounter = 0;       // Counter để control tốc độ
+    protected int punchFrameIndex = 0;        // Frame hiện tại của punch animation
+    protected int punchFrameCounter = 0;       // Counter để control tốc độ
     private long lastPunchTime = 0;          // Thời điểm punch cuối
     private final long PUNCH_RESET_TIME = 300; // 0.3 giây = 300ms
     private final int MAX_PUNCH_FRAMES = 19;   // Tổng 19 frames
     
-    private int tornadoFrameIndex = 0;       // Frame hiện tại của tornado animation
-    private int tornadoFrameCounter = 0;     // Counter để control tốc độ
-    private final int MAX_TORNADO_FRAMES = 6;  // TỔNG SỐ FRAME CỦA TORNADO
+    protected int tornadoFrameIndex = 0;       // Frame hiện tại của tornado animation
+    protected int tornadoFrameCounter = 0;     // Counter để control tốc độ
+    protected final int MAX_TORNADO_FRAMES = 6;  // TỔNG SỐ FRAME CỦA TORNADO
     private int tornadoAnimationSpeed = 25;  // Tốc độ animation (càng lớn càng chậm)
 
     // Animation (cho các action khác)
