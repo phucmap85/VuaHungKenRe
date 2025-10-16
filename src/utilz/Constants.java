@@ -30,7 +30,9 @@ public class Constants {
         public static final int TORNADO_RIGHT = 10;
         public static final int TORNADO_LEFT = 11;
 
-        
+        public static final int TORNADO = 12; // chỉ có 1 chiều
+        public static final int HOG_RIGHT = 12; // chỉ có 1 chiều
+        public static final int HOG_LEFT = 13; // chỉ có 1 chiều
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
                 case IDLE_LEFT:

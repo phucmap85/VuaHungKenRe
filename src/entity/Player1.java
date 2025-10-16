@@ -25,7 +25,7 @@ public class Player1 extends Entity {
     protected int punchFrameIndex = 0;        // Frame hiện tại của punch animation
     protected int punchFrameCounter = 0;       // Counter để control tốc độ
     private long lastPunchTime = 0;          // Thời điểm punch cuối
-    private final long PUNCH_RESET_TIME = 300; // 0.3 giây = 300ms
+    private final long PUNCH_RESET_TIME = 200; // 0.3 giây = 300ms
     private final int MAX_PUNCH_FRAMES = 19;   // Tổng 19 frames
     
     protected int tornadoFrameIndex = 0;       // Frame hiện tại của tornado animation

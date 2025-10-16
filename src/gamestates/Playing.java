@@ -10,7 +10,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import entity.Hog;
 import entity.Player1;
+import entity.Player2;
 import entity.Tornado;
 
 public class Playing extends State implements Statemethods {
@@ -19,7 +21,10 @@ public class Playing extends State implements Statemethods {
     private Map map;
 	private Player1 player1;
     private PlayerUI uiPlayer1;
+    private PlayerUI uiPlayer2;
     private Tornado tornado;
+    private Player2 player2;
+    private Hog hog;
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -29,7 +34,10 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game);
 		player1 = new Player1(200f, 530f, 55f, 95f, 35f, 20f);
         uiPlayer1 = new PlayerUI(100, true);
+        player2 = new Player2(800f, 530f, 55f, 95f, 35f, 20f);
+        uiPlayer2 = new PlayerUI(100, false);
         tornado = new Tornado(player1);
+        hog = new Hog(player2);
 	}
 
     public void windowFocusLost() {
@@ -39,12 +47,18 @@ public class Playing extends State implements Statemethods {
 	public Player1 getPlayer1() {
         return player1;
 	}
+    public Player2 getPlayer2() {
+        return player2;
+    }
 
     @Override
     public void update() {
         player1.update();
         uiPlayer1.update();
         tornado.update();
+        player2.update();
+        uiPlayer2.update();     
+        hog.update();
     }
 
     @Override
@@ -53,6 +67,9 @@ public class Playing extends State implements Statemethods {
 		player1.render(g);
         uiPlayer1.draw(g, GAME_WIDTH);
         tornado.render(g);
+        player2.render(g);
+        uiPlayer2.draw(g, GAME_WIDTH); 
+        hog.render(g);      
     }
 
     @Override
@@ -105,6 +122,25 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_U:
                     player1.setTornado(true);
                     break;
+                case KeyEvent.VK_LEFT:
+                    player2.setLeft(true);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    player2.setRight(true); 
+                    break;
+                case KeyEvent.VK_DOWN:
+                    player2.setDefense(true);
+                    break;
+                case KeyEvent.VK_NUMPAD2:
+                    player2.setJump(true);
+                    break;
+                case KeyEvent.VK_NUMPAD1:
+                    player2.setPunch(true); 
+                    break;
+                case KeyEvent.VK_NUMPAD4:
+                    player2.setTornado(true);
+             
+                    break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
                     break;
@@ -138,6 +174,24 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_U:
                 player1.setTornado(false);  
+                break;
+            case KeyEvent.VK_LEFT:
+                player2.setLeft(false); 
+                break;
+            case KeyEvent.VK_RIGHT:
+                player2.setRight(false); 
+                break;
+            case KeyEvent.VK_DOWN:
+                player2.setDefense(false);  
+                break;
+            case KeyEvent.VK_NUMPAD2:
+                player2.setJump(false); 
+                break;      
+            case KeyEvent.VK_NUMPAD1:
+                player2.setPunch(false);
+                break;
+            case KeyEvent.VK_NUMPAD4:
+                player2.setTornado(false);  
                 break;
             default:
                 break;

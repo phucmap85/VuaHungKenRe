@@ -37,69 +37,85 @@ public class LoadSave {
         BufferedImage flippedHorizontally = op.filter(img, null);
         return flippedHorizontally;
     }
+  
+
     public static BufferedImage[][] GetAnimation(String player) {
-        // FIXED: Mảng có 12 animations
         BufferedImage[][] animations = new BufferedImage[15][20];
-        
-        String[][] animConfig = {
-            {"IDLE", "8"},      // animations[0]
-            //{"IDLE_left", "8"},       // animations[1]
-            {"MOVE", "4"},      // animations[2]
-            //{"MOVE_left", "4"},       // animations[3]
-            {"JUMP", "9"},      // animations[4]
-            //{"JUMP_left", "9"},       // animations[5]
-            {"PUNCH", "19"},    // animations[6]
-            //{"PUNCH_left", "19"},     // animations[7]
-            {"DEFENSE", "3"},   // animations[8]
-            //{"DEFENSE_left", "3"}     // animations[9]
-            {"SUMMONTORNADO", "6"}    // animations[10] - New animation
-            //{"TORNADO_left", "6"}     // animations[11] - New animation
-            // Tổng: 12 animations
-        };
-        
+        String[][] animConfig = null;
+
+        // SỬA LỖI: Dùng .equals() để so sánh chuỗi, không dùng ==
+        if ("SonTinh".equals(player)) {
+            // Cấu hình cho nhân vật SonTinh
+            animConfig = new String[][] {
+                // { Tên Animation, Số Frames, Loại }
+                {"IDLE", "8", "NORMAL"},      // -> animations[0] (Phải), animations[1] (Trái)
+                {"MOVE", "8", "NORMAL"},      // -> animations[2] (Phải), animations[3] (Trái)
+                {"JUMP", "9", "NORMAL"},      // -> animations[4] (Phải), animations[5] (Trái)
+                {"PUNCH", "19", "NORMAL"},     // -> animations[6] (Phải), animations[7] (Trái)
+                {"DEFENSE", "3", "NORMAL"},   // -> animations[8] (Phải), animations[9] (Trái)
+                {"SUMMONHOG", "6", "NORMAL"}, // Hoạt ảnh "triệu hồi" nên có 2 chiều
+                {"HOG", "8", "NORMAL"}        // Con lợn chỉ có 1 chiều -> animations[12]
+            };
+        } else { // Mặc định là ThuyTinh hoặc nhân vật khác
+            // Cấu hình cho nhân vật ThuyTinh
+            animConfig = new String[][] {
+                // { Tên Animation, Số Frames, Loại }
+                {"IDLE", "8", "NORMAL"},          // -> animations[0] (Phải), animations[1] (Trái)
+                {"MOVE", "4", "NORMAL"},          // -> animations[2] (Phải), animations[3] (Trái)
+                {"JUMP", "9", "NORMAL"},          // -> animations[4] (Phải), animations[5] (Trái)
+                {"PUNCH", "19", "NORMAL"},         // -> animations[6] (Phải), animations[7] (Trái)
+                {"DEFENSE", "3", "NORMAL"},       // -> animations[8] (Phải), animations[9] (Trái)
+                {"SUMMONTORNADO", "6", "NORMAL"}, // Hoạt ảnh "tung chiêu" -> animations[10], [11]
+                {"TORNADO", "2", "SINGLE"}        // Lốc xoáy chỉ có 1 chiều -> animations[12]
+            };
+        }
+
         try {
+            int currentRow = 0; // Biến theo dõi hàng hiện tại trong mảng animations[][]
+
             for (int i = 0; i < animConfig.length; i++) {
                 String animName = animConfig[i][0];
                 int frameCount = Integer.parseInt(animConfig[i][1]);
-                
-                System.out.println("Loading: " + animName + " (" + frameCount + " frames)");
-                
+                String animType = animConfig[i][2];
+
+                System.out.println("Loading: " + animName + " (" + frameCount + " frames, type: " + animType + ")");
+
                 for (int j = 0; j < frameCount; j++) {
                     String path = String.format("/image/%s/%s_%04d.png", player, animName, j + 1);
-                    
                     InputStream is = LoadSave.class.getResourceAsStream(path);
-                    
-                    // Kiểm tra file có tồn tại không
+
                     if (is == null) {
                         System.err.println("ERROR: File not found: " + path);
-                        System.err.println("Please check:");
-                        System.err.println("  1. File exists in /res/image/ or /resources/image/");
-                        System.err.println("  2. File name is EXACT: " + animName + "_" + String.format("%04d", j + 1) + ".png");
-                        System.err.println("  3. Check uppercase/lowercase");
                         throw new RuntimeException("Missing animation file: " + path);
                     }
                     BufferedImage img = ImageIO.read(is);
-                    animations[i * 2][j] = img;
-                    animations[i * 2 + 1][j] = flipHorizontally(img);
-                    is.close(); // Đóng stream sau khi đọc
+                    
+                    // Logic tải ảnh dựa trên loại animation
+                    if ("NORMAL".equals(animType)) {
+                        // Tải vào 2 hàng: một hàng cho ảnh gốc, một hàng cho ảnh lật
+                        animations[currentRow][j] = img;
+                        animations[currentRow + 1][j] = flipHorizontally(img);
+                    } else if ("SINGLE".equals(animType)) {
+                        // Chỉ tải vào 1 hàng, không lật
+                        animations[currentRow][j] = img;
+                    }
+
+                    is.close();
                 }
-                
-                System.out.println("✓ Loaded successfully");
+
+                // Cập nhật chỉ số hàng cho animation tiếp theo
+                if ("NORMAL".equals(animType)) {
+                    currentRow += 2;
+                } else { // animType là "SINGLE"
+                    currentRow += 1;
+                }
+
+                System.out.println("✓ Loaded successfully into row(s) starting from " + (currentRow - ("NORMAL".equals(animType) ? 2 : 1)));
             }
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        try{
-            BufferedImage tornadoImg = ImageIO.read(LoadSave.class.getResourceAsStream("/image/ThuyTinh/TORNADO_0001.png"));
-            animations[12][0] = tornadoImg;
-            tornadoImg = ImageIO.read(LoadSave.class.getResourceAsStream("/image/ThuyTinh/TORNADO_0002.png"));
-            animations[12][1] = tornadoImg;
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        
+
         return animations;
     }
 

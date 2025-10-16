@@ -3,6 +3,8 @@ package entity;
 import static utilz.Constants.GameConstants.GAME_WIDTH;
 import static utilz.Constants.PlayerConstants.LEFT;
 import static utilz.Constants.PlayerConstants.RIGHT;
+import static utilz.Constants.PlayerConstants.TORNADO;
+import static utilz.Constants.PlayerConstants.getFramesAmount;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -32,7 +34,7 @@ public class Tornado {
         if(framesCounter >= animationSpeed){
             framesCounter = 0;
             framesIndex++;
-            if(framesIndex >= 2){
+            if(framesIndex >= getFramesAmount(TORNADO)){
                 framesIndex = 0;
             }
         }
@@ -70,7 +72,7 @@ public class Tornado {
         Graphics2D g2 = (Graphics2D) g;
         if(isRender){
             updateAnimationTick();
-            g2.drawImage(tornadoImage[framesIndex], (int)x, (int)y, 128,128,null);
+            g2.drawImage(thuytinh.animations[TORNADO][framesIndex], (int)x, (int)y, 128,128,null);
         }
     }
 
