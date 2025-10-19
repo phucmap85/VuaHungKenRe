@@ -36,8 +36,9 @@ public class Playing extends State implements Statemethods {
         uiPlayer1 = new PlayerUI(100, true);
         player2 = new Player2(800f, 530f, 55f, 95f, 35f, 20f);
         uiPlayer2 = new PlayerUI(100, false);
-        tornado = new Tornado(player1);
+        tornado = new Tornado(player1,player2,uiPlayer2);
         hog = new Hog(player2);
+
 	}
 
     public void windowFocusLost() {

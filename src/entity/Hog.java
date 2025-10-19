@@ -40,7 +40,7 @@ public class Hog {
             y = sontinh.y;
             speed = 3.5f;
             isRender = true;
-            ani = HOG_RIGHT;
+            ani = HOGING_RIGHT;
         }
         // Kiểm tra điều kiện tung chiêu khi SƠN TINH quay mặt sang TRÁI
         else if (sontinh.tornadoing && sontinh.tornadoFrameIndex == sontinh.MAX_TORNADO_FRAMES - 1 && sontinh.direction == LEFT && !sontinh.inAir) {
@@ -48,7 +48,7 @@ public class Hog {
             y = sontinh.y;
             speed = -3.5f;
             isRender = true;
-            ani = HOG_LEFT;
+            ani = HOGING_LEFT;
         }
     }
      else if (isRender){

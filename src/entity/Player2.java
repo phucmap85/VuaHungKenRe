@@ -16,8 +16,10 @@ public class Player2 extends Entity {
     protected boolean left, right, jump, defense, punch, tornado;
     private boolean moving = false;
     protected boolean inAir = false;
-    private boolean defending = false;
+    protected boolean defending = false;
     protected boolean tornadoing = false;
+    protected boolean takingHit = false;
+    protected boolean doneFalling = false;
     protected int direction = LEFT;
     
     // ===== PUNCH STATE (Tách riêng) =====
@@ -57,6 +59,7 @@ public class Player2 extends Entity {
     }
     
     public void update() { 
+        updateTakingHitState();
         updatePunchState();    // Update punch state TRƯỚC
         updateTornadoState();
         updateAnimationTick();
@@ -68,7 +71,16 @@ public class Player2 extends Entity {
         Graphics2D g2 = (Graphics2D) g;
         
         // Nếu đang punch, vẽ punch animation
-        if (punching) {
+        if(takingHit){
+            int hitAction = (direction == LEFT) ? TAKING_HIT_LEFT : TAKING_HIT_RIGHT;
+            if(framesIndex == 1){
+                x += (direction == RIGHT) ? -1.5f : 1.5f;
+               
+            }
+            g2.drawImage(animations[hitAction][framesIndex], 
+                        (int) x, (int) y, 128, 128, null);
+        }
+        else if (punching) {
             int punchAction = (direction == LEFT) ? PUNCH_LEFT : PUNCH_RIGHT;
             g2.drawImage(animations[punchAction][punchFrameIndex], 
                         (int) x, (int) y, 128, 128, null);
@@ -83,10 +95,11 @@ public class Player2 extends Entity {
             g2.drawImage(animations[playerAction][framesIndex], 
                         (int) x, (int) y, 128, 128, null);
         }
+        drawHitbox(g);
     }
     private void updateTornadoState() {
         // Chỉ chạy khi đang trong trạng thái tornadoing
-        if (!tornadoing) return;
+        if (!tornadoing || !takingHit) return;
         
         tornadoFrameCounter++;
         if (tornadoFrameCounter >= tornadoAnimationSpeed) {
@@ -96,6 +109,21 @@ public class Player2 extends Entity {
             // KHI ANIMATION CHẠY XONG -> TỰ ĐỘNG RESET
             if (tornadoFrameIndex >= MAX_TORNADO_FRAMES) {
                 resetTornadoState(); // Tự động kết thúc chiêu
+            }
+        }
+    }
+
+    private void updateTakingHitState(){
+        if(!takingHit) return;
+  
+        framesCounter++;
+        if(framesCounter >= animationSpeed){
+            framesCounter = 0;
+            framesIndex++;
+            if(framesIndex >= getFramesAmount(TAKING_HIT_RIGHT)){
+                takingHit = false;
+                doneFalling = false;
+                framesIndex = 0;
             }
         }
     }
@@ -163,7 +191,14 @@ public class Player2 extends Entity {
 
     private void updatePos() {
         moving = false;
-        if(tornado && !inAir)  {
+        
+        if(takingHit){
+
+            
+            
+
+        }
+        else if(tornado && !inAir)  {
             tornadoing = true;
         }
         else if(tornadoing == true) return;
@@ -272,6 +307,7 @@ public class Player2 extends Entity {
         // (Punch có animation riêng)
         if (punching) return;
         if(tornadoing) return;
+        if(takingHit) return;
         framesCounter++;
         
         int currentSpeed = animationSpeed;
@@ -303,8 +339,10 @@ public class Player2 extends Entity {
         if (punching) return;
         if(tornadoing) return;
         int startAnim = playerAction;
-        
-        if (inAir) {
+        if(takingHit){
+            playerAction = (direction == LEFT) ? TAKING_HIT_LEFT : TAKING_HIT_RIGHT;
+        }
+        else if (inAir) {
             playerAction = (direction == LEFT) ? JUMP_LEFT : JUMP_RIGHT;
         } else if (defending) {
             playerAction = (direction == LEFT) ? DEFEND_LEFT : DEFEND_RIGHT;

@@ -29,10 +29,16 @@ public class Constants {
 
         public static final int TORNADO_RIGHT = 10;
         public static final int TORNADO_LEFT = 11;
+        public static final int HOG_RIGHT = 10;
+        public static final int HOG_LEFT = 11;
 
-        public static final int TORNADO = 12; // chỉ có 1 chiều
-        public static final int HOG_RIGHT = 12; // chỉ có 1 chiều
-        public static final int HOG_LEFT = 13; // chỉ có 1 chiều
+        public static final int TORNADOING_RIGHT = 12;  
+        public static final int TORNADOING_LEFT = 13;   
+        public static final int HOGING_RIGHT = 12;  
+        public static final int HOGING_LEFT = 13; 
+
+        public static final int TAKING_HIT_RIGHT = 14;
+        public static final int TAKING_HIT_LEFT = 15;
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
                 case IDLE_LEFT:
@@ -53,6 +59,10 @@ public class Constants {
                 case TORNADO_LEFT:
                 case TORNADO_RIGHT:
                     return 6;
+                case TAKING_HIT_LEFT:
+                case TAKING_HIT_RIGHT:
+                    return 3;
+                
                 default:
                     return 0;
             }

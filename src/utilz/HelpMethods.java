@@ -44,4 +44,7 @@ public class HelpMethods {
         
         return false;
     }
+    public static boolean Collision(Rectangle2D.Float hitbox1, Rectangle2D.Float hitbox2) {
+        return hitbox1.intersects(hitbox2);
+    }   
 }

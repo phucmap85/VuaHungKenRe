@@ -16,8 +16,9 @@ public class Player1 extends Entity {
     protected boolean left, right, jump, defense, punch, tornado;
     private boolean moving = false;
     protected boolean inAir = false;
-    private boolean defending = false;
+    protected boolean defending = false;
     protected boolean tornadoing = false;
+    protected boolean takingHit = false;
     protected int direction = RIGHT;
     
     // ===== PUNCH STATE (Tách riêng) =====
@@ -83,6 +84,7 @@ public class Player1 extends Entity {
             g2.drawImage(animations[playerAction][framesIndex], 
                         (int) x, (int) y, 128, 128, null);
         }
+        drawHitbox(g);
     }
     private void updateTornadoState() {
         // Chỉ chạy khi đang trong trạng thái tornadoing
