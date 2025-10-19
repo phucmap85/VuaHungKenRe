@@ -3,7 +3,7 @@ package entity;
 import static utilz.Constants.GameConstants.GAME_WIDTH;
 import static utilz.Constants.PlayerConstants.LEFT;
 import static utilz.Constants.PlayerConstants.RIGHT;
-import static utilz.Constants.PlayerConstants.TORNADO;
+
 import static utilz.Constants.PlayerConstants.TORNADO_LEFT;
 import static utilz.Constants.PlayerConstants.TORNADO_RIGHT;
 import static utilz.Constants.PlayerConstants.getFramesAmount;
@@ -11,6 +11,8 @@ import static utilz.HelpMethods.Collision;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -19,6 +21,7 @@ import ui.PlayerUI;
 public class Tornado {
     Player1 thuytinh; Player2 sontinh;
     float x,y;
+    private Rectangle2D.Float attackBox;
     float speed;
     BufferedImage tornadoImage[];
     int framesIndex = 0;
@@ -35,6 +38,7 @@ public class Tornado {
         this.sontinh = sontinh;
         this.playerUI = playerUI;
         initClasses();
+        this.attackBox = new Rectangle2D.Float(x, y, 100, 128);
     }
 
     protected void drawHitbox(Graphics g) {
@@ -117,6 +121,20 @@ public class Tornado {
             }
         }
 
+    }
+
+    private void updateAttackBox() {
+        attackBox.x = x+14;
+        attackBox.y = y;
+    }
+
+    public Rectangle2D.Float getAttackBox() {
+        return attackBox;
+    }
+
+    private void drawAttackBox(Graphics g) {
+        g.setColor(Color.RED);
+        g.drawRect((int)attackBox.x, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
     
 

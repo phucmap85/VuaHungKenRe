@@ -1,7 +1,7 @@
 package entity;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import ui.PlayerUI;
@@ -20,6 +20,7 @@ public class Player1 extends Entity {
     protected boolean tornadoing = false;
     protected boolean takingHit = false;
     protected int direction = RIGHT;
+    private Rectangle2D.Float attackBox;
     
     // ===== PUNCH STATE (Tách riêng) =====
     private boolean punching = false;
@@ -53,8 +54,35 @@ public class Player1 extends Entity {
     public Player1(float x, float y, float width, float height,float xOffSet,float yOffSet) {
         super(x, y, width, height, xOffSet, yOffSet);
         initHitbox();
+        initAttackBox();
         groundY = y;
         loadAnimation();
+    }
+
+    private void initAttackBox() {
+        attackBox = new Rectangle2D.Float(x, y, 0, 0);
+    }
+
+    private void updateAttackBox() {
+        if (punching) {
+            attackBox.width = 40;
+            attackBox.height = 50;
+            if (direction == RIGHT) {
+                attackBox.x = hitbox.x + hitbox.width-20;
+                attackBox.y = hitbox.y + 20;
+            } else if (direction == LEFT) {
+                attackBox.x = hitbox.x - attackBox.width + 20;
+                attackBox.y = hitbox.y + 20;
+            }
+        }
+        else attackBox.width = 0;
+    }
+
+    private void drawAttackBox(Graphics g) {
+        if (attackBox.width > 0) { // Chỉ vẽ khi nó hoạt động
+            g.setColor(Color.RED);
+            g.drawRect((int) attackBox.x, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
+        }
     }
     
     public void update() { 
@@ -63,6 +91,7 @@ public class Player1 extends Entity {
         updateAnimationTick();
         setAnimation();
         updatePos();
+        updateAttackBox();
     }
     
     public void render(Graphics g) { 
@@ -85,6 +114,8 @@ public class Player1 extends Entity {
                         (int) x, (int) y, 128, 128, null);
         }
         drawHitbox(g);
+        drawHitbox(g);      // Vẽ hitbox (màu hồng)
+        drawAttackBox(g);   // Vẽ attackBox (màu đỏ)
     }
     private void updateTornadoState() {
         // Chỉ chạy khi đang trong trạng thái tornadoing
@@ -354,6 +385,7 @@ public class Player1 extends Entity {
     public boolean isPunching() { return punching; }
     public boolean isTornadoing() { return tornadoing; }    
     public int getPunchFrame() { return punchFrameIndex; }
+    public Rectangle2D.Float getAttackBox() { return attackBox; }
 
 }
 
