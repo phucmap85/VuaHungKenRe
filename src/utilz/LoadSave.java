@@ -55,7 +55,8 @@ public class LoadSave {
                 {"DEFENSE", "3", "NORMAL"},   // -> animations[8] (Phải), animations[9] (Trái)
                 {"SUMMONHOG", "6", "NORMAL"}, // Hoạt ảnh "triệu hồi" nên có 2 chiều
                 {"HOG", "8", "NORMAL"},
-                {"TAKINGHIT","3","NORMAL"}       // Con lợn chỉ có 1 chiều -> animations[12]
+                {"TAKINGHIT","3","NORMAL"},
+                {"FALLINGBACKDEATH","12","NORMAL"}       // Con lợn chỉ có 1 chiều -> animations[12]
             };
         } else { // Mặc định là ThuyTinh hoặc nhân vật khác
             // Cấu hình cho nhân vật ThuyTinh

@@ -3,14 +3,14 @@ package ui;
 import java.awt.*;
 
 public class HealthBar {
-    private int health, maxHealth;
-    private float animatedHealth;
+    public int health, maxHealth;
+   public  float animatedHealth;
     private int barWidth, barHeight;
     private boolean leftSide;
 
     private long lastHitTime;
-    private static final long DAMAGE_ANIMATION_DELAY = 1000; // Độ trễ 500ms (nửa giây)
-    private static final float HEALTH_DROP_SPEED = 0.5f;
+    private static final long DAMAGE_ANIMATION_DELAY = 200; // Độ trễ 500ms (nửa giây)
+    private static final float HEALTH_DROP_SPEED = 100f;
 
     public HealthBar(int maxHealth, boolean leftSide) {
         this.maxHealth = maxHealth;

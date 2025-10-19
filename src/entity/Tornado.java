@@ -1,12 +1,7 @@
 package entity;
 
 import static utilz.Constants.GameConstants.GAME_WIDTH;
-import static utilz.Constants.PlayerConstants.LEFT;
-import static utilz.Constants.PlayerConstants.RIGHT;
-
-import static utilz.Constants.PlayerConstants.TORNADO_LEFT;
-import static utilz.Constants.PlayerConstants.TORNADO_RIGHT;
-import static utilz.Constants.PlayerConstants.getFramesAmount;
+import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.Collision;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -101,25 +96,32 @@ public class Tornado {
         }
         if (isRender){
             updateAnimationTick();
-            if(!takeDamage && Collision(hitbox, sontinh.hitbox)){
+            if(sontinh.vulnerable && Collision(hitbox, sontinh.hitbox)){
                 if(!sontinh.defending) {
-                    playerUI.takeDamage(20);
-                    takeDamage = true;
                     sontinh.takingHit = true;
+                    playerUI.takeDamage(20);
+                    
+                   
                 }
+            }
+            
 
                 
-        }
+        
             if(x < -128 || x + speed  > GAME_WIDTH){
                 isRender = false;
                 doneTornado = true;
-                takeDamage =  false;
+
             }
             else{
                 x += speed;
                 updateHitbox();
             }
         }
+        if(sontinh.vulnerable && !sontinh.defending && Collision(thuytinh.getAttackBox(), sontinh.hitbox)){
+                    playerUI.takeDamage(1);
+                    sontinh.takingHit = true;
+             }
 
     }
 
@@ -141,7 +143,7 @@ public class Tornado {
     public void render(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         if(isRender){
-            g2.drawImage(thuytinh.animations[TORNADO_RIGHT][framesIndex], (int)x, (int)y, 128,128,null);
+            g2.drawImage(thuytinh.animations[TORNADOING_RIGHT][framesIndex], (int)x, (int)y, 128,128,null);
             drawHitbox(g);
             
 

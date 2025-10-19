@@ -159,7 +159,7 @@ public class Player1 extends Entity {
             
             // Kiểm tra timeout - Reset về IDLE nếu quá lâu không nhấn J
             if ((currentTime - lastPunchTime > PUNCH_RESET_TIME) && !punch) {
-                System.out.println("Punch timeout - Reset to IDLE");
+                // System.out.println("Punch timeout - Reset to IDLE");
                 resetPunchState();
             }
         }
@@ -175,18 +175,18 @@ public class Player1 extends Entity {
     // Setter cho punch - QUAN TRỌNG
     public void setPunch(boolean punch) {
         this.punch = punch;
-        System.out.println(punch);
+        // System.out.println(punch);
         if (punch && !inAir && !tornadoing) { // Chỉ punch khi không trong không khí
             // Nếu chưa đang punch → Bắt đầu mới
             if (!punching) {
                 punching = true;
                 punchFrameIndex = 0;
                 punchFrameCounter = 0;
-                System.out.println("Start punching from frame 0");
+                // System.out.println("Start punching from frame 0");
             } 
             // Nếu đang punch → Tiếp tục combo (không reset frame)
             else {
-                System.out.println("Continue combo at frame " + punchFrameIndex);
+                // System.out.println("Continue combo at frame " + punchFrameIndex);
             }
             
             // Cập nhật thời gian punch cuối

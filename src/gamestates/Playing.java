@@ -33,9 +33,10 @@ public class Playing extends State implements Statemethods {
     private void initClasses() {
 		map = new Map(game);
 		player1 = new Player1(200f, 530f, 55f, 95f, 35f, 20f);
-        uiPlayer1 = new PlayerUI(100, true);
-        player2 = new Player2(800f, 530f, 55f, 95f, 35f, 20f);
-        uiPlayer2 = new PlayerUI(100, false);
+        uiPlayer1 = new PlayerUI(10000, true);
+        uiPlayer2 = new PlayerUI(10000, false);
+        player2 = new Player2(800f, 530f, 55f, 95f, 35f, 20f, uiPlayer2);
+
         tornado = new Tornado(player1,player2,uiPlayer2);
         hog = new Hog(player2);
 

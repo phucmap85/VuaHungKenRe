@@ -19,9 +19,12 @@ public class Player2 extends Entity {
     protected boolean defending = false;
     protected boolean tornadoing = false;
     protected boolean takingHit = false;
-    protected boolean doneFalling = false;
+    protected boolean vulnerable = true;
+    protected boolean falling = false;
+    protected int countHealthTaken = 0; 
     protected int direction = LEFT;
-    
+    public PlayerUI playerUI;
+    protected long currentHitTime = 0;
     // ===== PUNCH STATE (Tách riêng) =====
     private boolean punching = false;
     protected int punchFrameIndex = 0;        // Frame hiện tại của punch animation
@@ -42,7 +45,7 @@ public class Player2 extends Entity {
     private int animationSpeed = 20;
     private int jumpAnimationSpeed = 15;
     private int punchAnimationSpeed = 20; // Tốc độ animation punch (2 = nhanh)
-    
+    long fallEndTime = 0;
     // Physics
     private float speed = 2.0f;
     private float punchSpeed = 0.3f;
@@ -51,32 +54,72 @@ public class Player2 extends Entity {
     private float velocityY = 0;
     private float groundY;
 
-    public Player2(float x, float y, float width, float height,float xOffSet,float yOffSet) {
+    public Player2(float x, float y, float width, float height,float xOffSet,float yOffSet,PlayerUI playerUI) {
         super(x, y, width, height, xOffSet, yOffSet);
+        this.playerUI = playerUI;
         initHitbox();
         groundY = y;
         loadAnimation();
     }
     
     public void update() { 
+        updateFalling();
+        updateVulnerableState();
         updateTakingHitState();
         updatePunchState();    // Update punch state TRƯỚC
         updateTornadoState();
         updateAnimationTick();
         setAnimation();
         updatePos();
+  
+      
     }
+    
+    public void updateVulnerableState(){
+        if(vulnerable == false && System.currentTimeMillis()- fallEndTime >= 500){
+            vulnerable = true;
+        }
+    }
+    public void updateFalling(){
+        if(!falling && takingHit && playerUI.healthBar.animatedHealth - playerUI.healthBar.health >= 100 ){
+
+            falling = true;
+            framesIndex = 4;
+        }
+        if(falling){
+            takingHit = false;
+            vulnerable = false;
+            count = false;
+            framesCounter++;
+         if(framesCounter >= 30){
+            framesCounter = 0;
+            framesIndex++;
+            if(framesIndex >= getFramesAmount(FALLING_LEFT)){
+                fallEndTime = System.currentTimeMillis();
+                falling = false;
+                framesIndex = 0;
+                framesCounter = 0;
+
+   
+            }
+        }
+        }
+        }
+        
     
     public void render(Graphics g) { 
         Graphics2D g2 = (Graphics2D) g;
         
         // Nếu đang punch, vẽ punch animation
-        if(takingHit){
+        if(falling){
+            int fallAction = (direction == LEFT) ? FALLING_LEFT : FALLING_RIGHT;
+            g2.drawImage(animations[fallAction][framesIndex], 
+                        (int) x, (int) y, 128, 128, null);
+            System.out.println("falling at frame "+ framesIndex);
+            
+        }
+        else if(takingHit){
             int hitAction = (direction == LEFT) ? TAKING_HIT_LEFT : TAKING_HIT_RIGHT;
-            if(framesIndex == 1){
-                x += (direction == RIGHT) ? -1.5f : 1.5f;
-               
-            }
             g2.drawImage(animations[hitAction][framesIndex], 
                         (int) x, (int) y, 128, 128, null);
         }
@@ -99,7 +142,7 @@ public class Player2 extends Entity {
     }
     private void updateTornadoState() {
         // Chỉ chạy khi đang trong trạng thái tornadoing
-        if (!tornadoing || !takingHit) return;
+        if (!tornadoing) return;
         
         tornadoFrameCounter++;
         if (tornadoFrameCounter >= tornadoAnimationSpeed) {
@@ -112,18 +155,32 @@ public class Player2 extends Entity {
             }
         }
     }
-
+    boolean count = false;
+    long firstTimeTakingHit ;
+    boolean countFirstTime = false;
     private void updateTakingHitState(){
         if(!takingHit) return;
-  
+        if(falling) return;
+        // if(!countFirstTime) {firstTimeTakingHit = System.currentTimeMillis();countFirstTime=true;}
         framesCounter++;
         if(framesCounter >= animationSpeed){
             framesCounter = 0;
             framesIndex++;
             if(framesIndex >= getFramesAmount(TAKING_HIT_RIGHT)){
-                takingHit = false;
-                doneFalling = false;
-                framesIndex = 0;
+                if(!count){
+                    currentHitTime =   System.currentTimeMillis();
+                    count = true;
+                }
+                framesIndex = 2;
+                
+                updateHitbox();
+                if(System.currentTimeMillis() - currentHitTime >= 300){
+                    count = false;
+                    takingHit = false;
+                    framesIndex = 0;
+                    framesCounter = 0;
+                }
+               
             }
         }
     }
@@ -148,7 +205,7 @@ public class Player2 extends Entity {
                 
                 // Đã chạy hết animation
                 if (punchFrameIndex >= MAX_PUNCH_FRAMES) {
-                    punchFrameIndex = 0; // Giữ ở frame cuối
+                    punchFrameIndex = 0;
                 }
             }
             
@@ -191,9 +248,16 @@ public class Player2 extends Entity {
 
     private void updatePos() {
         moving = false;
-        
-        if(takingHit){
-
+        if(falling){
+            if(framesIndex == 6){
+                x += direction == RIGHT ? -1.0f : 1.0f;
+ 
+            }
+          
+        }
+        else if(takingHit){
+            
+            if(framesIndex == 2) x += 0.2f;
             
             
 
@@ -297,7 +361,10 @@ public class Player2 extends Entity {
                     inAir = false;
                 }
             }
+    
+
         }
+      
         
         updateHitbox();
     }
@@ -308,6 +375,7 @@ public class Player2 extends Entity {
         if (punching) return;
         if(tornadoing) return;
         if(takingHit) return;
+        if(falling) return;
         framesCounter++;
         
         int currentSpeed = animationSpeed;
@@ -338,8 +406,13 @@ public class Player2 extends Entity {
         // Không set animation nếu đang punch
         if (punching) return;
         if(tornadoing) return;
+        
         int startAnim = playerAction;
-        if(takingHit){
+        if(falling){
+            playerAction = (direction == LEFT) ? FALLING_LEFT : FALLING_RIGHT;
+            return;
+        }
+        else if(takingHit){
             playerAction = (direction == LEFT) ? TAKING_HIT_LEFT : TAKING_HIT_RIGHT;
         }
         else if (inAir) {

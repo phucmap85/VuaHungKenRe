@@ -3,7 +3,7 @@ package ui;
 import java.awt.*;
 
 public class PlayerUI {
-    private HealthBar healthBar;
+    public HealthBar healthBar;
     private ManaBar manaBar;
     private boolean leftSide;
 
