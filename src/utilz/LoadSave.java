@@ -39,7 +39,7 @@ public class LoadSave {
     }
   
 
-    public static BufferedImage[][] GetAnimation(String player) {
+    public static BufferedImage[][] getAnimations(String player) {
         BufferedImage[][] animations = new BufferedImage[20][20];
         String[][] animConfig = null;
 
@@ -53,10 +53,9 @@ public class LoadSave {
                 {"JUMP", "9", "NORMAL"},      // -> animations[4] (Phải), animations[5] (Trái)
                 {"PUNCH", "19", "NORMAL"},     // -> animations[6] (Phải), animations[7] (Trái)
                 {"DEFENSE", "3", "NORMAL"},   // -> animations[8] (Phải), animations[9] (Trái)
-                {"SUMMONHOG", "6", "NORMAL"}, // Hoạt ảnh "triệu hồi" nên có 2 chiều
-                {"HOG", "8", "NORMAL"},
                 {"TAKINGHIT","3","NORMAL"},
-                {"FALLINGBACKDEATH","12","NORMAL"}       // Con lợn chỉ có 1 chiều -> animations[12]
+                {"FALLINGBACKDEATH","12","NORMAL"},
+                {"SUMMONSKILL","6","NORMAL"}       // Con lợn chỉ có 1 chiều -> animations[12]
             };
         } else { // Mặc định là ThuyTinh hoặc nhân vật khác
             // Cấu hình cho nhân vật ThuyTinh
@@ -67,9 +66,9 @@ public class LoadSave {
                 {"JUMP", "9", "NORMAL"},          // -> animations[4] (Phải), animations[5] (Trái)
                 {"PUNCH", "19", "NORMAL"},         // -> animations[6] (Phải), animations[7] (Trái)
                 {"DEFENSE", "3", "NORMAL"},       // -> animations[8] (Phải), animations[9] (Trái)
-                {"SUMMONTORNADO", "6", "NORMAL"}, // Hoạt ảnh "tung chiêu" -> animations[10], [11]
-                {"TORNADO", "2", "NORMAL"},
-                {"TAKINGHIT","3","NORMAL"}        // Lốc xoáy chỉ có 1 chiều -> animations[12]
+                {"TAKINGHIT","3","NORMAL"},
+                {"FALLINGBACKDEATH","12","NORMAL"},
+                {"SUMMONSKILL","6","NORMAL"}       
             };
         }
 
@@ -121,5 +120,59 @@ public class LoadSave {
 
         return animations;
     }
-
+   
+    
+    /**
+     * Loads animation frames for summoned entities (HOG, TORNADO) based on character name
+     * @param characterName Name of the character ("SonTinh" or "ThuyTinh")
+     * @return 2D array of animation frames [direction][frame]
+     */
+    public static BufferedImage[][] loadSummonedEntityAnimation(String characterName) {
+        String entityName;
+        int frameCount;
+        
+        // Get entity name and frame count based on character
+        if ("SonTinh".equals(characterName)) {
+            entityName = "HOG";
+            frameCount = 8;  // 8 frames for HOG
+        } else if ("ThuyTinh".equals(characterName)) {
+            entityName = "TORNADO";
+            frameCount = 2;  // 2 frames for TORNADO
+        } else {
+            System.err.println("Unknown character for summoned entity: " + characterName);
+            return new BufferedImage[2][1]; // Return minimal array for unknown character
+        }
+        
+        BufferedImage[][] animations = new BufferedImage[2][frameCount];
+        
+        try {
+            for (int j = 0; j < frameCount; j++) {
+                // Load the entity image
+                String path = String.format("/image/%s/%s_%04d.png", characterName, entityName, j + 1);
+                InputStream is = LoadSave.class.getResourceAsStream(path);
+                
+                if (is == null) {
+                    System.err.println("ERROR: Summoned entity file not found: " + path);
+                    continue; // Skip this frame rather than crashing
+                }
+                
+                BufferedImage img = ImageIO.read(is);
+                
+                // Frame for right direction (original)
+                animations[0][j] = img;
+                
+                // Frame for left direction (flipped)
+                animations[1][j] = flipHorizontally(img);
+                
+                is.close();
+            }
+            
+            System.out.println("Loaded summoned entity animations for " + characterName + " (" + entityName + ", " + frameCount + " frames)");
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return animations;
+    }
 }

@@ -9,6 +9,7 @@ public class Constants {
 	}
 
     public static class PlayerConstants {
+        // directions
         public static final int RIGHT = 0;
         public static final int LEFT = 1;
 
@@ -19,29 +20,21 @@ public class Constants {
         public static final int MOVE_LEFT = 3;
         public static final int JUMP_RIGHT= 4;
         public static final int JUMP_LEFT = 5;
-        
-        // combat 
         public static final int PUNCH_RIGHT = 6;
         public static final int PUNCH_LEFT = 7;
-
         public static final int DEFEND_RIGHT = 8;
         public static final int DEFEND_LEFT = 9;
 
-        public static final int TORNADO_RIGHT = 10;
-        public static final int TORNADO_LEFT = 11;
-        public static final int HOG_RIGHT = 10;
-        public static final int HOG_LEFT = 11;
+        public static final int TAKING_HIT_RIGHT = 10;
+        public static final int TAKING_HIT_LEFT = 11;
 
-        public static final int TORNADOING_RIGHT = 12;  
-        public static final int TORNADOING_LEFT = 13;   
-        public static final int HOGING_RIGHT = 12;  
-        public static final int HOGING_LEFT = 13; 
+        public static final int FALLING_RIGHT = 12;
+        public static final int FALLING_LEFT = 13;
 
-        public static final int TAKING_HIT_RIGHT = 14;
-        public static final int TAKING_HIT_LEFT = 15;
+        public static final int SUMMONSKILL_RIGHT = 14;
+        public static final int SUMMONSKILL_LEFT = 15;
 
-        public static final int FALLING_RIGHT = 16;
-        public static final int FALLING_LEFT = 17;
+   
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
                 case IDLE_LEFT:
@@ -59,15 +52,15 @@ public class Constants {
                 case DEFEND_LEFT:
                 case DEFEND_RIGHT:
                     return 3;
-                case TORNADO_LEFT:
-                case TORNADO_RIGHT:
-                    return 6;
                 case TAKING_HIT_LEFT:
                 case TAKING_HIT_RIGHT:
-                    return 3;
+                    return 3;            
                 case FALLING_LEFT:
                 case FALLING_RIGHT:
                     return 12;
+                case SUMMONSKILL_LEFT:
+                case SUMMONSKILL_RIGHT:
+                    return 6;
                 default:
                     return 0;
             }
@@ -80,6 +73,7 @@ public class Constants {
 	    public final static int GAME_HEIGHT = 768;
 
         // đây là thông số của cái bậc và thông số map
-        public final static float platFormX1 = 320f, platFormX2 = 755f, platFormY = 475f;
+        public final static float platFormX1 = 320f, platFormX2 = 755f, platFormY = 470f;
+        public final static float groundY = 640f;
     }
 }

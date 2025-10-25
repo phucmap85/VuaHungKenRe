@@ -1,6 +1,7 @@
 package gamestates;
 
 import static utilz.Constants.GameConstants.*;
+import static utilz.Constants.PlayerConstants.*;
 
 import main.Game;
 import map.Map;
@@ -10,21 +11,22 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import entity.Hog;
-import entity.Player1;
-import entity.Player2;
-import entity.Tornado;
+import entity.SummonSkill;
+import entity.Character;
+
+
+
 
 public class Playing extends State implements Statemethods {
     private boolean[] keysPressed = new boolean[256];
 
     private Map map;
-	private Player1 player1;
-    private PlayerUI uiPlayer1;
-    private PlayerUI uiPlayer2;
-    private Tornado tornado;
-    private Player2 player2;
-    private Hog hog;
+    private Character sonTinh, thuyTinh;
+
+
+
+
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -32,46 +34,28 @@ public class Playing extends State implements Statemethods {
     
     private void initClasses() {
 		map = new Map(game);
-		player1 = new Player1(200f, 530f, 55f, 95f, 35f, 20f);
-        uiPlayer1 = new PlayerUI(10000, true);
-        uiPlayer2 = new PlayerUI(10000, false);
-        player2 = new Player2(800f, 530f, 55f, 95f, 35f, 20f, uiPlayer2);
-
-        tornado = new Tornado(player1,player2,uiPlayer2);
-        hog = new Hog(player2);
-
+		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
+        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 
+        50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
 	}
 
     public void windowFocusLost() {
-		player1.resetDirBooleans();
+		sonTinh.resetAllBools();
+        thuyTinh.resetAllBools();
 	}
-
-	public Player1 getPlayer1() {
-        return player1;
-	}
-    public Player2 getPlayer2() {
-        return player2;
-    }
 
     @Override
     public void update() {
-        player1.update();
-        uiPlayer1.update();
-        tornado.update();
-        player2.update();
-        uiPlayer2.update();     
-        hog.update();
+        sonTinh.update();
+        thuyTinh.update();
     }
 
     @Override
     public void draw(Graphics g) {
         map.draw(g);
-		player1.render(g);
-        uiPlayer1.draw(g, GAME_WIDTH);
-        tornado.render(g);
-        player2.render(g);
-        uiPlayer2.draw(g, GAME_WIDTH); 
-        hog.render(g);      
+        sonTinh.render(g);
+        thuyTinh.render(g);
+		
     }
 
     @Override
@@ -107,41 +91,40 @@ public class Playing extends State implements Statemethods {
 
             switch (keyCode) {
                 case KeyEvent.VK_A:
-                    player1.setLeft(true);
+                    thuyTinh.setLeft(true);
                     break;
                 case KeyEvent.VK_D:
-                    player1.setRight(true);
+                    thuyTinh.setRight(true);
                     break;
                 case KeyEvent.VK_S:
-                    player1.setDefense(true);
+                    thuyTinh.setDefend(true);
                     break;
                 case KeyEvent.VK_K:
-                    player1.setJump(true);
+                    thuyTinh.setJump(true);
                     break;
                 case KeyEvent.VK_J:
-                    player1.setPunch(true);
+                    thuyTinh.setPunch(true);
                     break;
                 case KeyEvent.VK_U:
-                    player1.setTornado(true);
+                    thuyTinh.setSummon(true);
                     break;
                 case KeyEvent.VK_LEFT:
-                    player2.setLeft(true);
+                    sonTinh.setLeft(true);
                     break;
                 case KeyEvent.VK_RIGHT:
-                    player2.setRight(true); 
+                    sonTinh.setRight(true); 
                     break;
                 case KeyEvent.VK_DOWN:
-                    player2.setDefense(true);
+                    sonTinh.setDefend(true);
                     break;
                 case KeyEvent.VK_NUMPAD2:
-                    player2.setJump(true);
+                    sonTinh.setJump(true);
                     break;
                 case KeyEvent.VK_NUMPAD1:
-                    player2.setPunch(true); 
+                    sonTinh.setPunch(true); 
                     break;
                 case KeyEvent.VK_NUMPAD4:
-                    player2.setTornado(true);
-             
+                    sonTinh.setSummon(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
@@ -160,40 +143,40 @@ public class Playing extends State implements Statemethods {
 
         switch (keyCode) {
             case KeyEvent.VK_A:
-                player1.setLeft(false);
+                thuyTinh.setLeft(false);
                 break;
             case KeyEvent.VK_D:
-                player1.setRight(false);
+                thuyTinh.setRight(false);
                 break;
             case KeyEvent.VK_S:
-                player1.setDefense(false);
+                thuyTinh.setDefend(false);
                 break;
             case KeyEvent.VK_K:
-                player1.setJump(false);
+                thuyTinh.setJump(false);
                 break;
             case KeyEvent.VK_J:
-                player1.setPunch(false);
+                thuyTinh.setPunch(false);
                 break;
             case KeyEvent.VK_U:
-                player1.setTornado(false);  
+                thuyTinh.setSummon(false);  
                 break;
             case KeyEvent.VK_LEFT:
-                player2.setLeft(false); 
+                sonTinh.setLeft(false); 
                 break;
             case KeyEvent.VK_RIGHT:
-                player2.setRight(false); 
+                sonTinh.setRight(false); 
                 break;
             case KeyEvent.VK_DOWN:
-                player2.setDefense(false);  
+                sonTinh.setDefend(false);  
                 break;
             case KeyEvent.VK_NUMPAD2:
-                player2.setJump(false); 
+                sonTinh.setJump(false); 
                 break;      
             case KeyEvent.VK_NUMPAD1:
-                player2.setPunch(false);
+                sonTinh.setPunch(false);
                 break;
             case KeyEvent.VK_NUMPAD4:
-                player2.setTornado(false);  
+                sonTinh.setSummon(false);  
                 break;
             default:
                 break;
