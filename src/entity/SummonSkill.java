@@ -10,7 +10,7 @@ import static utilz.Constants.PlayerConstants.*;
 public class SummonSkill extends Entity {
     private final float speed = 3.5f; // speed of the summoned entity
     private int direction; // 0: right, 1: left
-    private static boolean isActive = false;
+    private boolean isActive = false;
 
     private BufferedImage[][] image;
     private int framesCounter, aniSpeed = 15, framesIndex, maxFrames;
@@ -20,7 +20,7 @@ public class SummonSkill extends Entity {
                        int direction, String characterName) {
         super(x, y, x_OffSetHitBox, y_OffSetHitBox, widthHitBox, heightHitBox);
         this.direction = direction;
-        isActive = true;
+        this.isActive = true;
 
         // Load animations based on character name
         this.image = loadSummonedEntityAnimation(characterName);

@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 
 import entity.SummonSkill;
 import entity.Character;
+import entity.Combat;
 
 
 
@@ -22,9 +23,9 @@ public class Playing extends State implements Statemethods {
 
     private Map map;
     private Character sonTinh, thuyTinh;
-
-
-
+    private PlayerUI playerUI1, playerUI2;
+    private Combat combat1;
+    private Combat combat2;
 
 
     public Playing(Game game) {
@@ -35,8 +36,11 @@ public class Playing extends State implements Statemethods {
     private void initClasses() {
 		map = new Map(game);
 		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
-        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 
-        50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
+        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
+        playerUI1 = new PlayerUI(1000, true);
+        playerUI2 = new PlayerUI(1000, false);
+        combat1 = new Combat(sonTinh, thuyTinh);
+        combat2 = new Combat(thuyTinh, sonTinh);
 	}
 
     public void windowFocusLost() {
@@ -48,6 +52,10 @@ public class Playing extends State implements Statemethods {
     public void update() {
         sonTinh.update();
         thuyTinh.update();
+        playerUI1.update();
+        playerUI2.update();
+        combat1.update();
+        combat2.update();
     }
 
     @Override
@@ -55,6 +63,10 @@ public class Playing extends State implements Statemethods {
         map.draw(g);
         sonTinh.render(g);
         thuyTinh.render(g);
+        playerUI1.draw(g, GAME_WIDTH);
+        playerUI2.draw(g, GAME_WIDTH);
+        combat1.render(g);
+        combat2.render(g);
 		
     }
 
