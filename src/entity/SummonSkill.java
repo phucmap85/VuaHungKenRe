@@ -8,12 +8,12 @@ import static utilz.HelpMethods.canMoveHere;
 import static utilz.Constants.GameConstants.GAME_WIDTH;
 import static utilz.Constants.PlayerConstants.*;
 public class SummonSkill extends Entity {
-    private final float speed = 3.5f; // speed of the summoned entity
+    private final float speed = 3.0f; // speed of the summoned entity
     private int direction; // 0: right, 1: left
     private boolean isActive = false;
 
     private BufferedImage[][] image;
-    private int framesCounter, aniSpeed = 15, framesIndex, maxFrames;
+    private int framesCounter, aniSpeed = 25, framesIndex, maxFrames;
     
     public SummonSkill(float x, float y,
                        float x_OffSetHitBox, float y_OffSetHitBox, float widthHitBox, float heightHitBox,
@@ -38,7 +38,19 @@ public class SummonSkill extends Entity {
                 else x -= speed;
             }
             updateHitBox();
+            updateAnimationTick();
         } 
+    }
+
+    public void updateAnimationTick(){
+        framesCounter++;
+        if(framesCounter >= aniSpeed){
+            framesCounter = 0;
+            framesIndex++;
+            if(framesIndex >= maxFrames){
+                framesIndex = 0;
+            }
+        }
     }
 
     public void render(Graphics g){

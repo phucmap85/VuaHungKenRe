@@ -19,12 +19,12 @@ public class Combat {
         if(sonTinh.callSummonedEntity() && hog == null) {
             sonTinh.setCallSummonedEntity(false);
             if(sonTinh.getDirection() == RIGHT) {
-                hog = new SummonSkill(sonTinh.getX() + 100, sonTinh.getY(),
-                        20f, 20f, 50f, 80f,
+                hog = new SummonSkill(sonTinh.getX() + 60, sonTinh.getY(),
+                        40f, 20f, 50f, 80f,
                         RIGHT, sonTinh.getCharacterName());
             } else {
-                hog = new SummonSkill(sonTinh.getX() - 100, sonTinh.getY(),
-                        20f, 20f, 50f, 80f,
+                hog = new SummonSkill(sonTinh.getX() - 60, sonTinh.getY(),
+                        40f, 20f, 50f, 80f,
                         LEFT, sonTinh.getCharacterName());
             }
         }
@@ -37,19 +37,29 @@ public class Combat {
         if(!thuyTinh.falling()){
             if(hog != null){
             if(Collision(hog.getHitBox(), thuyTinh.getHurtBox())) {
+                if(thuyTinh.defending() && thuyTinh.getDirection() != hog.getDirection()){
+                    thuyTinh.setHealthDefend(2);
+                }
+                else{
                 thuyTinh.setTakingHit(true);
                 thuyTinh.setHealthTakenPerCombo(2);
                 thuyTinh.setDirectionTakenHit(hog.getDirection());
+                }
             }
         }
             if(sonTinh.punching() && sonTinh.punch()){
                 sonTinh.updateAttackBox();
                 if(Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox())) {
+                    if(thuyTinh.defending() && thuyTinh.getDirection() != sonTinh.getDirection()){
+                        thuyTinh.setHealthDefend(1);
+                    }
+                    else{
                     thuyTinh.setTakingHit(true);
                     thuyTinh.setHealthTakenPerCombo(1);
                     thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                 }
             }
+        }
         }
        
     }

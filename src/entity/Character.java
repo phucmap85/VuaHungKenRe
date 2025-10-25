@@ -473,6 +473,10 @@ public class Character extends Entity {
         return falling;
     }
 
+    public boolean defending() {
+        return defending;
+    }
+
     public boolean callSummonedEntity() {
         return callSummonedEntity;
     }
