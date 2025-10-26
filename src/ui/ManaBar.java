@@ -68,13 +68,13 @@ public class ManaBar {
     public void update() {
         long now = System.currentTimeMillis();
         if (now - lastRegenTime >= 1000) {
-            mana = Math.min(maxMana, mana + 5);
+            mana = Math.min(maxMana, mana + 3);
             lastRegenTime = now;
         }
     }
 
-    public void setMana(int mana) {
-        this.mana = Math.max(0, Math.min(maxMana, mana));
+    public void takeMana(int amount) {
+        mana = Math.max(0, mana - amount);
     }
 
     public int getMana() { return mana; }

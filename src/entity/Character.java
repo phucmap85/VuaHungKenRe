@@ -48,6 +48,8 @@ public class Character extends Entity {
     // Update
     private int updateCounter = 0, updateSpeed = 5;
 
+    private int mana;
+
     public Character(float x, float y,
                      float x_OffSetHitBox, float y_OffSetHitBox, float widthHitBox, float heightHitBox,
                      float x_OffSetHurtBox, float y_OffSetHurtBox, float widthHurtBox, float heightHurtBox,
@@ -92,7 +94,7 @@ public class Character extends Entity {
     }
 
     public void updateSummon() {
-        if (summon && !summoning && !jumping && !takingHit && !falling) {
+        if (summon && !summoning && !jumping && !takingHit && !falling && mana >= 25) {
             resetAllStates();
             summoning = true;
         } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 1
@@ -492,5 +494,9 @@ public class Character extends Entity {
 
     public String getCharacterName() {
         return name;
+    }
+
+    public void setMana(int mana){
+        this.mana = mana;
     }
 }

@@ -39,8 +39,8 @@ public class Playing extends State implements Statemethods {
         sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
         playerUI1 = new PlayerUI(1000, true);
         playerUI2 = new PlayerUI(1000, false);
-        combat1 = new Combat(sonTinh, thuyTinh);
-        combat2 = new Combat(thuyTinh, sonTinh);
+        combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
+        combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
 	}
 
     public void windowFocusLost() {
@@ -52,10 +52,10 @@ public class Playing extends State implements Statemethods {
     public void update() {
         sonTinh.update();
         thuyTinh.update();
-        playerUI1.update();
-        playerUI2.update();
         combat1.update();
         combat2.update();
+        playerUI1.update();
+        playerUI2.update();
     }
 
     @Override
