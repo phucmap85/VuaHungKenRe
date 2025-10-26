@@ -29,7 +29,7 @@ public class Character extends Entity {
     private BufferedImage[][] animations;
     private int framesCounter, framesIndex;
     private int DelayForGettingUp = 100, DelayForTakingHit = 50;
-    private int normalAniSpeed = 20, punchAniSpeed = 22;
+    private int normalAniSpeed = 20, punchAniSpeed = 22, summonAniSpeed = 25;
 
     // Physics
     private float speed = 2.0f, punchSpeed = 0.2f;
@@ -84,6 +84,7 @@ public class Character extends Entity {
         if (takingHit) {
             resetAllStates();
             takingHit = true;
+            direction = (directionTakenHit == RIGHT) ? LEFT : RIGHT;
         }
         if(!takingHit) {
             healthTakenPerCombo = 0;
@@ -159,12 +160,12 @@ public class Character extends Entity {
             }
         } else if (takingHit) {
             if (directionTakenHit == RIGHT) {
-                if (canMoveHere(hurtBox, punchSpeed)) {
-                    x += punchSpeed;
+                if (canMoveHere(hurtBox, punchSpeed/2)) {
+                    x += punchSpeed/2;
                 }
             } else {
-                if (canMoveHere(hurtBox, -punchSpeed)) {
-                    x -= punchSpeed;
+                if (canMoveHere(hurtBox, -punchSpeed/2)) {
+                    x -= punchSpeed/2;
                 }
             }
         } else if (summoning) {
@@ -190,6 +191,7 @@ public class Character extends Entity {
                         x -= punchSpeed;
                     }
                 }
+                defendDamageSignal = false;
             }
         } else {
             if (moving) {
@@ -305,6 +307,9 @@ public class Character extends Entity {
         } else {
             if (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT) {
                 currentSpeed = punchAniSpeed;
+            }
+            else if(playerAction == SUMMONSKILL_LEFT || playerAction == SUMMONSKILL_RIGHT){
+                currentSpeed = summonAniSpeed;
             }
             if (framesCounter >= currentSpeed) {
                 framesCounter = 0;
