@@ -35,7 +35,7 @@ public class Character extends Entity {
     private float speed = 2.0f, punchSpeed = 0.2f;
     private float jumpSpeed = -6.5f, gravity = 0.1f, velocityY = 0;
     private float velocityX = 0, punchStrength = 1.5f, gravityX = -0.3f;
-    
+    private float gravityFalling = 0.025f, fallStrength = 1.0f;
     // Timings
     private long lastPunchTime, PUNCH_RESET_TIME = 300;
     private long lastTimeFalling;
@@ -152,15 +152,15 @@ public class Character extends Entity {
         if (falling) {
             if (framesIndex <= 5) {
                 if (directionTakenHit == RIGHT) {
-                    if (canMoveHere(hurtBox, 5*punchSpeed)) {
-                        x += 5*punchSpeed;
+                    if (canMoveHere(hurtBox, 10*punchSpeed)) {
+                        x += 10*punchSpeed;
                     }
                 } else {
-                    if (canMoveHere(hurtBox, -3*punchSpeed)) {
-                        x -= 5*punchSpeed;
+                    if (canMoveHere(hurtBox, -10*punchSpeed)) {
+                        x -= 10*punchSpeed;
                     }
                 }
-                y-=0.5;
+                y-= fallStrength;
             }
         } else if (takingHit) {
             if (directionTakenHit == RIGHT) {
@@ -222,7 +222,8 @@ public class Character extends Entity {
         }
 
         if (inAir) {
-            velocityY += gravity;
+            if(falling) velocityY += gravityFalling;
+            else velocityY += gravity;
 
             if (willHitPlatForm(hurtBox, velocityY)) {
                 y = platFormY - hurtBox.height - y_OffSetHurtBox;
