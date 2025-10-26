@@ -1,5 +1,7 @@
 package entity;
 
+import ui.PlayerUI;
+
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.Collision;
 
@@ -8,70 +10,82 @@ import java.awt.Graphics;
 public class Combat {
     private Character sonTinh;
     private Character thuyTinh;
-    private SummonSkill hog = null;
+    private PlayerUI sonTinhUI;
+    private PlayerUI thuyTinhUI;
+    private SummonSkill[] hog;
 
-    public Combat(Character sonTinh, Character thuyTinh) {
+    public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
         this.sonTinh = sonTinh;
         this.thuyTinh = thuyTinh;
+        this.sonTinhUI = sonTinhUI;
+        this.thuyTinhUI = thuyTinhUI;
+        hog = new SummonSkill[5];
     }
 
     public void update() {
-        if(sonTinh.callSummonedEntity() && hog == null) {
-            sonTinh.setCallSummonedEntity(false);
-            if(sonTinh.getDirection() == RIGHT) {
-                hog = new SummonSkill(sonTinh.getX() + 50, sonTinh.getY(),
-                        40f, 20f, 50f, 80f,
-                        RIGHT, sonTinh.getCharacterName());
-            } else {
-                hog = new SummonSkill(sonTinh.getX() - 50, sonTinh.getY(),
-                        40f, 20f, 50f, 80f,
-                        LEFT, sonTinh.getCharacterName());
-            }
-        }
-        if(hog != null){
-            hog.update();
-            if(!hog.isActive()){
-                hog = null;
-            }
-        }
-        if(!thuyTinh.falling()){
-            if(hog != null){
-            if(Collision(hog.getHitBox(), thuyTinh.getHurtBox())) {
-                if(thuyTinh.defending() && thuyTinh.getDirection() != hog.getDirection()){
-                    thuyTinh.setHealthDefend(2);
-                    thuyTinh.setDefendDamageSignal(true);
-                    thuyTinh.setDirectionTakenHit(hog.getDirection());
+        sonTinh.setMana(sonTinhUI.getMana());
+        for (int i = 0; i < 5; i++) {
+            if (sonTinh.callSummonedEntity() && hog[i] == null) {
+                if (sonTinh.getDirection() == RIGHT) {
+                    hog[i] = new SummonSkill(sonTinh.getX() + 60, sonTinh.getY(),
+                            40f, 20f, 50f, 80f,
+                            RIGHT, sonTinh.getCharacterName());
+                } else {
+                    hog[i] = new SummonSkill(sonTinh.getX() - 60, sonTinh.getY(),
+                            40f, 20f, 50f, 80f,
+                            LEFT, sonTinh.getCharacterName());
                 }
-                else{
-                thuyTinh.setTakingHit(true);
-                thuyTinh.setHealthTakenPerCombo(2);
-                thuyTinh.setDirectionTakenHit(hog.getDirection());
+                sonTinhUI.takeMana(25);
+                sonTinh.setCallSummonedEntity(false);
+            }
+            if (hog[i] != null) {
+                hog[i].update();
+                if (!hog[i].isActive()) {
+                    hog[i] = null;
                 }
             }
+            if (!thuyTinh.falling()) {
+                if (hog[i] != null) {
+                    if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox())) {
+                        if (thuyTinh.defending() && thuyTinh.getDirection() != hog[i].getDirection()) {
+                            thuyTinh.setHealthDefend(2);
+                        } else {
+                            thuyTinh.setTakingHit(true);
+                            thuyTinh.setHealthTakenPerCombo(2);
+                            thuyTinhUI.takeDamage(2);
+
+                            thuyTinh.setDirectionTakenHit(hog[i].getDirection());
+                        }
+                    }
+                }
+            }
         }
-            if(sonTinh.punching() && sonTinh.punch()){
+
+        if (!thuyTinh.falling()) {
+            if (sonTinh.punching() && sonTinh.punch()) {
                 sonTinh.updateAttackBox();
-                if(Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox())) {
-                    if(thuyTinh.defending() && thuyTinh.getDirection() != sonTinh.getDirection()){
+                if (Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox())) {
+                    if (thuyTinh.defending() && thuyTinh.getDirection() != sonTinh.getDirection()) {
                         thuyTinh.setHealthDefend(1);
-                        thuyTinh.setDefendDamageSignal(true);
+                    } else {
+                        thuyTinh.setTakingHit(true);
+                        thuyTinh.setHealthTakenPerCombo(1);
+                        thuyTinhUI.takeDamage(1);
                         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                     }
-                    else{
-                    thuyTinh.setTakingHit(true);
-                    thuyTinh.setHealthTakenPerCombo(1);
-                    thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                 }
             }
         }
-        }
-       
     }
 
+
+
     public void render(Graphics g) {
-        if (hog != null) {
-            hog.render(g);
-            hog.drawHitBox(g);
+        for(int i = 0 ; i < 5 ; i++) {
+            if (hog[i] != null) {
+                hog[i].render(g);
+                hog[i].drawHitBox(g);
+            }
         }
     }
 }
