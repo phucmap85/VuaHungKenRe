@@ -175,4 +175,56 @@ public class LoadSave {
         
         return animations;
     }
+
+    /**
+     * Loads animation frames for LIGHTNING attack based on character name
+     * @param characterName Name of the character ("SonTinh" or "ThuyTinh")
+     * @return 2D array of animation frames [direction][frame]
+     */
+    public static BufferedImage[][] loadLightningAnimation(String characterName) {
+        int frameCount;
+        
+        // Get frame count based on character
+        if ("SonTinh".equals(characterName)) {
+            frameCount = 27;  // 27 frames for SonTinh's LIGHTNING
+        } else if ("ThuyTinh".equals(characterName)) {
+            frameCount = 20;  // 20 frames for ThuyTinh's LIGHTNING
+        } else {
+            System.err.println("Unknown character for lightning animation: " + characterName);
+            return new BufferedImage[2][1]; // Return minimal array for unknown character
+        }
+        
+        BufferedImage[][] animations = new BufferedImage[2][frameCount];
+        
+        try {
+            for (int j = 0; j < frameCount; j++) {
+                // Load the lightning image
+                String path = String.format("/image/%s/LIGHTNING_%04d.png", characterName, j + 1);
+                InputStream is = LoadSave.class.getResourceAsStream(path);
+                
+                if (is == null) {
+                    System.err.println("ERROR: Lightning file not found: " + path);
+                    continue; // Skip this frame rather than crashing
+                }
+                
+                BufferedImage img = ImageIO.read(is);
+                
+                // Frame for right direction (original)
+                animations[0][j] = img;
+                
+                // Frame for left direction (flipped)
+                animations[1][j] = flipHorizontally(img);
+                
+                is.close();
+            }
+            
+            System.out.println("Loaded lightning animations for " + characterName + " (" + frameCount + " frames)");
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return animations;
+    }
+
 }

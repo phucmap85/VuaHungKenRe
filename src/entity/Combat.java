@@ -6,6 +6,7 @@ import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.Collision;
 
 import java.awt.Graphics;
+import java.sql.Time;
 
 public class Combat {
     private Character sonTinh;
@@ -13,7 +14,7 @@ public class Combat {
     private PlayerUI sonTinhUI;
     private PlayerUI thuyTinhUI;
     private SummonSkill[] hog;
-
+    private long TimeInVulnerable = 500;
     public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
         this.sonTinh = sonTinh;
         this.thuyTinh = thuyTinh;
@@ -44,7 +45,7 @@ public class Combat {
                     hog[i] = null;
                 }
             }
-            if (!thuyTinh.falling()) {
+            if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
                 if (hog[i] != null) {
                     if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox())) {
                         hog[i].setCollision(true);
@@ -63,7 +64,7 @@ public class Combat {
             }
         }
 
-        if (!thuyTinh.falling()) {
+        if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
             if (sonTinh.punching() && sonTinh.punch()) {
                 sonTinh.updateAttackBox();
                 if (Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox())) {

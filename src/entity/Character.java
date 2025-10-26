@@ -38,6 +38,7 @@ public class Character extends Entity {
     
     // Timings
     private long lastPunchTime, PUNCH_RESET_TIME = 300;
+    private long lastTimeFalling;
 
     // Combat
     private int directionTakenHit, healthTakenPerCombo;
@@ -151,14 +152,15 @@ public class Character extends Entity {
         if (falling) {
             if (framesIndex <= 5) {
                 if (directionTakenHit == RIGHT) {
-                    if (canMoveHere(hurtBox, 3*punchSpeed)) {
-                        x += 3*punchSpeed;
+                    if (canMoveHere(hurtBox, 5*punchSpeed)) {
+                        x += 5*punchSpeed;
                     }
                 } else {
                     if (canMoveHere(hurtBox, -3*punchSpeed)) {
-                        x -= 3*punchSpeed;
+                        x -= 5*punchSpeed;
                     }
                 }
+                y-=0.5;
             }
         } else if (takingHit) {
             if (directionTakenHit == RIGHT) {
@@ -281,6 +283,7 @@ public class Character extends Entity {
                 if (framesIndex >= getFramesAmount(playerAction)) {
                     framesIndex = 0;
                     falling = false;
+                    lastTimeFalling = System.currentTimeMillis();
                 }
             } else {
                 if (framesCounter >= DelayForGettingUp) {
@@ -499,4 +502,8 @@ public class Character extends Entity {
     public void setMana(int mana){
         this.mana = mana;
     }
+
+    public long getLastTimeFalling(){
+        return lastTimeFalling;
+    }   
 }
