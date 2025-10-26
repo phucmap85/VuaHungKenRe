@@ -162,12 +162,12 @@ public class Character extends Entity {
             }
         } else if (takingHit) {
             if (directionTakenHit == RIGHT) {
-                if (canMoveHere(hurtBox, punchSpeed/2)) {
-                    x += punchSpeed/2;
+                if (canMoveHere(hurtBox, punchSpeed)) {
+                    x += punchSpeed;
                 }
             } else {
-                if (canMoveHere(hurtBox, -punchSpeed/2)) {
-                    x -= punchSpeed/2;
+                if (canMoveHere(hurtBox, -punchSpeed)) {
+                    x -= punchSpeed;
                 }
             }
         } else if (summoning) {
