@@ -137,7 +137,7 @@ public class LoadSave {
             frameCount = 8;  // 8 frames for HOG
         } else if ("ThuyTinh".equals(characterName)) {
             entityName = "TORNADO";
-            frameCount = 2;  // 2 frames for TORNADO
+            frameCount = 17;  // 14 frames for TORNADO
         } else {
             System.err.println("Unknown character for summoned entity: " + characterName);
             return new BufferedImage[2][1]; // Return minimal array for unknown character

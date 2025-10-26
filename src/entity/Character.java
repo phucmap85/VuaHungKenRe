@@ -41,7 +41,7 @@ public class Character extends Entity {
 
     // Combat
     private int directionTakenHit, healthTakenPerCombo;
-    private int healthThresholdForFalling = 250;
+    private int healthThresholdForFalling = 100;
     private boolean vulnerable = true;
     private int healthDefend, healthThresholdForDefend = 200;
 
@@ -97,8 +97,7 @@ public class Character extends Entity {
         if (summon && !summoning && !jumping && !takingHit && !falling && mana >= 25) {
             resetAllStates();
             summoning = true;
-        } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 1
-                && framesCounter == normalAniSpeed - 1) {
+        } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 1) {
             callSummonedEntity = true;
             summoning = false;
         }

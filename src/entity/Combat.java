@@ -27,11 +27,11 @@ public class Combat {
         for (int i = 0; i < 5; i++) {
             if (sonTinh.callSummonedEntity() && hog[i] == null) {
                 if (sonTinh.getDirection() == RIGHT) {
-                    hog[i] = new SummonSkill(sonTinh.getX() + 60, sonTinh.getY(),
+                    hog[i] = new SummonSkill(sonTinh.getX() + 50, sonTinh.getY(),
                             40f, 20f, 50f, 80f,
                             RIGHT, sonTinh.getCharacterName());
                 } else {
-                    hog[i] = new SummonSkill(sonTinh.getX() - 60, sonTinh.getY(),
+                    hog[i] = new SummonSkill(sonTinh.getX() - 50, sonTinh.getY(),
                             40f, 20f, 50f, 80f,
                             LEFT, sonTinh.getCharacterName());
                 }
@@ -47,13 +47,15 @@ public class Combat {
             if (!thuyTinh.falling()) {
                 if (hog[i] != null) {
                     if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox())) {
+                        hog[i].setCollision(true);
                         if (thuyTinh.defending() && thuyTinh.getDirection() != hog[i].getDirection()) {
+                            thuyTinh.setDefendDamageSignal(true);
                             thuyTinh.setHealthDefend(2);
+                            thuyTinh.setDirectionTakenHit(hog[i].getDirection());
                         } else {
                             thuyTinh.setTakingHit(true);
                             thuyTinh.setHealthTakenPerCombo(2);
                             thuyTinhUI.takeDamage(2);
-
                             thuyTinh.setDirectionTakenHit(hog[i].getDirection());
                         }
                     }
@@ -66,7 +68,9 @@ public class Combat {
                 sonTinh.updateAttackBox();
                 if (Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox())) {
                     if (thuyTinh.defending() && thuyTinh.getDirection() != sonTinh.getDirection()) {
+                        thuyTinh.setDefendDamageSignal(true);
                         thuyTinh.setHealthDefend(1);
+                        thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                     } else {
                         thuyTinh.setTakingHit(true);
                         thuyTinh.setHealthTakenPerCombo(1);
