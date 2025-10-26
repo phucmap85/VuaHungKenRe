@@ -73,6 +73,7 @@ public class SummonSkill extends Entity {
             framesIndex++;
             if(framesIndex >= maxFramesDisappearTornado){
                 isActive = false;
+                collision = false;
             }
         }
     }
@@ -100,6 +101,9 @@ public class SummonSkill extends Entity {
         framesCounter = 0;
         return this.collision = collision;
         
+    }
+    public boolean getCollision(){
+        return collision;
     }
 
 }

@@ -48,10 +48,10 @@ public class Playing extends State implements Statemethods {
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         
         // TEST: Initialize lightning animations ở giữa màn hình
-        // lightningTestSonTinh = new LightningTest(50, 100, "SonTinh");
-        // lightningTestThuyTinh = new LightningTest(500 , 100, "ThuyTinh");
-        // lightningTestSonTinh.setDirection(1); // Hướng trái
-        // lightningTestThuyTinh.setDirection(0); // Hướng phải
+        lightningTestSonTinh = new LightningTest(0, 0, "SonTinh");
+        lightningTestThuyTinh = new LightningTest(500 , 0, "ThuyTinh");
+        lightningTestSonTinh.setDirection(1); // Hướng trái
+        lightningTestThuyTinh.setDirection(0); // Hướng phải
 	}
 
     public void windowFocusLost() {
@@ -69,8 +69,8 @@ public class Playing extends State implements Statemethods {
         playerUI2.update();
         
         // TEST: Update lightning animations
-        // lightningTestSonTinh.update();
-        // lightningTestThuyTinh.update();
+        lightningTestSonTinh.update();
+        lightningTestThuyTinh.update();
     }
 
     @Override
@@ -97,8 +97,8 @@ public class Playing extends State implements Statemethods {
         combat2.render(g);
         
         // TEST: Render lightning animations on top
-        // lightningTestSonTinh.render(g);
-        // lightningTestThuyTinh.render(g);
+        lightningTestSonTinh.render(g);
+        lightningTestThuyTinh.render(g);
 		
     }
 

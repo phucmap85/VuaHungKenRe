@@ -47,7 +47,7 @@ public class LightningTest {
     
     public void render(Graphics g) {
         if (animations != null && animations[direction] != null) {
-            g.drawImage(animations[direction][framesIndex], (int) x, (int) y, 300, 768, null);
+            g.drawImage(animations[direction][framesIndex], (int) x, (int) y, 1089, 822, null);
             
             // Hiển thị thông tin debug
             g.drawString("Lightning: " + characterName, (int) x, (int) y - 10);

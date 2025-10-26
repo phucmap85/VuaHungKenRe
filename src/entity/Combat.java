@@ -29,11 +29,11 @@ public class Combat {
             if (sonTinh.callSummonedEntity() && hog[i] == null) {
                 if (sonTinh.getDirection() == RIGHT) {
                     hog[i] = new SummonSkill(sonTinh.getX() + 40, sonTinh.getY(),
-                            40f, 20f, 50f, 80f,
+                            40f, 20f, 60f, 80f,
                             RIGHT, sonTinh.getCharacterName());
                 } else {
                     hog[i] = new SummonSkill(sonTinh.getX() - 40, sonTinh.getY(),
-                            40f, 20f, 50f, 80f,
+                            40f, 20f, 60f, 80f,
                             LEFT, sonTinh.getCharacterName());
                 }
                 sonTinhUI.takeMana(25);
@@ -48,7 +48,7 @@ public class Combat {
             if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
                 if (hog[i] != null) {
                     if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox())) {
-                        hog[i].setCollision(true);
+                        if(!hog[i].getCollision()) hog[i].setCollision(true);
                         if (thuyTinh.defending() && thuyTinh.getDirection() != hog[i].getDirection()) {
                             thuyTinh.setDefendDamageSignal(true);
                             thuyTinh.setHealthDefend(2);
