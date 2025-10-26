@@ -60,7 +60,7 @@ public class Constants {
                     return 12;
                 case SUMMONSKILL_LEFT:
                 case SUMMONSKILL_RIGHT:
-                    return 7;
+                    return 6;
                 default:
                     return 0;
             }
