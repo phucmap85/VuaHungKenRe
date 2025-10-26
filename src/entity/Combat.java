@@ -27,11 +27,11 @@ public class Combat {
         for (int i = 0; i < 5; i++) {
             if (sonTinh.callSummonedEntity() && hog[i] == null) {
                 if (sonTinh.getDirection() == RIGHT) {
-                    hog[i] = new SummonSkill(sonTinh.getX() + 50, sonTinh.getY(),
+                    hog[i] = new SummonSkill(sonTinh.getX() + 40, sonTinh.getY(),
                             40f, 20f, 50f, 80f,
                             RIGHT, sonTinh.getCharacterName());
                 } else {
-                    hog[i] = new SummonSkill(sonTinh.getX() - 50, sonTinh.getY(),
+                    hog[i] = new SummonSkill(sonTinh.getX() - 40, sonTinh.getY(),
                             40f, 20f, 50f, 80f,
                             LEFT, sonTinh.getCharacterName());
                 }

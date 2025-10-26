@@ -61,8 +61,21 @@ public class Playing extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
         map.draw(g);
-        sonTinh.render(g);
-        thuyTinh.render(g);
+        // layer rendering based on punching state
+        if(sonTinh.punching()){
+            thuyTinh.render(g);
+            sonTinh.render(g);
+
+
+        }
+        else if(thuyTinh.punching()){
+            sonTinh.render(g);
+            thuyTinh.render(g);
+        }
+        else{
+            sonTinh.render(g);
+            thuyTinh.render(g);
+        }
         playerUI1.draw(g, GAME_WIDTH);
         playerUI2.draw(g, GAME_WIDTH);
         combat1.render(g);

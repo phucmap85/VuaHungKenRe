@@ -29,7 +29,7 @@ public class Character extends Entity {
     private BufferedImage[][] animations;
     private int framesCounter, framesIndex;
     private int DelayForGettingUp = 100, DelayForTakingHit = 50;
-    private int normalAniSpeed = 20, punchAniSpeed = 22, summonAniSpeed = 25;
+    private int normalAniSpeed = 20, punchAniSpeed = 22, summonAniSpeed = 20;
 
     // Physics
     private float speed = 2.0f, punchSpeed = 0.2f;
@@ -97,8 +97,9 @@ public class Character extends Entity {
         if (summon && !summoning && !jumping && !takingHit && !falling && mana >= 25) {
             resetAllStates();
             summoning = true;
-        } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 1) {
+        } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {
             callSummonedEntity = true;
+        } else if (summoning && framesIndex == getFramesAmount(playerAction) - 1 && framesCounter >= summonAniSpeed - 1) {
             summoning = false;
         }
     }
@@ -150,12 +151,12 @@ public class Character extends Entity {
         if (falling) {
             if (framesIndex <= 5) {
                 if (directionTakenHit == RIGHT) {
-                    if (canMoveHere(hurtBox, punchSpeed)) {
-                        x += punchSpeed;
+                    if (canMoveHere(hurtBox, 3*punchSpeed)) {
+                        x += 3*punchSpeed;
                     }
                 } else {
-                    if (canMoveHere(hurtBox, -punchSpeed)) {
-                        x -= punchSpeed;
+                    if (canMoveHere(hurtBox, -3*punchSpeed)) {
+                        x -= 3*punchSpeed;
                     }
                 }
             }
