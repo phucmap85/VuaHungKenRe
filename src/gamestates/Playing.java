@@ -12,9 +12,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import entity.SummonSkill;
+import entity.UltiSkill;
 import entity.Character;
 import entity.Combat;
-import entity.LightningTest;
+
 
 
 
@@ -28,11 +29,6 @@ public class Playing extends State implements Statemethods {
     private Combat combat1;
     private Combat combat2;
 
-    // TEST: Lightning animation test
-    private LightningTest lightningTestSonTinh;
-    private LightningTest lightningTestThuyTinh;
-
-
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -40,18 +36,15 @@ public class Playing extends State implements Statemethods {
     
     private void initClasses() {
 		map = new Map(game);
-		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
-        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
+		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
+        sonTinh = new Character(235f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
         playerUI1 = new PlayerUI(1000, true);
         playerUI2 = new PlayerUI(1000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         
         // TEST: Initialize lightning animations ở giữa màn hình
-        lightningTestSonTinh = new LightningTest(0, 0, "SonTinh");
-        lightningTestThuyTinh = new LightningTest(500 , 0, "ThuyTinh");
-        lightningTestSonTinh.setDirection(1); // Hướng trái
-        lightningTestThuyTinh.setDirection(0); // Hướng phải
+      
 	}
 
     public void windowFocusLost() {
@@ -67,10 +60,7 @@ public class Playing extends State implements Statemethods {
         combat2.update();
         playerUI1.update();
         playerUI2.update();
-        
-        // TEST: Update lightning animations
-        lightningTestSonTinh.update();
-        lightningTestThuyTinh.update();
+       
     }
 
     @Override
@@ -97,11 +87,10 @@ public class Playing extends State implements Statemethods {
         combat2.render(g);
         
         // TEST: Render lightning animations on top
-        lightningTestSonTinh.render(g);
-        lightningTestThuyTinh.render(g);
-		
-    }
+        // lightningTestSonTinh.render(g);
+        // lightningTestThuyTinh.render(g);
 
+    }  
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
@@ -152,6 +141,9 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_U:
                     thuyTinh.setSummon(true);
                     break;
+                case KeyEvent.VK_I:
+                    thuyTinh.setUlti(true);
+                    break;
                 case KeyEvent.VK_LEFT:
                     sonTinh.setLeft(true);
                     break;
@@ -169,6 +161,9 @@ public class Playing extends State implements Statemethods {
                     break;
                 case KeyEvent.VK_NUMPAD4:
                     sonTinh.setSummon(true);
+                    break;
+                case KeyEvent.VK_NUMPAD5:
+                    sonTinh.setUlti(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
@@ -213,6 +208,9 @@ public class Playing extends State implements Statemethods {
             case KeyEvent.VK_DOWN:
                 sonTinh.setDefend(false);  
                 break;
+            case KeyEvent.VK_I:
+                thuyTinh.setUlti(false);
+                break;
             case KeyEvent.VK_NUMPAD2:
                 sonTinh.setJump(false); 
                 break;      
@@ -222,6 +220,8 @@ public class Playing extends State implements Statemethods {
             case KeyEvent.VK_NUMPAD4:
                 sonTinh.setSummon(false);  
                 break;
+            case KeyEvent.VK_NUMPAD5:
+                sonTinh.setUlti(false);
             default:
                 break;
         }
