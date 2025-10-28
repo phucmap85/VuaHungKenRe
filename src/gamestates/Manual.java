@@ -9,17 +9,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import entity.Combat;
-import entity.LightningTest;
 import main.Game;
 import map.Map;
 import ui.KeyButton;
 import ui.PlayerUI;
 
-
 import entity.SummonSkill;
 import entity.Character;
 import entity.Combat;
-import entity.LightningTest;
 
 public class Manual extends State implements Statemethods{
 
@@ -30,8 +27,6 @@ public class Manual extends State implements Statemethods{
     private PlayerUI playerUI1, playerUI2;
     private Combat combat1;
     private Combat combat2;
-
-
 
     public Manual(Game game) {
         super(game);
@@ -78,7 +73,7 @@ public class Manual extends State implements Statemethods{
         keyButtons[13] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 4, K_YPOS - K_OFFSET, 16); // "4"
         keyButtons[14] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 5, K_YPOS - K_OFFSET, 17); // "5"
 
-        keyButtons[18] = new KeyButton(K_XPOS, K_YPOS - K_OFFSET * 3, 0, 21, 41, "esc.png"); // "ESC"
+        keyButtons[18] = new KeyButton(K_XPOS, K_YPOS - K_OFFSET * 3, 0, 21, 41, "KeyButton/esc.png"); // "ESC"
     }
     @Override
     public void update() {
