@@ -11,7 +11,7 @@ public class LoadSave {
     public static String BattleMap = "map.png";
     public static String MenuButton = "menu_button_atlas.png";
     public static String MenuBackground = "menu_background.png";
-
+    public static String KeyButton = "keys.png";
     public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;
 		InputStream is = LoadSave.class.getResourceAsStream("/image/" + fileName);
@@ -219,6 +219,61 @@ public class LoadSave {
             }
             
             System.out.println("Loaded lightning animations for " + characterName + " (" + frameCount + " frames)");
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return animations;
+    }
+
+    /**
+     * Loads animation frames for ULTI summoned creatures (PHOENIX, SQUID) based on character name
+     * These creatures appear before the lightning strike in ultimate attack
+     * @param characterName Name of the character ("SonTinh" or "ThuyTinh")
+     * @return 2D array of animation frames [direction][frame]
+     */
+    public static BufferedImage[][] loadUltiCreatureAnimation(String characterName) {
+        String creatureName;
+        int frameCount;
+        
+        // Get creature name and frame count based on character
+        if ("SonTinh".equals(characterName)) {
+            creatureName = "PHOENIX";
+            frameCount = 19;  // 19 frames for PHOENIX
+        } else if ("ThuyTinh".equals(characterName)) {
+            creatureName = "SQUID";
+            frameCount = 20;  // 20 frames for SQUID
+        } else {
+            System.err.println("Unknown character for ulti creature: " + characterName);
+            return new BufferedImage[2][1]; // Return minimal array for unknown character
+        }
+        
+        BufferedImage[][] animations = new BufferedImage[2][frameCount];
+        
+        try {
+            for (int j = 0; j < frameCount; j++) {
+                // Load the creature image
+                String path = String.format("/image/%s/%s_%04d.png", characterName, creatureName, j + 1);
+                InputStream is = LoadSave.class.getResourceAsStream(path);
+                
+                if (is == null) {
+                    System.err.println("ERROR: Ulti creature file not found: " + path);
+                    continue; // Skip this frame rather than crashing
+                }
+                
+                BufferedImage img = ImageIO.read(is);
+                
+                // Frame for right direction (original)
+                animations[0][j] = img;
+                
+                // Frame for left direction (flipped)
+                animations[1][j] = flipHorizontally(img);
+                
+                is.close();
+            }
+            
+            System.out.println("Loaded ulti creature animations for " + characterName + " (" + creatureName + ", " + frameCount + " frames)");
             
         } catch (IOException e) {
             e.printStackTrace();

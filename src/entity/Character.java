@@ -14,12 +14,12 @@ public class Character extends Entity {
     private int direction;
     
     // Get from key input
-    private boolean left, right, jump, defend, punch, summon;
+    private boolean left, right, jump, defend, punch, summon, ulti;
 
     // States of character
-    private boolean moving, defending, jumping, punching, summoning, inAir; // Internal states
+    private boolean moving, defending, jumping, punching, summoning,
+    ulting, inAir; // Internal states
     private boolean takingHit, falling; // States from outside
-
     // Signals calling skills
     private boolean callSummonedEntity; // Hog and tornado
     private boolean defendDamageSignal = false;
@@ -91,6 +91,7 @@ public class Character extends Entity {
         }
         if(!takingHit) {
             healthTakenPerCombo = 0;
+            setThressholdForFalling(100);
         }
     }
 
@@ -215,7 +216,7 @@ public class Character extends Entity {
 
         // Handle vertical movement and jumping
         if ((jumping || isInAir(hurtBox)) && !inAir) {
-            if (jump) {
+            if (jump && !takingHit && !falling) {
                 velocityY = jumpSpeed;
             }
             inAir = true;
@@ -390,6 +391,9 @@ public class Character extends Entity {
             lastPunchTime = System.currentTimeMillis();
         }
     }
+    public void setUlti(boolean ulti) {
+        this.ulti = ulti;
+    }
 
     public void setDirectionTakenHit(int directionEnemy) {
         this.directionTakenHit = directionEnemy;
@@ -487,6 +491,10 @@ public class Character extends Entity {
     public boolean defending() {
         return defending;
     }
+    
+    public boolean ulting() {
+        return ulting;
+    }
 
     public boolean callSummonedEntity() {
         return callSummonedEntity;
@@ -502,6 +510,10 @@ public class Character extends Entity {
 
     public void setMana(int mana){
         this.mana = mana;
+    }
+    
+    public void setThressholdForFalling(int threshold){
+        this.healthThresholdForFalling = threshold;
     }
 
     public long getLastTimeFalling(){
