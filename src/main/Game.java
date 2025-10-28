@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import static utilz.Constants.GameConstants.*;
 
 import gamestates.Gamestate;
+import gamestates.Manual;
 import gamestates.Menu;
 import gamestates.Playing;
 
@@ -15,7 +16,7 @@ public class Game implements Runnable {
 
 	private Playing playing;
 	private Menu menu;
-
+	private Manual manual;
 	public Game() {
 		initClasses();
 
@@ -29,6 +30,7 @@ public class Game implements Runnable {
 	private void initClasses() {
 		menu = new Menu(this);
 		playing = new Playing(this);
+		manual = new Manual(this);
 	}
 
 	private void startGameLoop() {
@@ -43,6 +45,9 @@ public class Game implements Runnable {
 				break;
 			case PLAYING:
 				playing.update();
+				break;
+			case MANUAL:
+				manual.update();
 				break;
 			case OPTIONS:
 			case QUIT:
@@ -59,6 +64,9 @@ public class Game implements Runnable {
 				break;
 			case PLAYING:
 				playing.draw(g);
+				break;
+			case MANUAL:
+				manual.draw(g);
 				break;
 			default:
 				break;
@@ -120,5 +128,8 @@ public class Game implements Runnable {
 
 	public Playing getPlaying() {
 		return playing;
+	}
+	public Manual getManual(){
+		return manual;
 	}
 }

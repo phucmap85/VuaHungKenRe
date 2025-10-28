@@ -6,6 +6,14 @@ public class Constants {
 			public static final int B_WIDTH = 140;
 			public static final int B_HEIGHT = 56;
 		}
+
+        public static class KeyButton {
+            public static final int K_WIDTH = 19;
+			public static final int K_HEIGHT = 21;
+            public static final int K_YPOS = 295;
+            public static final int K_XPOS = 80;
+            public static final int K_OFFSET = 60;
+        }
 	}
 
     public static class PlayerConstants {

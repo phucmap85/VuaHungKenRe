@@ -2,40 +2,41 @@ package gamestates;
 
 import static utilz.Constants.GameConstants.*;
 import static utilz.Constants.PlayerConstants.*;
-
-import main.Game;
-import map.Map;
-import ui.PlayerUI;
+import static utilz.Constants.UI.KeyButton.*;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import entity.Combat;
+import entity.LightningTest;
+import main.Game;
+import map.Map;
+import ui.KeyButton;
+import ui.PlayerUI;
+
 
 import entity.SummonSkill;
 import entity.Character;
 import entity.Combat;
 import entity.LightningTest;
 
+public class Manual extends State implements Statemethods{
 
-
-
-public class Playing extends State implements Statemethods {
     private boolean[] keysPressed = new boolean[256];
-
+    private KeyButton[] keyButtons = new KeyButton[19];
     private Map map;
     private Character sonTinh, thuyTinh;
     private PlayerUI playerUI1, playerUI2;
     private Combat combat1;
     private Combat combat2;
 
-    // TEST: Lightning animation test
-    private LightningTest lightningTestSonTinh;
-    private LightningTest lightningTestThuyTinh;
 
 
-    public Playing(Game game) {
+    public Manual(Game game) {
         super(game);
         initClasses();
+        loadKeyButtons();
     }
     
     private void initClasses() {
@@ -47,11 +48,6 @@ public class Playing extends State implements Statemethods {
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         
-        // TEST: Initialize lightning animations ở giữa màn hình
-        lightningTestSonTinh = new LightningTest(0, 0, "SonTinh");
-        lightningTestThuyTinh = new LightningTest(500 , 0, "ThuyTinh");
-        lightningTestSonTinh.setDirection(1); // Hướng trái
-        lightningTestThuyTinh.setDirection(0); // Hướng phải
 	}
 
     public void windowFocusLost() {
@@ -59,6 +55,31 @@ public class Playing extends State implements Statemethods {
         thuyTinh.resetAllBools();
 	}
 
+    void loadKeyButtons(){
+        keyButtons[0] = new KeyButton(K_XPOS, K_YPOS, 0); // "A"
+        keyButtons[3] = new KeyButton(K_XPOS + K_OFFSET, K_YPOS, 1); // "S"
+        keyButtons[2] = new KeyButton(K_XPOS + K_OFFSET * 2, K_YPOS, 2); // "D"
+        keyButtons[1] = new KeyButton(K_XPOS + K_OFFSET, K_YPOS - K_OFFSET, 3); // "W"
+
+        keyButtons[4] = new KeyButton(K_XPOS + K_OFFSET * 4, K_YPOS - K_OFFSET, 4); // "U"
+        keyButtons[5] = new KeyButton(K_XPOS + K_OFFSET * 5, K_YPOS - K_OFFSET, 5); // "I"
+        keyButtons[6] = new KeyButton(K_XPOS + K_OFFSET * 4, K_YPOS, 6); // "J"
+        keyButtons[7] = new KeyButton(K_XPOS + K_OFFSET * 5, K_YPOS, 7); // "K"
+        keyButtons[8] = new KeyButton(K_XPOS + K_OFFSET * 6, K_YPOS, 8); // "L"
+
+        keyButtons[9] = new KeyButton(GAME_WIDTH / 2 + K_XPOS, K_YPOS, 9); // "LEFT"
+        keyButtons[12] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET, K_YPOS, 10); // "DOWN"
+        keyButtons[11] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 2, K_YPOS, 11); // "RIGHT"
+        keyButtons[10] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET, K_YPOS - K_OFFSET, 12); // "UP"
+
+        keyButtons[16] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 4, K_YPOS, 13); // "1"
+        keyButtons[17] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 5, K_YPOS, 14); // "2"
+        keyButtons[15] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 6, K_YPOS, 15); // "3"
+        keyButtons[13] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 4, K_YPOS - K_OFFSET, 16); // "4"
+        keyButtons[14] = new KeyButton(GAME_WIDTH / 2 + K_XPOS + K_OFFSET * 5, K_YPOS - K_OFFSET, 17); // "5"
+
+        keyButtons[18] = new KeyButton(K_XPOS, K_YPOS - K_OFFSET * 3, 0, 21, 41, "esc.png"); // "ESC"
+    }
     @Override
     public void update() {
         sonTinh.update();
@@ -68,6 +89,9 @@ public class Playing extends State implements Statemethods {
         playerUI1.update();
         playerUI2.update();
         
+        for (KeyButton kb : keyButtons){
+            kb.update();
+        }
         // TEST: Update lightning animations
         // lightningTestSonTinh.update();
         // lightningTestThuyTinh.update();
@@ -75,7 +99,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void draw(Graphics g) {
-        map.draw(g);
+        //map.draw(g);
         // layer rendering based on punching state
         if(sonTinh.punching()){
             thuyTinh.render(g);
@@ -91,11 +115,14 @@ public class Playing extends State implements Statemethods {
             sonTinh.render(g);
             thuyTinh.render(g);
         }
-        playerUI1.draw(g, GAME_WIDTH);
-        playerUI2.draw(g, GAME_WIDTH);
+        // playerUI1.draw(g, GAME_WIDTH);
+        // playerUI2.draw(g, GAME_WIDTH);
         combat1.render(g);
         combat2.render(g);
         
+        for (KeyButton kb : keyButtons){
+            kb.draw(g);
+        }
         // TEST: Render lightning animations on top
         // lightningTestSonTinh.render(g);
         // lightningTestThuyTinh.render(g);
@@ -104,7 +131,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+    
     }
 
     @Override
@@ -114,7 +141,7 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        
     }
 
     @Override
@@ -132,39 +159,63 @@ public class Playing extends State implements Statemethods {
             switch (keyCode) {
                 case KeyEvent.VK_A:
                     thuyTinh.setLeft(true);
+                    keyButtons[0].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_D:
                     thuyTinh.setRight(true);
+                    keyButtons[2].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_S:
                     thuyTinh.setDefend(true);
+                    keyButtons[3].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_K:
                     thuyTinh.setJump(true);
+                    keyButtons[7].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_J:
                     thuyTinh.setPunch(true);
+                    keyButtons[6].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_U:
                     thuyTinh.setSummon(true);
+                    keyButtons[4].setKeyPressed(true);
+                    break;
+                case KeyEvent.VK_I:
+                    keyButtons[5].setKeyPressed(true);
+                    break;
+                case KeyEvent.VK_L:
+                    keyButtons[8].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_LEFT:
                     sonTinh.setLeft(true);
+                    keyButtons[9].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_RIGHT:
                     sonTinh.setRight(true); 
+                    keyButtons[11].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_DOWN:
                     sonTinh.setDefend(true);
+                    keyButtons[12].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_NUMPAD2:
                     sonTinh.setJump(true);
+                    keyButtons[17].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_NUMPAD1:
                     sonTinh.setPunch(true); 
+                    keyButtons[16].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_NUMPAD4:
                     sonTinh.setSummon(true);
+                    keyButtons[13].setKeyPressed(true);
+                    break;
+                case KeyEvent.VK_NUMPAD3:
+                    keyButtons[15].setKeyPressed(true);
+                    break;
+                case KeyEvent.VK_NUMPAD5:
+                    keyButtons[14].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
@@ -184,39 +235,63 @@ public class Playing extends State implements Statemethods {
         switch (keyCode) {
             case KeyEvent.VK_A:
                 thuyTinh.setLeft(false);
+                keyButtons[0].setKeyPressed(false);
                 break;
             case KeyEvent.VK_D:
                 thuyTinh.setRight(false);
+                keyButtons[2].setKeyPressed(false);
                 break;
             case KeyEvent.VK_S:
                 thuyTinh.setDefend(false);
+                keyButtons[3].setKeyPressed(false);
                 break;
             case KeyEvent.VK_K:
                 thuyTinh.setJump(false);
+                keyButtons[7].setKeyPressed(false);
                 break;
             case KeyEvent.VK_J:
                 thuyTinh.setPunch(false);
+                keyButtons[6].setKeyPressed(false);
                 break;
             case KeyEvent.VK_U:
-                thuyTinh.setSummon(false);  
+                thuyTinh.setSummon(false); 
+                keyButtons[4].setKeyPressed(false); 
+                break;
+            case KeyEvent.VK_I:
+                keyButtons[5].setKeyPressed(false);
+                break;
+            case KeyEvent.VK_L:
+                keyButtons[8].setKeyPressed(false);
                 break;
             case KeyEvent.VK_LEFT:
                 sonTinh.setLeft(false); 
+                keyButtons[9].setKeyPressed(false);
                 break;
             case KeyEvent.VK_RIGHT:
                 sonTinh.setRight(false); 
+                keyButtons[11].setKeyPressed(false);
                 break;
             case KeyEvent.VK_DOWN:
                 sonTinh.setDefend(false);  
+                keyButtons[12].setKeyPressed(false);
                 break;
             case KeyEvent.VK_NUMPAD2:
                 sonTinh.setJump(false); 
+                keyButtons[17].setKeyPressed(false);
                 break;      
             case KeyEvent.VK_NUMPAD1:
                 sonTinh.setPunch(false);
+                keyButtons[16].setKeyPressed(false);
                 break;
             case KeyEvent.VK_NUMPAD4:
                 sonTinh.setSummon(false);  
+                keyButtons[13].setKeyPressed(false);
+                break;
+            case KeyEvent.VK_NUMPAD3:
+                keyButtons[15].setKeyPressed(false);
+                break;
+            case KeyEvent.VK_NUMPAD5:
+                keyButtons[14].setKeyPressed(false);
                 break;
             default:
                 break;
