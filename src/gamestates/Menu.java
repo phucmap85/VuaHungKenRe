@@ -24,16 +24,16 @@ public class Menu extends State implements Statemethods {
 
 	private void loadBackground() {
 		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MenuBackground);
-		menuWidth = backgroundImg.getWidth() + 50;
-		menuHeight = backgroundImg.getHeight() + 50;
-		menuX = GAME_WIDTH / 2 - menuWidth / 2;
-		menuY = 160;
+		menuWidth = backgroundImg.getWidth();
+		menuHeight = backgroundImg.getHeight();
+		menuX = GAME_WIDTH / 2 - menuWidth / 2 - 80;
+		menuY = 0;
 	}
 
 	private void loadButtons() {
-		buttons[0] = new MenuButton(GAME_WIDTH / 2, 295, 0, Gamestate.PLAYING);
-		buttons[2] = new MenuButton(GAME_WIDTH / 2, 435, 2, Gamestate.QUIT);
-		buttons[1] = new MenuButton(GAME_WIDTH / 2, 365, 3, Gamestate.MANUAL);		
+		buttons[0] = new MenuButton(GAME_WIDTH - 180, 295 + 200, 0, Gamestate.PLAYING);
+		buttons[2] = new MenuButton(GAME_WIDTH - 180, 435 + 200, 2, Gamestate.QUIT);
+		buttons[1] = new MenuButton(GAME_WIDTH - 180, 365 + 200, 3, Gamestate.MANUAL);		
 	}
 
 	@Override
