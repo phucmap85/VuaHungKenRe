@@ -88,6 +88,7 @@ public class Combat {
         if(sonTinh.callUltiEntity() && ulti == null) {
             ulti = new UltiSkill(0,0,0,0,0,0, sonTinh.getCharacterName());
             sonTinh.setCallUltiEntity(false);
+            sonTinhUI.takeMana(100);
         }
         if(ulti !=null && !thuyTinh.falling()) {
             ulti.update(thuyTinh.getX(), thuyTinh.getY());

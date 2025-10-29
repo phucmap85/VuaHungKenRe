@@ -36,7 +36,7 @@ public class Playing extends State implements Statemethods {
     private void initClasses() {
 		map = new Map(game);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
-        sonTinh = new Character(235f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
+        sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
         playerUI1 = new PlayerUI(1000, true);
         playerUI2 = new PlayerUI(1000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
