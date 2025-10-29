@@ -45,7 +45,7 @@ public class LoadSave {
   
 
     public static BufferedImage[][] getAnimations(String player) {
-        BufferedImage[][] animations = new BufferedImage[20][20];
+        BufferedImage[][] animations = new BufferedImage[22][20];
         String[][] animConfig = null;
 
         // SỬA LỖI: Dùng .equals() để so sánh chuỗi, không dùng ==
@@ -60,7 +60,9 @@ public class LoadSave {
                 {"DEFENSE", "3", "NORMAL"},   // -> animations[8] (Phải), animations[9] (Trái)
                 {"TAKINGHIT","3","NORMAL"},
                 {"FALLINGBACKDEATH","12","NORMAL"},
-                {"SUMMONSKILL","6","NORMAL"}       // Con lợn chỉ có 1 chiều -> animations[12]
+                {"SUMMONSKILL","6","NORMAL"},
+                {"DASH","1","NORMAL"},
+                {"SUMMONULTI","6","NORMAL"}      // Con lợn chỉ có 1 chiều -> animations[12]
             };
         } else { // Mặc định là ThuyTinh hoặc nhân vật khác
             // Cấu hình cho nhân vật ThuyTinh
@@ -73,7 +75,8 @@ public class LoadSave {
                 {"DEFENSE", "3", "NORMAL"},       // -> animations[8] (Phải), animations[9] (Trái)
                 {"TAKINGHIT","3","NORMAL"},
                 {"FALLINGBACKDEATH","12","NORMAL"},
-                {"SUMMONSKILL","6","NORMAL"}       
+                {"SUMMONSKILL","6","NORMAL"},
+                {"SUMMONULTI","6","NORMAL"}        // Con lốc xoáy chỉ có 1 chiều -> animations[12]
             };
         }
 

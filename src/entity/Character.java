@@ -14,14 +14,14 @@ public class Character extends Entity {
     private int direction;
     
     // Get from key input
-    private boolean left, right, jump, defend, punch, summon, ulti;
+    private boolean left, right, jump, defend, punch, summon, ulti, dash;
 
     // States of character
-    private boolean moving, defending, jumping, punching, summoning,
+    private boolean moving, defending, jumping, punching, summoning, dashing,
     ulting, inAir; // Internal states
     private boolean takingHit, falling; // States from outside
     // Signals calling skills
-    private boolean callSummonedEntity; // Hog and tornado
+    private boolean callSummonedEntity, callUltiEntity;
     private boolean defendDamageSignal = false;
     
     // Animations
@@ -51,6 +51,10 @@ public class Character extends Entity {
 
     private int mana;
 
+    private int dashCounter = 0, maxDashCount = 50;
+    private float dashSpeed = 5.0f;
+    private long lastTimeDash = 0, DASH_RESET_TIME = 200;
+
     public Character(float x, float y,
                      float x_OffSetHitBox, float y_OffSetHitBox, float widthHitBox, float heightHitBox,
                      float x_OffSetHurtBox, float y_OffSetHurtBox, float widthHurtBox, float heightHurtBox,
@@ -66,6 +70,8 @@ public class Character extends Entity {
         updateFalling();
         updateTakingHit();
         updateSummon();
+        updateUlti();
+        updateDash();
         updatePunch();
         updateDefend();
         updateMoving();
@@ -79,7 +85,6 @@ public class Character extends Entity {
         if (!falling && takingHit && healthTakenPerCombo >= healthThresholdForFalling) {
             resetAllStates();
             falling = true;
-
         }
     }
 
@@ -94,6 +99,14 @@ public class Character extends Entity {
             setThressholdForFalling(100);
         }
     }
+    public void updateUlti(){
+        if(ulti && !ulting && !jumping && !takingHit && !falling && mana == 100){
+            ulting = true;
+            callUltiEntity = true;
+        } else if(ulting == true && framesIndex == getFramesAmount(playerAction) -1 && framesCounter >= normalAniSpeed -1){
+            ulting = false;
+        }
+    }
 
     public void updateSummon() {
         if (summon && !summoning && !jumping && !takingHit && !falling && mana >= 25) {
@@ -106,6 +119,19 @@ public class Character extends Entity {
         }
     }
 
+    public void updateDash(){
+        if(dash && !dashing && !inAir && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
+            dashing = true;
+            dashCounter = 0;
+        }
+        if(dashing){
+            dashCounter++;
+            if(dashCounter >=  maxDashCount){
+                dashing = false;
+                lastTimeDash = System.currentTimeMillis();
+            }
+        }
+    }
     public void updateDefend() {
         if (defend && !defending && !jumping && !summoning && !takingHit && !falling) {
             defending = true;
@@ -173,9 +199,9 @@ public class Character extends Entity {
                     x -= punchSpeed;
                 }
             }
-        } else if (summoning) {
-            return;
-        } else if (punching) {
+        } 
+            
+         else if (punching) {
             if (direction == RIGHT) {
                 if (canMoveHere(hurtBox, punchSpeed)) {
                     x += punchSpeed;
@@ -185,7 +211,19 @@ public class Character extends Entity {
                     x -= punchSpeed;
                 }
             }
-        } else if (defending) {
+        }else if(dashing){
+            if(direction == RIGHT){
+                if(canMoveHere(hurtBox, dashSpeed)){
+                    x += dashSpeed;
+                }
+            }
+            else{
+                if(canMoveHere(hurtBox, -dashSpeed)){
+                    x -= dashSpeed;
+                }
+            }
+        }
+         else if (defending) {
             if (defendDamageSignal) {
                 if (directionTakenHit == RIGHT) {
                     if (canMoveHere(hurtBox, punchSpeed)) {
@@ -255,7 +293,13 @@ public class Character extends Entity {
             playerAction = (directionTakenHit == LEFT) ? TAKING_HIT_RIGHT : TAKING_HIT_LEFT;
         } else if (summoning) {
             playerAction = (direction == RIGHT) ? SUMMONSKILL_RIGHT : SUMMONSKILL_LEFT;
-        } else if (punching) {
+        } else if(ulting){
+            playerAction = (direction == RIGHT) ? SUMMONULTI_RIGHT : SUMMONULTI_LEFT;
+        }
+        else if(dashing){
+            playerAction = (direction == RIGHT) ? DASH_RIGHT : DASH_LEFT;
+        }
+        else if (punching) {
             playerAction = (direction == RIGHT) ? PUNCH_RIGHT : PUNCH_LEFT;
         } else if (jumping) {
             playerAction = (direction == RIGHT) ? JUMP_RIGHT : JUMP_LEFT;
@@ -391,10 +435,16 @@ public class Character extends Entity {
             lastPunchTime = System.currentTimeMillis();
         }
     }
+
+    public void setDash(boolean dash) {
+        this.dash = dash;
+    }
+
     public void setUlti(boolean ulti) {
         this.ulti = ulti;
     }
 
+    
     public void setDirectionTakenHit(int directionEnemy) {
         this.directionTakenHit = directionEnemy;
     }
@@ -414,7 +464,10 @@ public class Character extends Entity {
     public void setCallSummonedEntity(boolean callSummonedEntity) {
         this.callSummonedEntity = callSummonedEntity;
     }
-
+    
+    public void setCallUltiEntity(boolean callUltiEntity) {
+        this.callUltiEntity = callUltiEntity;
+    }
     public void resetAllBools() {
         left = false;
         right = false;
@@ -434,6 +487,8 @@ public class Character extends Entity {
         summoning = false;
         takingHit = false;
         falling = false;
+        dashing = false;
+        ulting = false;
     }
 
     public boolean isLeft() {
@@ -496,8 +551,16 @@ public class Character extends Entity {
         return ulting;
     }
 
+    public boolean dashing() {
+        return dashing;
+    }
+
     public boolean callSummonedEntity() {
         return callSummonedEntity;
+    }
+
+    public boolean callUltiEntity() {
+        return callUltiEntity;
     }
 
     public int getDirection() {
@@ -519,4 +582,8 @@ public class Character extends Entity {
     public long getLastTimeFalling(){
         return lastTimeFalling;
     }   
+
+    public void setFalling(boolean falling){
+        this.falling = falling;
+    }
 }

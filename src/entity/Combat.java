@@ -6,7 +6,7 @@ import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.Collision;
 
 import java.awt.Graphics;
-import java.sql.Time;
+
 
 public class Combat {
     private Character sonTinh;
@@ -14,6 +14,7 @@ public class Combat {
     private PlayerUI sonTinhUI;
     private PlayerUI thuyTinhUI;
     private SummonSkill[] hog;
+    private UltiSkill ulti;
     private long TimeInVulnerable = 500;
     public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
         this.sonTinh = sonTinh;
@@ -47,7 +48,8 @@ public class Combat {
             }
             if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
                 if (hog[i] != null) {
-                    if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox())) {
+                    if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox()) && !thuyTinh.dashing()) {
+        
                         if(!hog[i].getCollision()) hog[i].setCollision(true);
                         if (thuyTinh.defending() && thuyTinh.getDirection() != hog[i].getDirection()) {
                             thuyTinh.setDefendDamageSignal(true);
@@ -67,7 +69,8 @@ public class Combat {
         if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
             if (sonTinh.punching() && sonTinh.punch()) {
                 sonTinh.updateAttackBox();
-                if (Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox())) {
+                if (Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox()) && !thuyTinh.dashing()) {
+                    
                     if (thuyTinh.defending() && thuyTinh.getDirection() != sonTinh.getDirection()) {
                         thuyTinh.setDefendDamageSignal(true);
                         thuyTinh.setHealthDefend(1);
@@ -81,6 +84,21 @@ public class Combat {
                 }
             }
         }
+        
+        if(sonTinh.callUltiEntity() && ulti == null) {
+            ulti = new UltiSkill(0,0,0,0,0,0, sonTinh.getCharacterName());
+            sonTinh.setCallUltiEntity(false);
+        }
+        if(ulti !=null && !thuyTinh.falling()) {
+            ulti.update(thuyTinh.getX(), thuyTinh.getY());
+            thuyTinh.setTakingHit(true); 
+            thuyTinhUI.takeDamage(1);
+            if(!ulti.isActive()) {
+                ulti = null;
+                thuyTinh.setTakingHit(false);
+                thuyTinh.setFalling(true);
+            }
+        }
     }
 
 
@@ -91,6 +109,9 @@ public class Combat {
                 hog[i].render(g);
                 hog[i].drawHitBox(g);
             }
+        }
+        if(ulti != null) {
+            ulti.render(g);
         }
     }
 }

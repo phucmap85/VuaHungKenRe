@@ -152,6 +152,9 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_I:
                     thuyTinh.setUlti(true);
                     break;
+                case KeyEvent.VK_L:
+                    thuyTinh.setDash(true);
+                    break;
                 case KeyEvent.VK_LEFT:
                     sonTinh.setLeft(true);
                     break;
@@ -172,6 +175,9 @@ public class Playing extends State implements Statemethods {
                     break;
                 case KeyEvent.VK_NUMPAD5:
                     sonTinh.setUlti(true);
+                    break;
+                case KeyEvent.VK_NUMPAD3:
+                    sonTinh.setDash(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
                     paused = !paused;
@@ -207,6 +213,12 @@ public class Playing extends State implements Statemethods {
             case KeyEvent.VK_U:
                 thuyTinh.setSummon(false);  
                 break;
+            case KeyEvent.VK_L:
+                thuyTinh.setDash(false);
+                break;
+            case KeyEvent.VK_I:
+                thuyTinh.setUlti(false);
+                break;
             case KeyEvent.VK_LEFT:
                 sonTinh.setLeft(false); 
                 break;
@@ -215,9 +227,6 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_DOWN:
                 sonTinh.setDefend(false);  
-                break;
-            case KeyEvent.VK_I:
-                thuyTinh.setUlti(false);
                 break;
             case KeyEvent.VK_NUMPAD2:
                 sonTinh.setJump(false); 
@@ -230,6 +239,9 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_NUMPAD5:
                 sonTinh.setUlti(false);
+            case KeyEvent.VK_NUMPAD3:
+                sonTinh.setDash(false);
+                break;
             default:
                 break;
         }

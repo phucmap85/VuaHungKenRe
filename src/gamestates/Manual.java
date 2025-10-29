@@ -94,7 +94,7 @@ public class Manual extends State implements Statemethods{
 
     @Override
     public void draw(Graphics g) {
-        //map.draw(g);
+        map.draw(g);
         // layer rendering based on punching state
         if(sonTinh.punching()){
             thuyTinh.render(g);

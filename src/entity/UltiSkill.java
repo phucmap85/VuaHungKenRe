@@ -43,9 +43,11 @@ public class UltiSkill extends Entity {
         }
     }
 
-    public void update(){
+    public void update(float enemyX, float enemyY){
+        setX_Y (enemyX, enemyY);
         updatePerFrame();
         updateAnimationTick();
+
     }
 
     public void updatePerFrame(){
@@ -112,6 +114,7 @@ public class UltiSkill extends Entity {
                 if(framesIndexforLightning >= maxFramesLightning){
                     lightningAppeared = false;
                     framesIndexforLightning = 0;
+                    isActive = false;
                 }
         }
     }
@@ -119,9 +122,11 @@ public class UltiSkill extends Entity {
 
     public void render(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
+        if(isActive){
         if(monsterAppeared) g2.drawImage(monsterAnimations[direction][framesIndexforMonster], 306, -30, 484, 484, null);
         if(lightningAppeared) g2.drawImage(lightningAnimations[direction][framesIndexforLightning], (int) x,(int) y, 1089, 822, null);
     }
+}
 
     public boolean isActive(){
         return isActive;

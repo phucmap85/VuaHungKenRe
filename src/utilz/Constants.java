@@ -65,7 +65,12 @@ public class Constants {
         public static final int SUMMONSKILL_RIGHT = 14;
         public static final int SUMMONSKILL_LEFT = 15;
 
-   
+        public static final int DASH_RIGHT = 16;
+        public static final int DASH_LEFT = 17;
+
+        public static final int SUMMONULTI_RIGHT = 18;
+        public static final int SUMMONULTI_LEFT = 19;
+
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
                 case IDLE_LEFT:
@@ -91,6 +96,12 @@ public class Constants {
                     return 12;
                 case SUMMONSKILL_LEFT:
                 case SUMMONSKILL_RIGHT:
+                    return 6;
+                case DASH_LEFT:
+                case DASH_RIGHT:
+                    return 1;
+                case SUMMONULTI_LEFT:
+                case SUMMONULTI_RIGHT:
                     return 6;
                 default:
                     return 0;
