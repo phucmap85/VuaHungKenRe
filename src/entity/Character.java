@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.EffectConstants.SMOKE_LEFT;
+import static utilz.Constants.EffectConstants.SMOKE_RIGHT;
 import static utilz.Constants.GameConstants.*;
 import static utilz.LoadSave.*;
 
@@ -54,6 +56,7 @@ public class Character extends Entity {
     private int dashCounter = 0, maxDashCount = 50;
     private float dashSpeed = 5.0f;
     private long lastTimeDash = 0, DASH_RESET_TIME = 200;
+    private EffectManager effectManager;
 
     public Character(float x, float y,
                      float x_OffSetHitBox, float y_OffSetHitBox, float widthHitBox, float heightHitBox,
@@ -64,6 +67,7 @@ public class Character extends Entity {
         this.name = name;
         this.direction = direction;
         loadAnimations(name);
+        effectManager = new EffectManager();
     }
 
     public void update() {
@@ -123,6 +127,12 @@ public class Character extends Entity {
         if(dash && !dashing && !inAir && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
             dashing = true;
             dashCounter = 0;
+            if(direction == RIGHT){
+                effectManager.addEffect(x-100, y, SMOKE_RIGHT);
+            }
+            else{
+                effectManager.addEffect(x+100, y, SMOKE_LEFT);
+            }
         }
         if(dashing){
             dashCounter++;
@@ -383,10 +393,12 @@ public class Character extends Entity {
                 else a = 2;
 
                 g2.drawImage(animations[playerAction][framesIndex],(int) x, (int) y + a*framesIndex, 128, 128, null);
-                drawBoxes(g);
                 return;
             }
         }
+        // Draw và update tất cả effects
+        effectManager.draw(g);
+        effectManager.update();
         g2.drawImage(animations[playerAction][framesIndex], (int) x, (int) y, 128, 128, null);
         drawBoxes(g);
     }

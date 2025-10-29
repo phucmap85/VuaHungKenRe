@@ -290,4 +290,68 @@ public class LoadSave {
         return animations;
     }
 
+    /**
+     * Loads all effect animations from Effects folder
+     * Returns 2D array where each row corresponds to an effect direction constant
+     * @return 2D array of effect animations [effectConstant][frame]
+     *         Row indices match EffectConstants (0=IMPACT1_RIGHT, 1=IMPACT1_LEFT, etc.)
+     */
+    public static BufferedImage[][] getEffectSprites() {
+        // Effect configuration: name, frame count
+        String[][] effectConfig = {
+            {"IMPACT1", "3"},      // Row 0-1: IMPACT1_RIGHT, IMPACT1_LEFT
+            {"IMPACT2", "9"},      // Row 2-3: IMPACT2_RIGHT, IMPACT2_LEFT
+            {"PUNCHSLASH", "5"},   // Row 4-5: PUNCHSLASH_RIGHT, PUNCHSLASH_LEFT
+            {"SHIELD", "2"},       // Row 6-7: SHIELD_RIGHT, SHIELD_LEFT
+            {"SLASH", "4"},        // Row 8-9: SLASH_RIGHT, SLASH_LEFT
+            {"SMEAR", "5"},        // Row 10-11: SMEAR_RIGHT, SMEAR_LEFT
+            {"SMOKE", "9"}         // Row 12-13: SMOKE_RIGHT, SMOKE_LEFT
+        };
+        
+        // Create array: [14 rows for all effect directions][max frames]
+        BufferedImage[][] effects = new BufferedImage[14][];
+        
+        try {
+            int currentRow = 0;
+            
+            for (int i = 0; i < effectConfig.length; i++) {
+                String effectName = effectConfig[i][0];
+                int frameCount = Integer.parseInt(effectConfig[i][1]);
+                
+                System.out.println("Loading effect: " + effectName + " (" + frameCount + " frames)");
+                
+                // Initialize arrays for right and left directions
+                effects[currentRow] = new BufferedImage[frameCount];     // Right direction
+                effects[currentRow + 1] = new BufferedImage[frameCount]; // Left direction
+                
+                for (int j = 0; j < frameCount; j++) {
+                    String path = String.format("/image/Effects/%s_%04d.png", effectName, j + 1);
+                    InputStream is = LoadSave.class.getResourceAsStream(path);
+                    
+                    if (is == null) {
+                        System.err.println("ERROR: Effect file not found: " + path);
+                        continue;
+                    }
+                    
+                    BufferedImage img = ImageIO.read(is);
+                    
+                    // Store original for right direction
+                    effects[currentRow][j] = img;
+                    
+                    // Store flipped for left direction
+                    effects[currentRow + 1][j] = flipHorizontally(img);
+                    
+                    is.close();
+                }
+                
+                System.out.println("✓ Loaded effect: " + effectName + " into rows " + currentRow + "-" + (currentRow + 1));
+                currentRow += 2;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return effects;
+    }
+
 }

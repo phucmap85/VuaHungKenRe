@@ -7,7 +7,10 @@ import static utilz.LoadSave.loadSummonedEntityAnimation;
 import static utilz.HelpMethods.canMoveHere;
 import static utilz.Constants.GameConstants.GAME_WIDTH;
 import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.EffectConstants.*;
+
 public class SummonSkill extends Entity {
+    private EffectManager effectManager; int updateCounter = 0, updateSpeed = 50;
     private final float speed = 3.0f; // speed of the summoned entity
     private int direction; // 0: right, 1: left
     private boolean isActive = false;
@@ -33,6 +36,10 @@ public class SummonSkill extends Entity {
             framesIndex = startFrames;
             maxFrames = 11; 
         }
+        else{
+            effectManager = new EffectManager();
+            effectManager.addEffect((direction == RIGHT) ? (x - 100) : (x + 110), y, (direction == RIGHT) ? SMOKE_RIGHT : SMOKE_LEFT);
+        }
     }
 
     public void update(){
@@ -50,6 +57,14 @@ public class SummonSkill extends Entity {
         }
             updateHitBox();
             updateAnimationTick();
+            if(characterName.equals("SonTinh")){
+                updateCounter++;
+                if(updateCounter >= updateSpeed){
+                    updateCounter = 0;
+                    effectManager.addEffect((direction == RIGHT) ? (x - 100) : (x + 110), y, (direction == RIGHT) ? SMOKE_RIGHT : SMOKE_LEFT);
+                }
+                effectManager.update();
+            }
         } 
     }
 
@@ -88,6 +103,9 @@ public class SummonSkill extends Entity {
             }
             
             g2.drawImage(image[direction][framesIndex], (int)x, (int)y, 128, 128, null);
+        }
+        if(effectManager != null){
+            effectManager.draw(g);
         }
     }
     
