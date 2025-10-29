@@ -5,6 +5,7 @@ import static utilz.Constants.PlayerConstants.*;
 
 import main.Game;
 import map.Map;
+import ui.PauseOverlay;
 import ui.PlayerUI;
 
 import java.awt.Graphics;
@@ -16,12 +17,10 @@ import entity.UltiSkill;
 import entity.Character;
 import entity.Combat;
 
-
-
-
-
 public class Playing extends State implements Statemethods {
     private boolean[] keysPressed = new boolean[256];
+    private boolean paused = false;
+    private PauseOverlay pauseOverlay;
 
     private Map map;
     private Character sonTinh, thuyTinh;
@@ -43,8 +42,7 @@ public class Playing extends State implements Statemethods {
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         
-        // TEST: Initialize lightning animations ở giữa màn hình
-      
+        pauseOverlay = new PauseOverlay(this);
 	}
 
     public void windowFocusLost() {
@@ -54,30 +52,30 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void update() {
-        sonTinh.update();
-        thuyTinh.update();
-        combat1.update();
-        combat2.update();
-        playerUI1.update();
-        playerUI2.update();
-       
+        if (!paused) {
+            sonTinh.update();
+            thuyTinh.update();
+            combat1.update();
+            combat2.update();
+            playerUI1.update();
+            playerUI2.update();
+        }
+        else {
+            pauseOverlay.update();
+        }
     }
 
     @Override
     public void draw(Graphics g) {
         map.draw(g);
-        // layer rendering based on punching state
-        if(sonTinh.punching()){
+        if(sonTinh.punching()) {
             thuyTinh.render(g);
             sonTinh.render(g);
-
-
         }
-        else if(thuyTinh.punching()){
+        else if(thuyTinh.punching()) {
             sonTinh.render(g);
             thuyTinh.render(g);
-        }
-        else{
+        } else {
             sonTinh.render(g);
             thuyTinh.render(g);
         }
@@ -85,30 +83,44 @@ public class Playing extends State implements Statemethods {
         playerUI2.draw(g, GAME_WIDTH);
         combat1.render(g);
         combat2.render(g);
-        
-        // TEST: Render lightning animations on top
-        // lightningTestSonTinh.render(g);
-        // lightningTestThuyTinh.render(g);
 
-    }  
+        if(paused) pauseOverlay.draw(g);
+    }
+
+    public void unpauseGame() {
+        paused = false;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         
     }
 
+    public void mouseDragged(MouseEvent e) {
+        if(paused) {
+            pauseOverlay.mouseDragged(e);
+        }
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        if(paused) {
+            pauseOverlay.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if(paused) {
+            pauseOverlay.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        
+        if(paused) {
+            pauseOverlay.mouseMoved(e);
+        }
     }
 
     @Override
@@ -162,7 +174,7 @@ public class Playing extends State implements Statemethods {
                     sonTinh.setUlti(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    Gamestate.state = Gamestate.MENU;
+                    paused = !paused;
                     break;
                 default:
                     break;
