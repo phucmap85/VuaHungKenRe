@@ -104,7 +104,7 @@ public class Character extends Entity {
         }
     }
     public void updateUlti(){
-        if(ulti && !ulting && !jumping && !takingHit && !falling && mana == 100){
+        if(ulti && !ulting && !jumping && !takingHit && !falling && !inAir &&mana == 100){
             ulting = true;
             callUltiEntity = true;
         } else if(ulting == true && framesIndex == getFramesAmount(playerAction) -1 && framesCounter >= normalAniSpeed -1){
@@ -113,7 +113,7 @@ public class Character extends Entity {
     }
 
     public void updateSummon() {
-        if (summon && !summoning && !jumping && !takingHit && !falling && mana >= 25) {
+        if (summon && !summoning && !jumping && !takingHit && !falling && !inAir && mana >= 25) {
             resetAllStates();
             summoning = true;
         } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {
@@ -153,6 +153,10 @@ public class Character extends Entity {
     }
 
     public void updatePunch() {
+        if (punch && !jumping && !summoning && !takingHit && !falling && !inAir) {
+            resetAllStates();
+            punching = true;
+        }
         if (punching && !punch && System.currentTimeMillis() - lastPunchTime >= PUNCH_RESET_TIME) {
             punching = false;
         }
@@ -210,7 +214,9 @@ public class Character extends Entity {
                 }
             }
         } 
-            
+        else if(ulting){
+            // No horizontal movement during ulti
+        }
          else if (punching) {
             if (direction == RIGHT) {
                 if (canMoveHere(hurtBox, punchSpeed)) {
@@ -441,11 +447,9 @@ public class Character extends Entity {
     }
     public void setPunch(boolean punch) {
         this.punch = punch;
-        if (punch && !jumping && !summoning && !takingHit && !falling) {
-            resetAllStates();
-            punching = true;
+        
             lastPunchTime = System.currentTimeMillis();
-        }
+        
     }
 
     public void setDash(boolean dash) {

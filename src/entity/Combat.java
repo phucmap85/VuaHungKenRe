@@ -92,8 +92,13 @@ public class Combat {
         }
         if(ulti !=null && !thuyTinh.falling()) {
             ulti.update(thuyTinh.getX(), thuyTinh.getY());
-            thuyTinh.setTakingHit(true); 
-            thuyTinhUI.takeDamage(1);
+            if(ulti.lightningAppeared()){
+                thuyTinh.setTakingHit(true); 
+                thuyTinhUI.takeDamage(1);
+                thuyTinh.setDirectionTakenHit(ulti.getDirection());
+            }
+      
+    
             if(!ulti.isActive()) {
                 ulti = null;
                 thuyTinh.setTakingHit(false);

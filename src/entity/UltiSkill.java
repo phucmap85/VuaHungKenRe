@@ -138,4 +138,10 @@ public class UltiSkill extends Entity {
         this.enemyX = enemyX;
         this.enemyY = enemyY;
 }
+    public boolean lightningAppeared(){
+        return lightningAppeared;
+    }
+    public int getDirection(){
+        return direction;
+    }   
 }

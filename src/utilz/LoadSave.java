@@ -16,6 +16,15 @@ public class LoadSave {
     public static String SoundButton = "PauseMenu/sound_button.png";
     public static String UrmButton = "PauseMenu/urm_button.png";
     public static String VolumeButton = "PauseMenu/volume_button.png";
+
+    // Static cache cho animations
+    private static BufferedImage[][] sonTinhSummonedEntity = null;
+    private static BufferedImage[][] thuyTinhSummonedEntity = null;
+    private static BufferedImage[][] sonTinhLightning = null;
+    private static BufferedImage[][] thuyTinhLightning = null;
+    private static BufferedImage[][] sonTinhUltiCreature = null;
+    private static BufferedImage[][] thuyTinhUltiCreature = null;
+    private static BufferedImage[][] effectSprites = null;
     
     public static BufferedImage GetSpriteAtlas(String fileName) {
 		BufferedImage img = null;
@@ -136,6 +145,13 @@ public class LoadSave {
      * @return 2D array of animation frames [direction][frame]
      */
     public static BufferedImage[][] loadSummonedEntityAnimation(String characterName) {
+        // Kiểm tra cache trước
+        if ("SonTinh".equals(characterName)) {
+            if (sonTinhSummonedEntity != null) return sonTinhSummonedEntity;
+        } else if ("ThuyTinh".equals(characterName)) {
+            if (thuyTinhSummonedEntity != null) return thuyTinhSummonedEntity;
+        }
+
         String entityName;
         int frameCount;
         
@@ -145,34 +161,36 @@ public class LoadSave {
             frameCount = 8;  // 8 frames for HOG
         } else if ("ThuyTinh".equals(characterName)) {
             entityName = "TORNADO";
-            frameCount = 17;  // 14 frames for TORNADO
+            frameCount = 17;  // 17 frames for TORNADO
         } else {
             System.err.println("Unknown character for summoned entity: " + characterName);
-            return new BufferedImage[2][1]; // Return minimal array for unknown character
+            return new BufferedImage[2][1];
         }
         
         BufferedImage[][] animations = new BufferedImage[2][frameCount];
         
         try {
             for (int j = 0; j < frameCount; j++) {
-                // Load the entity image
                 String path = String.format("/image/%s/%s_%04d.png", characterName, entityName, j + 1);
                 InputStream is = LoadSave.class.getResourceAsStream(path);
                 
                 if (is == null) {
                     System.err.println("ERROR: Summoned entity file not found: " + path);
-                    continue; // Skip this frame rather than crashing
+                    continue;
                 }
                 
                 BufferedImage img = ImageIO.read(is);
-                
-                // Frame for right direction (original)
                 animations[0][j] = img;
-                
-                // Frame for left direction (flipped)
                 animations[1][j] = flipHorizontally(img);
                 
                 is.close();
+            }
+            
+            // Lưu vào cache
+            if ("SonTinh".equals(characterName)) {
+                sonTinhSummonedEntity = animations;
+            } else if ("ThuyTinh".equals(characterName)) {
+                thuyTinhSummonedEntity = animations;
             }
             
             System.out.println("Loaded summoned entity animations for " + characterName + " (" + entityName + ", " + frameCount + " frames)");
@@ -190,40 +208,48 @@ public class LoadSave {
      * @return 2D array of animation frames [direction][frame]
      */
     public static BufferedImage[][] loadLightningAnimation(String characterName) {
+        // Kiểm tra cache trước
+        if ("SonTinh".equals(characterName)) {
+            if (sonTinhLightning != null) return sonTinhLightning;
+        } else if ("ThuyTinh".equals(characterName)) {
+            if (thuyTinhLightning != null) return thuyTinhLightning;
+        }
+
         int frameCount;
         
-        // Get frame count based on character
         if ("SonTinh".equals(characterName)) {
             frameCount = 27;  // 27 frames for SonTinh's LIGHTNING
         } else if ("ThuyTinh".equals(characterName)) {
             frameCount = 20;  // 20 frames for ThuyTinh's LIGHTNING
         } else {
             System.err.println("Unknown character for lightning animation: " + characterName);
-            return new BufferedImage[2][1]; // Return minimal array for unknown character
+            return new BufferedImage[2][1];
         }
         
         BufferedImage[][] animations = new BufferedImage[2][frameCount];
         
         try {
             for (int j = 0; j < frameCount; j++) {
-                // Load the lightning image
                 String path = String.format("/image/%s/LIGHTNING_%04d.png", characterName, j + 1);
                 InputStream is = LoadSave.class.getResourceAsStream(path);
                 
                 if (is == null) {
                     System.err.println("ERROR: Lightning file not found: " + path);
-                    continue; // Skip this frame rather than crashing
+                    continue;
                 }
                 
                 BufferedImage img = ImageIO.read(is);
-                
-                // Frame for right direction (original)
                 animations[0][j] = img;
-                
-                // Frame for left direction (flipped)
                 animations[1][j] = flipHorizontally(img);
                 
                 is.close();
+            }
+            
+            // Lưu vào cache
+            if ("SonTinh".equals(characterName)) {
+                sonTinhLightning = animations;
+            } else if ("ThuyTinh".equals(characterName)) {
+                thuyTinhLightning = animations;
             }
             
             System.out.println("Loaded lightning animations for " + characterName + " (" + frameCount + " frames)");
@@ -237,15 +263,20 @@ public class LoadSave {
 
     /**
      * Loads animation frames for ULTI summoned creatures (PHOENIX, SQUID) based on character name
-     * These creatures appear before the lightning strike in ultimate attack
      * @param characterName Name of the character ("SonTinh" or "ThuyTinh")
      * @return 2D array of animation frames [direction][frame]
      */
     public static BufferedImage[][] loadUltiCreatureAnimation(String characterName) {
+        // Kiểm tra cache trước
+        if ("SonTinh".equals(characterName)) {
+            if (sonTinhUltiCreature != null) return sonTinhUltiCreature;
+        } else if ("ThuyTinh".equals(characterName)) {
+            if (thuyTinhUltiCreature != null) return thuyTinhUltiCreature;
+        }
+
         String creatureName;
         int frameCount;
         
-        // Get creature name and frame count based on character
         if ("SonTinh".equals(characterName)) {
             creatureName = "PHOENIX";
             frameCount = 19;  // 19 frames for PHOENIX
@@ -254,31 +285,33 @@ public class LoadSave {
             frameCount = 20;  // 20 frames for SQUID
         } else {
             System.err.println("Unknown character for ulti creature: " + characterName);
-            return new BufferedImage[2][1]; // Return minimal array for unknown character
+            return new BufferedImage[2][1];
         }
         
         BufferedImage[][] animations = new BufferedImage[2][frameCount];
         
         try {
             for (int j = 0; j < frameCount; j++) {
-                // Load the creature image
                 String path = String.format("/image/%s/%s_%04d.png", characterName, creatureName, j + 1);
                 InputStream is = LoadSave.class.getResourceAsStream(path);
                 
                 if (is == null) {
                     System.err.println("ERROR: Ulti creature file not found: " + path);
-                    continue; // Skip this frame rather than crashing
+                    continue;
                 }
                 
                 BufferedImage img = ImageIO.read(is);
-                
-                // Frame for right direction (original)
                 animations[0][j] = img;
-                
-                // Frame for left direction (flipped)
                 animations[1][j] = flipHorizontally(img);
                 
                 is.close();
+            }
+            
+            // Lưu vào cache
+            if ("SonTinh".equals(characterName)) {
+                sonTinhUltiCreature = animations;
+            } else if ("ThuyTinh".equals(characterName)) {
+                thuyTinhUltiCreature = animations;
             }
             
             System.out.println("Loaded ulti creature animations for " + characterName + " (" + creatureName + ", " + frameCount + " frames)");
@@ -297,6 +330,8 @@ public class LoadSave {
      *         Row indices match EffectConstants (0=IMPACT1_RIGHT, 1=IMPACT1_LEFT, etc.)
      */
     public static BufferedImage[][] getEffectSprites() {
+        // Kiểm tra cache trước
+        if (effectSprites != null) return effectSprites;
         // Effect configuration: name, frame count
         String[][] effectConfig = {
             {"IMPACT1", "3"},      // Row 0-1: IMPACT1_RIGHT, IMPACT1_LEFT
@@ -347,6 +382,9 @@ public class LoadSave {
                 System.out.println("✓ Loaded effect: " + effectName + " into rows " + currentRow + "-" + (currentRow + 1));
                 currentRow += 2;
             }
+
+            // Lưu vào cache
+            effectSprites = effects;
         } catch (IOException e) {
             e.printStackTrace();
         }
