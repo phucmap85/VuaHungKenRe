@@ -2,6 +2,10 @@ package gamestates;
 
 import static utilz.Constants.GameConstants.*;
 import static utilz.Constants.PlayerConstants.*;
+import static utilz.LoadSave.getEffectSprites;
+import static utilz.LoadSave.loadLightningAnimation;
+import static utilz.LoadSave.loadSummonedEntityAnimation;
+import static utilz.LoadSave.loadUltiCreatureAnimation;
 
 import main.Game;
 import map.Map;
@@ -41,7 +45,13 @@ public class Playing extends State implements Statemethods {
         playerUI2 = new PlayerUI(1000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
-        
+        loadLightningAnimation("SonTinh");
+        loadLightningAnimation("ThuyTinh");
+        loadSummonedEntityAnimation("SonTinh");
+        loadSummonedEntityAnimation("ThuyTinh");
+        loadUltiCreatureAnimation("SonTinh");
+        loadUltiCreatureAnimation("ThuyTinh");
+        getEffectSprites();
         pauseOverlay = new PauseOverlay(this);
 	}
 

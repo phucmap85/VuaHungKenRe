@@ -602,4 +602,8 @@ public class Character extends Entity {
     public void setFalling(boolean falling){
         this.falling = falling;
     }
+
+    public String getName(){
+        return name;
+    }
 }

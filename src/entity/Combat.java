@@ -90,12 +90,15 @@ public class Combat {
             sonTinh.setCallUltiEntity(false);
             sonTinhUI.takeMana(100);
         }
-        if(ulti !=null && !thuyTinh.falling()) {
+        if(ulti !=null) {
             ulti.update(thuyTinh.getX(), thuyTinh.getY());
-            if(ulti.lightningAppeared()){
+            if(ulti.lightningAppeared() && !thuyTinh.falling()){
                 thuyTinh.setTakingHit(true); 
                 thuyTinhUI.takeDamage(1);
                 thuyTinh.setDirectionTakenHit(ulti.getDirection());
+                if(sonTinh.getName().equals("SonTinh")) {
+                    thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
+                }
             }
       
     

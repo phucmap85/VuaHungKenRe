@@ -16,7 +16,7 @@ public class UltiSkill extends Entity {
     private BufferedImage[][] monsterAnimations;
     private int framesCounterforLightning, framesCounterforMonster, 
     framesIndexforLightning, framesIndexforMonster = 5,
-    aniSpeedForMonster = 14, aniSpeedForLightning = 12, 
+    aniSpeedForMonster = 14, aniSpeedForLightning = 10, 
     maxFramesLightning, maxFramesMonster,
     delayForMonsterAppearing = 50, framesDelayForSquid = 12, framesDelayForPhoenix = 13;
     private int framesDelay;
