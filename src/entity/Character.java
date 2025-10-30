@@ -67,7 +67,7 @@ public class Character extends Entity {
         this.name = name;
         this.direction = direction;
         loadAnimations(name);
-        effectManager = new EffectManager();
+        effectManager = new EffectManager(6);
     }
 
     public void update() {
@@ -124,7 +124,7 @@ public class Character extends Entity {
     }
 
     public void updateDash(){
-        if(dash && !dashing && !inAir && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
+        if(dash && !dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
             dashing = true;
             dashCounter = 0;
             if(direction == RIGHT){

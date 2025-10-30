@@ -6,7 +6,7 @@ import static utilz.Constants.EffectConstants.*;
 import static utilz.LoadSave.getEffectSprites;
 public class Effect {
     private static BufferedImage[][] animations = getEffectSprites();
-    private int effectType, framesIndex, framesCounter, aniSpeed = 10;
+    private int effectType, framesIndex, framesCounter, aniSpeedforSmoke = 10, aniSpeedforSlash = 15;
     private float x, y;
     private boolean isActive;
     
@@ -22,7 +22,8 @@ public class Effect {
 }
     public void update(){
         framesCounter++;
-        if(framesCounter >= aniSpeed){
+        int currentSpeed = (effectType == SMOKE_RIGHT || effectType == SMOKE_LEFT) ? aniSpeedforSmoke : aniSpeedforSlash;
+        if(framesCounter >= currentSpeed){
             framesCounter = 0;
             framesIndex++;
             if(framesIndex >= getFramesAmount(effectType)){
@@ -34,7 +35,13 @@ public class Effect {
     
     public void draw(Graphics g){
     Graphics2D g2 = (Graphics2D) g;
-       if(isActive) g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 160,128 ,null);
+       if(isActive) {
+        if(effectType == SLASH_RIGHT || effectType == SLASH_LEFT) {
+            g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 87, 87, null);
+        }
+        else
+        g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 160,128 ,null);
+       }
     }
     public boolean isActive() {
         return isActive;

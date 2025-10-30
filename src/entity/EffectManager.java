@@ -3,12 +3,13 @@ package entity;
 public class EffectManager {
     private Effect[] effects;
     private int currentEffectIndex = 0;
-    private static final int MAX_EFFECTS = 10;  // Số lượng effect tối đa có thể chạy đồng thời
+    private int maxEffects;  // Số lượng effect tối đa có thể chạy đồng thời
 
-    public EffectManager() {
-        effects = new Effect[MAX_EFFECTS];
+    public EffectManager(int maxEffects) {
+        this.maxEffects = maxEffects;
+        effects = new Effect[maxEffects];
         // Khởi tạo mảng effects
-        for (int i = 0; i < MAX_EFFECTS; i++) {
+        for (int i = 0; i < maxEffects; i++) {
             effects[i] = new Effect();
         }
     }
@@ -18,11 +19,13 @@ public class EffectManager {
         if (!effects[currentEffectIndex].isActive()) {
             effects[currentEffectIndex].setRender(x, y, effectType);
         } else {
-            // Nếu effect hiện tại đang active, chuyển sang effect tiếp theo
-            currentEffectIndex = (currentEffectIndex + 1) % MAX_EFFECTS;
-            effects[currentEffectIndex].setRender(x, y, effectType);
+            if(!effects[(currentEffectIndex +1) % maxEffects].isActive()){
+                currentEffectIndex = (currentEffectIndex + 1) % maxEffects;
+                effects[currentEffectIndex].setRender(x, y, effectType);
+            }
+            }
         }
-    }
+    
 
     public void update() {
         // Update tất cả effects đang active

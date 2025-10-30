@@ -7,7 +7,9 @@ import static utilz.HelpMethods.Collision;
 
 import java.awt.Graphics;
 
-
+import static utilz.Constants.EffectConstants;
+import static utilz.Constants.EffectConstants.SLASH_LEFT;
+import static utilz.Constants.EffectConstants.SLASH_RIGHT;
 public class Combat {
     private Character sonTinh;
     private Character thuyTinh;
@@ -16,12 +18,14 @@ public class Combat {
     private SummonSkill[] hog;
     private UltiSkill ulti;
     private long TimeInVulnerable = 500;
+    private EffectManager effectManager;
     public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
         this.sonTinh = sonTinh;
         this.thuyTinh = thuyTinh;
         this.sonTinhUI = sonTinhUI;
         this.thuyTinhUI = thuyTinhUI;
         hog = new SummonSkill[5];
+        effectManager = new EffectManager(1);
     }
 
     public void update() {
@@ -55,6 +59,10 @@ public class Combat {
                             thuyTinh.setDefendDamageSignal(true);
                             thuyTinh.setHealthDefend(2);
                             thuyTinh.setDirectionTakenHit(hog[i].getDirection());
+                             if(thuyTinh.getDirection() == RIGHT) {
+                            effectManager.addEffect(thuyTinh.getX() + 50, thuyTinh.getY() - 30,SLASH_RIGHT);
+                        }
+                        else effectManager.addEffect(thuyTinh.getX(), thuyTinh.getY() - 30,SLASH_LEFT);
                         } else {
                             thuyTinh.setTakingHit(true);
                             thuyTinh.setHealthTakenPerCombo(2);
@@ -64,6 +72,7 @@ public class Combat {
                     }
                 }
             }
+            
         }
 
         if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
@@ -75,6 +84,10 @@ public class Combat {
                         thuyTinh.setDefendDamageSignal(true);
                         thuyTinh.setHealthDefend(1);
                         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
+                        if(thuyTinh.getDirection() == RIGHT) {
+                            effectManager.addEffect(thuyTinh.getX() + 50, thuyTinh.getY() - 30,SLASH_RIGHT);
+                        }
+                        else effectManager.addEffect(thuyTinh.getX(), thuyTinh.getY() - 30,SLASH_LEFT);
                     } else {
                         thuyTinh.setTakingHit(true);
                         thuyTinh.setHealthTakenPerCombo(1);
@@ -83,8 +96,9 @@ public class Combat {
                     }
                 }
             }
+            
         }
-        
+        effectManager.update();
         if(sonTinh.callUltiEntity() && ulti == null) {
             ulti = new UltiSkill(0,0,0,0,0,0, sonTinh.getCharacterName());
             sonTinh.setCallUltiEntity(false);
@@ -121,6 +135,9 @@ public class Combat {
         }
         if(ulti != null) {
             ulti.render(g);
+        }
+        if(effectManager != null) {
+            effectManager.draw(g);
         }
     }
 }

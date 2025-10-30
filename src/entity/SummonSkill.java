@@ -37,7 +37,7 @@ public class SummonSkill extends Entity {
             maxFrames = 11; 
         }
         else{
-            effectManager = new EffectManager();
+            effectManager = new EffectManager(10);
             effectManager.addEffect((direction == RIGHT) ? (x - 100) : (x + 110), y, (direction == RIGHT) ? SMOKE_RIGHT : SMOKE_LEFT);
         }
     }
