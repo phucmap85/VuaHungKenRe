@@ -130,7 +130,6 @@ public class Combat {
         for(int i = 0 ; i < 5 ; i++) {
             if (hog[i] != null) {
                 hog[i].render(g);
-                hog[i].drawHitBox(g);
             }
         }
         if(ulti != null) {

@@ -141,7 +141,9 @@ public class Constants {
         
         public static final int SMOKE_RIGHT = 12;
         public static final int SMOKE_LEFT = 13;
-
+        
+        public static final int LANDING_RIGHT = 14;
+        public static final int LANDING_LEFT = 15;
         public static int getFramesAmount(int effectType) {
             switch (effectType) {
                 case IMPACT1_LEFT:
@@ -164,6 +166,9 @@ public class Constants {
                     return 5;
                 case SMOKE_LEFT:
                 case SMOKE_RIGHT:
+                    return 9;
+                case LANDING_LEFT:
+                case LANDING_RIGHT:
                     return 9;
                 default:
                     return 0;

@@ -340,11 +340,12 @@ public class LoadSave {
             {"SHIELD", "2"},       // Row 6-7: SHIELD_RIGHT, SHIELD_LEFT
             {"SLASH", "4"},        // Row 8-9: SLASH_RIGHT, SLASH_LEFT
             {"SMEAR", "5"},        // Row 10-11: SMEAR_RIGHT, SMEAR_LEFT
-            {"SMOKE", "9"}         // Row 12-13: SMOKE_RIGHT, SMOKE_LEFT
+            {"SMOKE", "9"},        // Row 12-13: SMOKE_RIGHT, SMOKE_LEFT
+            {"LANDING", "9"}       // Row 14-15: LANDING_RIGHT, LANDING_LEFT
         };
         
         // Create array: [14 rows for all effect directions][max frames]
-        BufferedImage[][] effects = new BufferedImage[14][];
+        BufferedImage[][] effects = new BufferedImage[16][];
         
         try {
             int currentRow = 0;

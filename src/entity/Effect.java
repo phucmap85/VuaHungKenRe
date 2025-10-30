@@ -6,8 +6,10 @@ import static utilz.Constants.EffectConstants.*;
 import static utilz.LoadSave.getEffectSprites;
 public class Effect {
     private static BufferedImage[][] animations = getEffectSprites();
-    private int effectType, framesIndex, framesCounter, aniSpeedforSmoke = 10, aniSpeedforSlash = 15;
-    private float x, y;
+    private int effectType, framesIndex, framesCounter, 
+    aniSpeedforSmoke = 8, aniSpeedforSlash = 15, aniSpeedForLanding = 15,
+    currentSpeed;   
+    private float x, y; 
     private boolean isActive;
     
     public Effect(){
@@ -19,10 +21,19 @@ public class Effect {
         this.y = y;
         this.effectType = effectType;
         isActive = true;
+        
+        if(effectType == LANDING_RIGHT || effectType == LANDING_LEFT){
+            currentSpeed = aniSpeedForLanding;
+        }
+        else if (effectType == SLASH_RIGHT || effectType == SLASH_LEFT){
+            currentSpeed = aniSpeedforSlash;
+        }
+        else {
+            currentSpeed = aniSpeedforSmoke;
+        }
 }
     public void update(){
         framesCounter++;
-        int currentSpeed = (effectType == SMOKE_RIGHT || effectType == SMOKE_LEFT) ? aniSpeedforSmoke : aniSpeedforSlash;
         if(framesCounter >= currentSpeed){
             framesCounter = 0;
             framesIndex++;
@@ -38,6 +49,9 @@ public class Effect {
        if(isActive) {
         if(effectType == SLASH_RIGHT || effectType == SLASH_LEFT) {
             g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 87, 87, null);
+        }
+        else if(effectType == LANDING_RIGHT || effectType == LANDING_LEFT) {
+            g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 128, 128, null);
         }
         else
         g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 160,128 ,null);

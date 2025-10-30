@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.EffectConstants.LANDING_LEFT;
+import static utilz.Constants.EffectConstants.LANDING_RIGHT;
 import static utilz.Constants.EffectConstants.SMOKE_LEFT;
 import static utilz.Constants.EffectConstants.SMOKE_RIGHT;
 import static utilz.Constants.GameConstants.*;
@@ -67,7 +69,7 @@ public class Character extends Entity {
         this.name = name;
         this.direction = direction;
         loadAnimations(name);
-        effectManager = new EffectManager(6);
+        effectManager = new EffectManager(10);
     }
 
     public void update() {
@@ -83,6 +85,7 @@ public class Character extends Entity {
         updatePosition();
         setAnimations();
         updateAnimationTick();
+        effectManager.update();
     }
 
     public void updateFalling() {
@@ -164,7 +167,7 @@ public class Character extends Entity {
 
     public void updateAttackBox() {
         if (punching && punch) {
-            x_OffSetHitBox = (direction == RIGHT) ? 80 : 15f;
+            x_OffSetHitBox = (direction == RIGHT) ? 65f : 30f;
             updateHitBox();
         }
     }
@@ -285,6 +288,7 @@ public class Character extends Entity {
                 velocityY = 0;
                 inAir = false;
                 jumping = false;
+                effectManager.addEffect(x , y + 50, LANDING_RIGHT);
             } else {
                 y += velocityY;
             }
@@ -294,6 +298,7 @@ public class Character extends Entity {
                 velocityY = 0;
                 inAir = false;
                 jumping = false;
+                effectManager.addEffect(x , y + 50, LANDING_RIGHT);
             }
         }
 
@@ -399,14 +404,13 @@ public class Character extends Entity {
                 else a = 2;
 
                 g2.drawImage(animations[playerAction][framesIndex],(int) x, (int) y + a*framesIndex, 128, 128, null);
-                return;
             }
+            else g2.drawImage(animations[playerAction][framesIndex], (int) x, (int) y, 128, 128, null);
         }
         // Draw và update tất cả effects
+        else g2.drawImage(animations[playerAction][framesIndex], (int) x, (int) y, 128, 128, null);
         effectManager.draw(g);
-        effectManager.update();
-        g2.drawImage(animations[playerAction][framesIndex], (int) x, (int) y, 128, 128, null);
-        drawBoxes(g);
+        // drawBoxes(g);
     }
 
     public void loadAnimations(String name) {
