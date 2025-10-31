@@ -1,33 +1,39 @@
 package sound;
 
 public enum SoundEffect {
-    MENU(0),
-    PLAYING(1),
-    ENDING(2),
+    MENU(0, "/sound/audio/menu.wav"),
+    PLAYING(1, "/sound/audio/playing.wav"),
+    ENDING(2, "/sound/audio/ending.wav"),
 
-    SONTINHATTACK(3),
-    SONTINHSUMMON(4),
-    SONTINHULTI(5),
-    SONTINHBLOCK(6),
-    SONTINHDASH(7),
-    SONTINHJUMP(8),
-    SONTINHFALL(9),
+    SONTINHATTACK(3, "/sound/audio/sonTinh_attack.wav"),
+    SONTINHSUMMON(4, "/sound/audio/sonTinh_summon.wav"),
+    SONTINHULTI(5, "/sound/audio/sonTinh_ulti.wav"),
+    SONTINHBLOCK(6, "/sound/audio/sonTinh_block.wav"),
+    SONTINHDASH(7, "/sound/audio/sonTinh_dash.wav"),
+    SONTINHJUMP(8, "/sound/audio/sonTinh_jump.wav"),
+    SONTINHFALL(9, "/sound/audio/sonTinh_fall.wav"),
 
-    THUYTINHATTACK(10),
-    THUYTINHSUMMON(11),
-    THUYTINHULTI(12),
-    THUYTINHBLOCK(13),
-    THUYTINHDASH(14),
-    THUYTINHJUMP(15),
-    THUYTINHFALL(16);
+    THUYTINHATTACK(10, "/sound/audio/thuyTinh_attack.wav"),
+    THUYTINHSUMMON(11, "/sound/audio/thuyTinh_summon.wav"),
+    THUYTINHULTI(12, "/sound/audio/thuyTinh_ulti.wav"),
+    THUYTINHBLOCK(13, "/sound/audio/thuyTinh_block.wav"),
+    THUYTINHDASH(14, "/sound/audio/thuyTinh_dash.wav"),
+    THUYTINHJUMP(15, "/sound/audio/thuyTinh_jump.wav"),
+    THUYTINHFALL(16, "/sound/audio/thuyTinh_fall.wav");
 
     private final int index;
+    private final String path;
 
-    SoundEffect(int idx) {
+    SoundEffect(int idx, String path) {
         this.index = idx;
+        this.path = path;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public String getPath() {
+        return path;
     }
 }
