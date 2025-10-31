@@ -303,11 +303,13 @@ public class Character extends Entity {
                 break;
             }
         }
+        effectManager.addEffect(x , y + 50, LANDING_RIGHT);
     } else if (willHitGround(hurtBox, velocityY, groundY)) {
         y = groundY - hurtBox.height - y_OffSetHurtBox;
         velocityY = 0;
         inAir = false;
         jumping = false;
+        effectManager.addEffect(x , y + 50, LANDING_RIGHT);
     } else {
         y += velocityY;
     }
