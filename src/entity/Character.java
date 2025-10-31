@@ -33,7 +33,7 @@ public class Character extends Entity {
     private BufferedImage[][] animations;
     private int framesCounter, framesIndex;
     private int DelayForGettingUp = 100, DelayForTakingHit = 50;
-    private int normalAniSpeed = 20, punchAniSpeed = 22, summonAniSpeed = 20;
+    private int normalAniSpeed = 18, punchAniSpeed = 18, summonAniSpeed = 15;
 
     // Physics
     private float speed = 2.0f, punchSpeed = 0.2f;
