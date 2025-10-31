@@ -15,6 +15,7 @@ public class SummonSkill extends Entity {
     private int direction; // 0: right, 1: left
     private boolean isActive = false;
     private boolean collision = false;
+    private boolean doneTakeHealth = false;
     private BufferedImage[][] image;
     private String characterName;
     private int framesCounter, aniSpeed = 20, framesIndex, maxFrames, startFrames = 0;
@@ -122,6 +123,12 @@ public class SummonSkill extends Entity {
     }
     public boolean getCollision(){
         return collision;
+    }
+    public boolean getdoneTakeHealth(){
+        return doneTakeHealth;
+    }
+    public void setDoneTakeHealth(boolean val){
+        this.doneTakeHealth = val;
     }
 
 }

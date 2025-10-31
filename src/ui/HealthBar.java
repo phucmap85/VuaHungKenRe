@@ -58,6 +58,16 @@ public class HealthBar {
         g2.setColor(Color.WHITE);
         g2.setStroke(new BasicStroke(2f));
         g2.drawRoundRect(x, y, barWidth, barHeight, 15, 15);
+
+        // Hiển thị số máu hiện tại
+        String healthText = health + "/" + maxHealth;
+        g2.setFont(new Font("Arial", Font.BOLD, 16));
+        g2.setColor(Color.WHITE);
+        FontMetrics metrics = g2.getFontMetrics();
+        int textWidth = metrics.stringWidth(healthText);
+        int textX = leftSide ? x + (barWidth - textWidth) / 2 : x + (barWidth - textWidth) / 2;
+        int textY = y + barHeight / 2 + metrics.getAscent() / 2;
+        g2.drawString(healthText, textX, textY);
     }
 
     private void drawHealthGradient(Graphics2D g2, int x, int y, int width, float percent) {

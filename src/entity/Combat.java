@@ -66,7 +66,10 @@ public class Combat {
                         } else {
                             thuyTinh.setTakingHit(true);
                             thuyTinh.setHealthTakenPerCombo(2);
-                            thuyTinhUI.takeDamage(2);
+                            if(!hog[i].getdoneTakeHealth()) {
+                                thuyTinhUI.takeDamage(8000);
+                                hog[i].setDoneTakeHealth(true);
+                            }
                             thuyTinh.setDirectionTakenHit(hog[i].getDirection());
                         }
                     }
@@ -91,7 +94,7 @@ public class Combat {
                     } else {
                         thuyTinh.setTakingHit(true);
                         thuyTinh.setHealthTakenPerCombo(1);
-                        thuyTinhUI.takeDamage(1);
+                        thuyTinhUI.takeDamage(150);
                         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                     }
                 }
@@ -108,7 +111,7 @@ public class Combat {
             ulti.update(thuyTinh.getX(), thuyTinh.getY());
             if(ulti.lightningAppeared() && !thuyTinh.falling()){
                 thuyTinh.setTakingHit(true); 
-                thuyTinhUI.takeDamage(1);
+                thuyTinhUI.takeDamage(sonTinh.getCharacterName().equals("SonTinh") ? 199 : 269);
                 thuyTinh.setDirectionTakenHit(ulti.getDirection());
                 if(sonTinh.getName().equals("SonTinh")) {
                     thuyTinh.setDirectionTakenHit(sonTinh.getDirection());

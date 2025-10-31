@@ -3,6 +3,10 @@ package gamestates;
 import static utilz.Constants.GameConstants.*;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.UI.KeyButton.*;
+import static utilz.LoadSave.getEffectSprites;
+import static utilz.LoadSave.loadLightningAnimation;
+import static utilz.LoadSave.loadSummonedEntityAnimation;
+import static utilz.LoadSave.loadUltiCreatureAnimation;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -35,6 +39,13 @@ public class Manual extends State implements Statemethods{
     }
     
     private void initClasses() {
+        loadLightningAnimation("SonTinh");
+        loadLightningAnimation("ThuyTinh");
+        loadSummonedEntityAnimation("SonTinh");
+        loadSummonedEntityAnimation("ThuyTinh");
+        loadUltiCreatureAnimation("SonTinh");
+        loadUltiCreatureAnimation("ThuyTinh");
+        getEffectSprites();
 		map = new Map(game, 0);
 		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
