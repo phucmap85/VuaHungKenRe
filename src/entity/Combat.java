@@ -108,8 +108,8 @@ public class Combat {
                         thuyTinh.setTakingHit(true);
                         thuyTinh.setHealthTakenPerCombo(1);
                         thuyTinhUI.takeDamage(150);
-                        if(thuyTinh.getDirection() == RIGHT) effectManager.addEffect(thuyTinh.getX() + 65, thuyTinh.getY() - 95, IMPACT1_RIGHT);
-                        else effectManager.addEffect(thuyTinh.getX() - 30, thuyTinh.getY() - 95, IMPACT1_LEFT);
+                        if(thuyTinh.getDirection() == RIGHT) effectManager.addEffect(thuyTinh.getX() + 50, thuyTinh.getY() - 85, IMPACT1_RIGHT);
+                        else effectManager.addEffect(thuyTinh.getX() - 20, thuyTinh.getY() - 85, IMPACT1_LEFT);
                         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                     }
                 }
