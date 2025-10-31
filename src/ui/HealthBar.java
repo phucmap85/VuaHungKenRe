@@ -47,10 +47,13 @@ public class HealthBar {
 
         g2.setColor(new Color(180, 0, 0));
         int damageWidth = animatedWidth - healthWidth;
-        if (leftSide) {
-            g2.fillRoundRect(x + healthWidth, y, damageWidth, barHeight, 15, 15);
-        } else {
-            g2.fillRoundRect(x + (barWidth - animatedWidth), y, damageWidth, barHeight, 15, 15);
+        if (damageWidth > 0) {
+            g2.setColor(new Color(180, 0, 0));
+            if (leftSide) {
+                g2.fillRoundRect(x + healthWidth, y, damageWidth, barHeight, 15, 15);
+            } else {
+                g2.fillRoundRect(x + (barWidth - animatedWidth), y, damageWidth, barHeight, 15, 15);
+            }
         }
 
         drawHealthGradient(g2, x, y, healthWidth, healthPercent);

@@ -3,6 +3,7 @@ package entity;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import sound.Sound;
 
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
@@ -19,6 +20,7 @@ public class Character extends Entity {
     
     // Get from key input
     private boolean left, right, jump, defend, punch, summon, ulti, dash;
+    private Sound sound;
 
     // States of character
     private boolean moving, defending, jumping, punching, summoning, dashing,

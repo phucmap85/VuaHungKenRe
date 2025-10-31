@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 
 import entity.Combat;
 import main.Game;
+import sound.Sound;
 import map.Map;
 import ui.KeyButton;
 import ui.PlayerUI;
@@ -31,6 +32,7 @@ public class Manual extends State implements Statemethods{
     private PlayerUI playerUI1, playerUI2;
     private Combat combat1;
     private Combat combat2;
+    private Sound sfx;
 
     public Manual(Game game) {
         super(game);
@@ -51,8 +53,10 @@ public class Manual extends State implements Statemethods{
         sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
         playerUI1 = new PlayerUI(1000, true);
         playerUI2 = new PlayerUI(1000, false);
-        combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
-        combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
+
+    this.sfx = new Sound();
+    combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1, this.sfx);
+    combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2, this.sfx);
         
 	}
 
@@ -223,6 +227,7 @@ public class Manual extends State implements Statemethods{
                     break;
                 case KeyEvent.VK_NUMPAD5:
                     keyButtons[14].setKeyPressed(true);
+
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;

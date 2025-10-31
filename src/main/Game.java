@@ -9,12 +9,13 @@ import gamestates.Manual;
 import gamestates.MatchSetup;
 import gamestates.Menu;
 import gamestates.Playing;
+import sound.Sound;
 
 public class Game implements Runnable {
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Thread gameThread;
-
+	private Sound sound = new Sound();
 	private Playing playing;
 	private Menu menu;
 	private Manual manual;
@@ -34,6 +35,7 @@ public class Game implements Runnable {
 		playing = new Playing(this);
 		manual = new Manual(this);
 		matchSetup = new MatchSetup(this);
+		playMusic(0);
 	}
 
 	private void startGameLoop() {
@@ -123,6 +125,19 @@ public class Game implements Runnable {
 			}
 		}
 
+	}
+
+	public void playMusic(int i) {
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
+	public void stopMusic() {
+		sound.stop();
+	}
+	public void playSE(int i) {
+		sound.setFile(i);
+		sound.play();
 	}
 
 	public void windowFocusLost() {
