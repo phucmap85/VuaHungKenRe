@@ -32,6 +32,9 @@ public class KeyHandler implements KeyListener {
             case MANUAL:
                 gamePanel.getGame().getManual().keyPressed(e);
                 break;
+            case MATCH_SETUP:
+                gamePanel.getGame().getMatchSetup().keyPressed(e);
+                break;
             default:
                 break;
         }
@@ -48,6 +51,9 @@ public class KeyHandler implements KeyListener {
                 break;
             case MANUAL:
                 gamePanel.getGame().getManual().keyReleased(e);
+                break;
+            case MATCH_SETUP:
+                gamePanel.getGame().getMatchSetup().keyReleased(e);
                 break;
             default:
                 break;

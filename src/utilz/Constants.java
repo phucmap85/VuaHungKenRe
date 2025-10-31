@@ -114,9 +114,9 @@ public class Constants {
         public final static int GAME_WIDTH = 1097;
 	    public final static int GAME_HEIGHT = 768;
 
-        // đây là thông số của cái bậc và thông số map
+        /*// đây là thông số của cái bậc và thông số map
         public final static float platFormX1 = 320f, platFormX2 = 755f, platFormY = 470f;
-        public final static float groundY = 640f;
+        public final static float groundY = 640f;*/
     }
 
     public static class EffectConstants {

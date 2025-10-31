@@ -6,6 +6,7 @@ import static utilz.Constants.GameConstants.*;
 
 import gamestates.Gamestate;
 import gamestates.Manual;
+import gamestates.MatchSetup;
 import gamestates.Menu;
 import gamestates.Playing;
 
@@ -17,6 +18,7 @@ public class Game implements Runnable {
 	private Playing playing;
 	private Menu menu;
 	private Manual manual;
+	private MatchSetup matchSetup;
 	public Game() {
 		initClasses();
 
@@ -31,6 +33,7 @@ public class Game implements Runnable {
 		menu = new Menu(this);
 		playing = new Playing(this);
 		manual = new Manual(this);
+		matchSetup = new MatchSetup(this);
 	}
 
 	private void startGameLoop() {
@@ -48,6 +51,9 @@ public class Game implements Runnable {
 				break;
 			case MANUAL:
 				manual.update();
+				break;
+			case MATCH_SETUP:
+				matchSetup.update();
 				break;
 			case OPTIONS:
 			case QUIT:
@@ -67,6 +73,9 @@ public class Game implements Runnable {
 				break;
 			case MANUAL:
 				manual.draw(g);
+				break;
+			case MATCH_SETUP:
+				matchSetup.draw(g);	
 				break;
 			default:
 				break;
@@ -132,4 +141,7 @@ public class Game implements Runnable {
 	public Manual getManual(){
 		return manual;
 	}
+	public MatchSetup getMatchSetup() {
+        return matchSetup;
+    }
 }

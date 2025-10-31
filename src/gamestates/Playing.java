@@ -31,6 +31,7 @@ public class Playing extends State implements Statemethods {
     private PlayerUI playerUI1, playerUI2;
     private Combat combat1;
     private Combat combat2;
+    private int selectedMapIndex;
 
     public Playing(Game game) {
         super(game);
@@ -38,9 +39,9 @@ public class Playing extends State implements Statemethods {
     }
     
     private void initClasses() {
-		map = new Map(game);
-		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
-        sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
+		map = new Map(game, selectedMapIndex);
+		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
+        sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
         playerUI1 = new PlayerUI(1000, true);
         playerUI2 = new PlayerUI(1000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
@@ -55,6 +56,29 @@ public class Playing extends State implements Statemethods {
         pauseOverlay = new PauseOverlay(this);
 	}
 
+    public void setMatchSettings(int mapID) {
+        this.selectedMapIndex = mapID;
+        cleanupOldInstances();
+        initClasses(); 
+        /* init lai vi playing van dang o default map */
+    }
+
+    private void cleanupOldInstances() {
+    try {
+        map = null;
+        thuyTinh = null;
+        sonTinh = null;
+        playerUI1 = null;
+        playerUI2 = null;
+        combat1 = null;
+        combat2 = null;
+        pauseOverlay = null;
+        System.gc(); 
+        System.out.println("[DEBUG] Old instances cleaned up successfully.");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
     public void windowFocusLost() {
 		sonTinh.resetAllBools();
         thuyTinh.resetAllBools();

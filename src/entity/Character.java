@@ -52,7 +52,7 @@ public class Character extends Entity {
 
     // Update
     private int updateCounter = 0, updateSpeed = 5;
-
+    private map.Map map;
     private int mana;
 
     private int dashCounter = 0, maxDashCount = 50;
@@ -63,12 +63,13 @@ public class Character extends Entity {
     public Character(float x, float y,
                      float x_OffSetHitBox, float y_OffSetHitBox, float widthHitBox, float heightHitBox,
                      float x_OffSetHurtBox, float y_OffSetHurtBox, float widthHurtBox, float heightHurtBox,
-                     String name, int direction) {
+                     String name, int direction, map.Map map) {
         super(x, y, x_OffSetHitBox, y_OffSetHitBox, widthHitBox, heightHitBox,
               x_OffSetHurtBox, y_OffSetHurtBox, widthHurtBox, heightHurtBox);
         this.name = name;
         this.direction = direction;
         loadAnimations(name);
+        this.map = map;
         effectManager = new EffectManager(10);
     }
 
@@ -271,36 +272,46 @@ public class Character extends Entity {
 
         updateBoxes();
 
-        // Handle vertical movement and jumping
-        if ((jumping || isInAir(hurtBox)) && !inAir) {
-            if (jump && !takingHit && !falling) {
+       // Handle vertical movement and jumping
+        float groundY = map.getGroundY();
+        var platforms = map.getPlatforms();
+
+        if ((jumping || isInAir(hurtBox, groundY, platforms)) && !inAir) {
+        if (jump && !takingHit && !falling) {
                 velocityY = jumpSpeed;
             }
             inAir = true;
         }
 
         if (inAir) {
-            if(falling) velocityY += gravityFalling;
-            else velocityY += gravity;
+            if (falling)
+                velocityY += gravityFalling;
+            else
+                velocityY += gravity;
 
-            if (willHitPlatForm(hurtBox, velocityY)) {
-                y = platFormY - hurtBox.height - y_OffSetHurtBox;
+    if (willHitPlatform(hurtBox, velocityY, platforms)) {
+        // Xác định platform mà player sắp chạm
+        for (var p : platforms) {
+            boolean withinX = (hurtBox.x + hurtBox.width >= p.x1) && (hurtBox.x <= p.x2);
+            boolean above = (hurtBox.y + hurtBox.height <= p.y);
+            boolean willCross = (hurtBox.y + hurtBox.height + velocityY >= p.y);
+            if (withinX && above && willCross) {
+                y = p.y - hurtBox.height - y_OffSetHurtBox;
                 velocityY = 0;
                 inAir = false;
                 jumping = false;
-                effectManager.addEffect(x , y + 50, LANDING_RIGHT);
-            } else {
-                y += velocityY;
-            }
-
-            if (willHitGround(hurtBox, velocityY)) {
-                y = groundY - hurtBox.height - y_OffSetHurtBox;
-                velocityY = 0;
-                inAir = false;
-                jumping = false;
-                effectManager.addEffect(x , y + 50, LANDING_RIGHT);
+                break;
             }
         }
+    } else if (willHitGround(hurtBox, velocityY, groundY)) {
+        y = groundY - hurtBox.height - y_OffSetHurtBox;
+        velocityY = 0;
+        inAir = false;
+        jumping = false;
+    } else {
+        y += velocityY;
+    }
+}
 
         updateBoxes();
     }
