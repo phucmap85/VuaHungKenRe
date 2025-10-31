@@ -7,14 +7,11 @@ import static utilz.LoadSave.getEffectSprites;
 public class Effect {
     private static BufferedImage[][] animations = getEffectSprites();
     private int effectType, framesIndex, framesCounter, 
-    aniSpeedforSmoke = 8, aniSpeedforSlash = 15, aniSpeedForLanding = 15,
+    aniSpeedforSmoke = 8, aniSpeedforSlash = 15, aniSpeedForLanding = 15, aniSpeedforPunching = 20,
     currentSpeed;   
     private float x, y; 
     private boolean isActive;
     
-    public Effect(){
-        
-    }
 
     public void setRender(float x, float y, int effectType){
         this.x = x;
@@ -28,10 +25,13 @@ public class Effect {
         else if (effectType == SLASH_RIGHT || effectType == SLASH_LEFT){
             currentSpeed = aniSpeedforSlash;
         }
-        else {
-            currentSpeed = aniSpeedforSmoke;
+        else if(effectType == IMPACT1_RIGHT || effectType == IMPACT1_LEFT){
+            currentSpeed = aniSpeedforPunching;
+            
         }
-}
+        else currentSpeed = aniSpeedforSmoke;
+    }
+
     public void update(){
         framesCounter++;
         if(framesCounter >= currentSpeed){
@@ -52,6 +52,9 @@ public class Effect {
         }
         else if(effectType == LANDING_RIGHT || effectType == LANDING_LEFT) {
             g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 128, 128, null);
+        }
+        else if(effectType == IMPACT1_RIGHT || effectType == IMPACT1_LEFT) {
+            g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 96, 180, null);
         }
         else
         g2.drawImage(animations[effectType][framesIndex], (int)x, (int)y, 160,128 ,null);

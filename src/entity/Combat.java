@@ -10,6 +10,8 @@ import static utilz.HelpMethods.Collision;
 import java.awt.Graphics;
 
 import static utilz.Constants.EffectConstants;
+import static utilz.Constants.EffectConstants.IMPACT1_LEFT;
+import static utilz.Constants.EffectConstants.IMPACT1_RIGHT;
 import static utilz.Constants.EffectConstants.SLASH_LEFT;
 import static utilz.Constants.EffectConstants.SLASH_RIGHT;
 public class Combat {
@@ -29,7 +31,8 @@ public class Combat {
         this.thuyTinhUI = thuyTinhUI;
         this.sfx = sfx;
         hog = new SummonSkill[5];
-        effectManager = new EffectManager(1);
+        effectManager = new EffectManager(3);
+
     }
 
     public void update() {
@@ -105,6 +108,8 @@ public class Combat {
                         thuyTinh.setTakingHit(true);
                         thuyTinh.setHealthTakenPerCombo(1);
                         thuyTinhUI.takeDamage(150);
+                        if(thuyTinh.getDirection() == RIGHT) effectManager.addEffect(thuyTinh.getX() + 65, thuyTinh.getY() - 95, IMPACT1_RIGHT);
+                        else effectManager.addEffect(thuyTinh.getX() - 30, thuyTinh.getY() - 95, IMPACT1_LEFT);
                         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                     }
                 }
@@ -157,5 +162,6 @@ public class Combat {
         if(effectManager != null) {
             effectManager.draw(g);
         }
+      
     }
 }
