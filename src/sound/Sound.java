@@ -7,16 +7,16 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
-import utilz.SoundConstants;
-import sound.SoundEffect;
 
 public class Sound {
     private Clip currentClip;
     private final Map<Integer, Clip[]> soundCache;
     private static final int CACHE_SIZE = 3; // Number of clips to cache for each sound
+    private final Map<Integer, SoundEffect> indexToEffect = new HashMap<>();
 
     public Sound() {
         soundCache = new HashMap<>();
+        buildIndexMap();
         preloadSounds();
     }
 
@@ -25,9 +25,10 @@ public class Sound {
      */
     private void preloadSounds() {
         System.out.println("Preloading sounds...");
-        for (int i = 0; i < SoundConstants.TOTAL_SOUNDS; i++) {
-            if (!soundCache.containsKey(i)) {
-                loadSound(i);
+        for (SoundEffect se : SoundEffect.values()) {
+            int idx = se.getIndex();
+            if (!soundCache.containsKey(idx)) {
+                loadSound(se);
             }
         }
         System.out.println("Sound preloading complete!");
@@ -36,14 +37,11 @@ public class Sound {
     /**
      * Loads multiple instances of a sound into the cache
      */
-    private void loadSound(int soundIndex) {
-        if (!SoundConstants.isValidSoundIndex(soundIndex)) {
-            System.err.println("Invalid sound index: " + soundIndex);
-            return;
-        }
+    private void loadSound(SoundEffect se) {
+        if (se == null) return;
 
         try {
-            String path = SoundConstants.getPathForSound(soundIndex);
+            String path = se.getPath();
             URL soundURL = getClass().getResource(path);
             if (soundURL == null) {
                 System.err.println("Could not find sound file: " + path);
@@ -65,10 +63,10 @@ public class Sound {
                 
                 clips[i] = clip;
             }
-            soundCache.put(soundIndex, clips);
+            soundCache.put(se.getIndex(), clips);
             
         } catch (Exception e) {
-            System.err.println("Error loading sound " + soundIndex + ": " + e.getMessage());
+            System.err.println("Error loading sound " + (se != null ? se.getIndex() : "?") + ": " + e.getMessage());
         }
     }
 
@@ -93,7 +91,7 @@ public class Sound {
     }
 
     public void setFile(int i) {
-        if (!SoundConstants.isValidSoundIndex(i)) {
+        if (!indexToEffect.containsKey(i)) {
             System.err.println("Invalid sound index: " + i);
             return;
         }
@@ -119,6 +117,12 @@ public class Sound {
         if (se == null) return;
         setFile(se);
         play();
+    }
+
+    private void buildIndexMap() {
+        for (SoundEffect se : SoundEffect.values()) {
+            indexToEffect.put(se.getIndex(), se);
+        }
     }
 
     public void play() {
