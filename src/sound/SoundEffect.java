@@ -5,7 +5,7 @@ public enum SoundEffect {
     PLAYING(1, "/sound/audio/playing.wav"),
     ENDING(2, "/sound/audio/ending.wav"),
 
-    SONTINHATTACK(3, "/sound/audio/sonTinh_attack.wav"),
+    SONTINHPUNCH(3, "/sound/audio/sonTinh_punch.wav"),
     SONTINHSUMMON(4, "/sound/audio/sonTinh_summon.wav"),
     SONTINHULTI(5, "/sound/audio/sonTinh_ulti.wav"),
     SONTINHBLOCK(6, "/sound/audio/sonTinh_block.wav"),
@@ -13,7 +13,7 @@ public enum SoundEffect {
     SONTINHJUMP(8, "/sound/audio/sonTinh_jump.wav"),
     SONTINHFALL(9, "/sound/audio/sonTinh_fall.wav"),
 
-    THUYTINHATTACK(10, "/sound/audio/thuyTinh_attack.wav"),
+    THUYTINHPUNCH(10, "/sound/audio/thuyTinh_punch.wav"),
     THUYTINHSUMMON(11, "/sound/audio/thuyTinh_summon.wav"),
     THUYTINHULTI(12, "/sound/audio/thuyTinh_ulti.wav"),
     THUYTINHBLOCK(13, "/sound/audio/thuyTinh_block.wav"),
