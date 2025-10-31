@@ -8,7 +8,8 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 public class LoadSave {
-    public static String BattleMap = "map.png";
+    public static String BattleMap0 = "map_0001.png";
+    public static String BattleMap1 = "map_0002.png";
     public static String MenuButton = "MainMenu/menu_button_atlas.png";
     public static String MenuBackground = "MainMenu/menu_background.png";
     public static String KeyButton = "KeyButton/keys.png";
@@ -16,7 +17,9 @@ public class LoadSave {
     public static String SoundButton = "PauseMenu/sound_button.png";
     public static String UrmButton = "PauseMenu/urm_button.png";
     public static String VolumeButton = "PauseMenu/volume_button.png";
-
+    public static String MatchSetupBackground = "MatchSetup/MatchSetupBackground.png";
+    public static String MatchSetupTitle = "MatchSetup/mapselection.png";
+    public static String NextButton = "MatchSetup/nextbutton.png";
     // Static cache cho animations
     private static BufferedImage[][] sonTinhSummonedEntity = null;
     private static BufferedImage[][] thuyTinhSummonedEntity = null;

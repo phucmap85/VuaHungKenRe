@@ -35,9 +35,9 @@ public class Manual extends State implements Statemethods{
     }
     
     private void initClasses() {
-		map = new Map(game);
-		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT);
-        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT);
+		map = new Map(game, 0);
+		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
+        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
         playerUI1 = new PlayerUI(1000, true);
         playerUI2 = new PlayerUI(1000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
@@ -75,6 +75,7 @@ public class Manual extends State implements Statemethods{
 
         keyButtons[18] = new KeyButton(K_XPOS, K_YPOS - K_OFFSET * 3, 0, 21, 41, "KeyButton/esc.png"); // "ESC"
     }
+    
     @Override
     public void update() {
         sonTinh.update();

@@ -1,60 +1,69 @@
 package utilz;
 import static utilz.Constants.GameConstants.*;
+import java.util.List;
+
+import map.Platform;
 
 import java.awt.geom.Rectangle2D;
 
 public class HelpMethods {
-    public static boolean isInAir(Rectangle2D.Float box) {
-        float boxBottom = box.y + box.height;  // Cạnh dưới của box
-        float boxRight = box.x + box.width;    // Cạnh phải của box
-        float boxLeft = box.x;                     // Cạnh trái của box
-        
-        // Player đang ở trên mặt đất và không ở trên platform
-        if (boxBottom < groundY && boxBottom != platFormY) {
-            return true;
-        }
-        
-        // Player đang ở độ cao của platform nhưng nằm ngoài vùng X của platform
-        boolean atPlatformHeight = (boxBottom == platFormY);
-        boolean outsidePlatformRange = (boxRight < platFormX1) || (boxLeft > platFormX2);
-        
-        if (atPlatformHeight && outsidePlatformRange) {
-            return true;
-        }
-        
+    public static boolean isInAir(Rectangle2D.Float box, float groundY, List<Platform> platforms) {
+    float boxBottom = box.y + box.height;
+    float boxLeft = box.x;
+    float boxRight = box.x + box.width;
+
+    //Nếu đang đứng trên mặt đất → không ở trên không
+    if (boxBottom >= groundY) 
         return false;
+
+    //Kiểm tra nếu đang đứng trên bất kỳ platform nào
+    for (Platform p : platforms) {
+        boolean withinX = (boxRight >= p.x1) && (boxLeft <= p.x2);
+        boolean atPlatformHeight = Math.abs(boxBottom - p.y) <= 1f;
+
+        // Nếu player đang đúng độ cao platform và trong phạm vi X của nó
+        if (atPlatformHeight && withinX) {
+            return false; // đứng trên platform
+        }
     }
+
+    
+    for (Platform p : platforms) {
+        boolean atPlatformHeight = Math.abs(boxBottom - p.y) <= 1f;
+        boolean outsidePlatformRange = (boxRight < p.x1) || (boxLeft > p.x2);
+
+        if (atPlatformHeight && outsidePlatformRange) {
+            return true; 
+        }
+    }
+
+    return true;
+}
     
 
-    public static boolean willHitPlatForm(Rectangle2D.Float box, float speedY) {
-        float boxRight = box.x + box.width;    // Cạnh phải của box
-        float boxLeft = box.x;                     // Cạnh trái của box
-        float boxBottom = box.y + box.height;  // Cạnh dưới của box
-        
-        // Kiểm tra player có trong phạm vi X của platform không
-        boolean inPlatformXRange = (boxRight >= platFormX1) && (boxLeft <= platFormX2);
-        
-        if (inPlatformXRange) {
-            // Kiểm tra player đang ở trên platform và sắp chạm vào nó trong frame tiếp theo
-            boolean abovePlatform = (boxBottom <= platFormY);
-            boolean willHitPlatform = (boxBottom + speedY > platFormY);
-            
-            if (abovePlatform && willHitPlatform) return true;
+    
+    public static boolean willHitPlatform(Rectangle2D.Float box, float speedY, List<Platform> platforms) {
+        float boxBottom = box.y + box.height;
+        float nextBottom = boxBottom + speedY;
+        float boxLeft = box.x;
+        float boxRight = box.x + box.width;
+
+        for (Platform p : platforms) {
+            boolean withinX = (boxRight >= p.x1) && (boxLeft <= p.x2);
+            boolean movingDown = (speedY > 0);
+            boolean abovePlatform = (boxBottom <= p.y);
+            boolean willCross = (nextBottom >= p.y);
+            if (withinX && movingDown && abovePlatform && willCross)
+                return true;
         }
-        
+
         return false;
     }
-
-    public static boolean willHitGround(Rectangle2D.Float box, float speedY) {
-        float boxBottom = box.y + box.height;  // Cạnh dưới của box
-        
-        // Kiểm tra player đang ở trên mặt đất và sắp chạm vào nó trong frame tiếp theo
+    public static boolean willHitGround(Rectangle2D.Float box, float speedY, float groundY) {
+        float boxBottom = box.y + box.height;
         boolean aboveGround = (boxBottom <= groundY);
-        boolean willHitGround = (boxBottom + speedY > groundY);
-        
-        if (aboveGround && willHitGround) return true;
-        
-        return false;
+        boolean willHit = (boxBottom + speedY > groundY);
+        return aboveGround && willHit;
     }
 
     public static boolean canMoveHere(Rectangle2D.Float box, float speedX) {
@@ -65,6 +74,7 @@ public class HelpMethods {
         }
         return true;
     }
+
     
     public static boolean Collision(Rectangle2D.Float box1, Rectangle2D.Float box2) {
         return box1.intersects(box2);

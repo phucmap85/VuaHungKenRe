@@ -25,7 +25,8 @@ public class GamePanel extends JPanel {
 		mouseHandler = new MouseHandler(this);
 		addMouseListener(mouseHandler);
 		addMouseMotionListener(mouseHandler);
-
+		
+		
 		setFocusable(true);
         requestFocusInWindow();
 	}
