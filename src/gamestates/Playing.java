@@ -2,10 +2,7 @@ package gamestates;
 
 import static utilz.Constants.GameConstants.*;
 import static utilz.Constants.PlayerConstants.*;
-import static utilz.LoadSave.getEffectSprites;
-import static utilz.LoadSave.loadLightningAnimation;
-import static utilz.LoadSave.loadSummonedEntityAnimation;
-import static utilz.LoadSave.loadUltiCreatureAnimation;
+import static utilz.LoadSave.loadAllAnimations;
 
 import main.Game;
 import map.Map;
@@ -39,6 +36,7 @@ public class Playing extends State implements Statemethods {
     }
 
     void initClasses() {
+        loadAllAnimations();
 		map = new Map(game, selectedMapIndex);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
@@ -46,13 +44,6 @@ public class Playing extends State implements Statemethods {
         playerUI2 = new PlayerUI(200000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
-        loadLightningAnimation("SonTinh");
-        loadLightningAnimation("ThuyTinh");
-        loadSummonedEntityAnimation("SonTinh");
-        loadSummonedEntityAnimation("ThuyTinh");
-        loadUltiCreatureAnimation("SonTinh");
-        loadUltiCreatureAnimation("ThuyTinh");
-        getEffectSprites();
         pauseOverlay = new PauseOverlay(this);
 	}
 
