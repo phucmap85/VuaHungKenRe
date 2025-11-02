@@ -77,5 +77,6 @@ public class ManaBar {
         mana = Math.max(0, mana - amount);
     }
 
+    public void setMana(int mana) { this.mana = mana; }
     public int getMana() { return mana; }
 }

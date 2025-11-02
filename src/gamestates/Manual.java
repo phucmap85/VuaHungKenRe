@@ -23,47 +23,46 @@ import entity.SummonSkill;
 import entity.Character;
 import entity.Combat;
 
-public class Manual extends State implements Statemethods{
+public class Manual extends Playing implements Statemethods{
 
-    private boolean[] keysPressed = new boolean[256];
+//    private boolean[] keysPressed = new boolean[256];
     private KeyButton[] keyButtons = new KeyButton[19];
-    private Map map;
-    private Character sonTinh, thuyTinh;
-    private PlayerUI playerUI1, playerUI2;
-    private Combat combat1;
-    private Combat combat2;
-    private Sound sfx;
+//    private Map map;
+//    private Character sonTinh, thuyTinh;
+//    private PlayerUI playerUI1, playerUI2;
+//    private Combat combat1;
+//    private Combat combat2;
+//    private Sound sfx;
 
     public Manual(Game game) {
         super(game);
-        initClasses();
         loadKeyButtons();
     }
     
-    private void initClasses() {
-        loadLightningAnimation("SonTinh");
-        loadLightningAnimation("ThuyTinh");
-        loadSummonedEntityAnimation("SonTinh");
-        loadSummonedEntityAnimation("ThuyTinh");
-        loadUltiCreatureAnimation("SonTinh");
-        loadUltiCreatureAnimation("ThuyTinh");
-        getEffectSprites();
-		map = new Map(game, 0);
-		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
-        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        playerUI1 = new PlayerUI(1000, true);
-        playerUI2 = new PlayerUI(1000, false);
+//    private void initClasses() {
+//        loadLightningAnimation("SonTinh");
+//        loadLightningAnimation("ThuyTinh");
+//        loadSummonedEntityAnimation("SonTinh");
+//        loadSummonedEntityAnimation("ThuyTinh");
+//        loadUltiCreatureAnimation("SonTinh");
+//        loadUltiCreatureAnimation("ThuyTinh");
+//        getEffectSprites();
+//		map = new Map(game, 0);
+//		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
+//        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
+//        playerUI1 = new PlayerUI(1000, true);
+//        playerUI2 = new PlayerUI(1000, false);
+//
+//    this.sfx = new Sound();
+//    combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1, this.sfx);
+//    combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2, this.sfx);
+//
+//	}
 
-    this.sfx = new Sound();
-    combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1, this.sfx);
-    combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2, this.sfx);
-        
-	}
-
-    public void windowFocusLost() {
-		sonTinh.resetAllBools();
-        thuyTinh.resetAllBools();
-	}
+//    public void windowFocusLost() {
+//		sonTinh.resetAllBools();
+//        thuyTinh.resetAllBools();
+//	}
 
     void loadKeyButtons(){
         keyButtons[0] = new KeyButton(K_XPOS, K_YPOS, 0); // "A"
@@ -90,54 +89,54 @@ public class Manual extends State implements Statemethods{
 
         keyButtons[18] = new KeyButton(K_XPOS, K_YPOS - K_OFFSET * 3, 0, 21, 41, "KeyButton/esc.png"); // "ESC"
     }
-    
+    private void resetHealthMana(){
+        playerUI1.setHealth((int)1e5 * 2);
+        playerUI2.setHealth((int)1e5 * 2);
+        playerUI1.setMana((int) 1e2);
+        playerUI2.setMana((int) 1e2);
+    }
+
     @Override
     public void update() {
-        sonTinh.update();
-        thuyTinh.update();
-        combat1.update();
-        combat2.update();
-        playerUI1.update();
-        playerUI2.update();
-        
+        if (!paused) {
+            sonTinh.update();
+            thuyTinh.update();
+            combat1.update();
+            combat2.update();
+            resetHealthMana();
+        }
+        else {
+            pauseOverlay.update();
+        }
+
         for (KeyButton kb : keyButtons){
             kb.update();
         }
-        // TEST: Update lightning animations
-        // lightningTestSonTinh.update();
-        // lightningTestThuyTinh.update();
     }
 
     @Override
     public void draw(Graphics g) {
-        map.draw(g);
-        // layer rendering based on punching state
-        if(sonTinh.punching()){
+        //map.draw(g);
+        if(sonTinh.punching()) {
             thuyTinh.render(g);
             sonTinh.render(g);
-
-
         }
-        else if(thuyTinh.punching()){
+        else if(thuyTinh.punching()) {
             sonTinh.render(g);
             thuyTinh.render(g);
-        }
-        else{
+        } else {
             sonTinh.render(g);
             thuyTinh.render(g);
         }
-        // playerUI1.draw(g, GAME_WIDTH);
-        // playerUI2.draw(g, GAME_WIDTH);
+        //playerUI1.draw(g, GAME_WIDTH);
+        //playerUI2.draw(g, GAME_WIDTH);
         combat1.render(g);
         combat2.render(g);
-        
-        for (KeyButton kb : keyButtons){
+
+        if(paused) pauseOverlay.draw(g);
+        for (KeyButton kb : keyButtons) {
             kb.draw(g);
         }
-        // TEST: Render lightning animations on top
-        // lightningTestSonTinh.render(g);
-        // lightningTestThuyTinh.render(g);
-		
     }
 
     @Override
@@ -193,9 +192,11 @@ public class Manual extends State implements Statemethods{
                     keyButtons[4].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_I:
+                    thuyTinh.setUlti(true);
                     keyButtons[5].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_L:
+                    thuyTinh.setDash(true);
                     keyButtons[8].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_LEFT:
@@ -223,11 +224,12 @@ public class Manual extends State implements Statemethods{
                     keyButtons[13].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_NUMPAD3:
+                    sonTinh.setDash(true);
                     keyButtons[15].setKeyPressed(true);
                     break;
                 case KeyEvent.VK_NUMPAD5:
+                    sonTinh.setUlti(true);
                     keyButtons[14].setKeyPressed(true);
-
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
@@ -270,9 +272,11 @@ public class Manual extends State implements Statemethods{
                 keyButtons[4].setKeyPressed(false); 
                 break;
             case KeyEvent.VK_I:
+                thuyTinh.setUlti(false);
                 keyButtons[5].setKeyPressed(false);
                 break;
             case KeyEvent.VK_L:
+                thuyTinh.setDash(false);
                 keyButtons[8].setKeyPressed(false);
                 break;
             case KeyEvent.VK_LEFT:
@@ -300,9 +304,11 @@ public class Manual extends State implements Statemethods{
                 keyButtons[13].setKeyPressed(false);
                 break;
             case KeyEvent.VK_NUMPAD3:
+                sonTinh.setDash(false);
                 keyButtons[15].setKeyPressed(false);
                 break;
             case KeyEvent.VK_NUMPAD5:
+                sonTinh.setUlti(false);
                 keyButtons[14].setKeyPressed(false);
                 break;
             default:
