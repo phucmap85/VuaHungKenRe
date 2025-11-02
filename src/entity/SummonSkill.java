@@ -130,5 +130,4 @@ public class SummonSkill extends Entity {
     public void setDoneTakeHealth(boolean val){
         this.doneTakeHealth = val;
     }
-
 }

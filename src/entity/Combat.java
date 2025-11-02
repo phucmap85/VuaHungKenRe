@@ -169,6 +169,14 @@ public class Combat {
         this.thuyTinh = thuyTinh;
         this.sonTinhUI = sonTinhUI;
         this.thuyTinhUI = thuyTinhUI;
+        if(ulti != null) {
+            ulti = null;
+        }
+        for(int i = 0 ; i < 5 ; i++) {
+            if(hog[i] != null) {
+                hog[i] = null;
+            }
+        }
         
     }
 }
