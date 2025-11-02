@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import static utilz.LoadSave.loadSummonedEntityAnimation;
-import static utilz.HelpMethods.canMoveHere;
 import static utilz.Constants.GameConstants.GAME_WIDTH;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.EffectConstants.*;

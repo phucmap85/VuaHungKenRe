@@ -2,7 +2,6 @@ package entity;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfigTemplate;
 import java.awt.image.BufferedImage;
 import static utilz.LoadSave.loadLightningAnimation;
 import static utilz.LoadSave.loadUltiCreatureAnimation;

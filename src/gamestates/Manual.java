@@ -1,22 +1,18 @@
 package gamestates;
 
 import static utilz.Constants.GameConstants.*;
-import static utilz.Constants.PlayerConstants.*;
+
 import static utilz.Constants.UI.KeyButton.*;
-import static utilz.LoadSave.getEffectSprites;
-import static utilz.LoadSave.loadLightningAnimation;
-import static utilz.LoadSave.loadSummonedEntityAnimation;
-import static utilz.LoadSave.loadUltiCreatureAnimation;
+
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import entity.Combat;
+
 import main.Game;
-import map.Map;
 import ui.KeyButton;
-import ui.PlayerUI;
+
 
 
 
@@ -64,8 +60,8 @@ public class Manual extends Playing{
     private void resetHealthMana(){
         playerUI1.setHealth((int)1e5 * 2);
         playerUI2.setHealth((int)1e5 * 2);
-        playerUI1.setMana((int) 1e2);
-        playerUI2.setMana((int) 1e2);
+        playerUI1.setMana((int) 2e3);
+        playerUI2.setMana((int) 2e3);
     }
 
     @Override

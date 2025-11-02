@@ -1,6 +1,6 @@
 package main;
 
-import entity.*;
+
 import static utilz.Constants.GameConstants.*;
 
 import java.awt.Color;

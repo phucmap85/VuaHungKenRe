@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import static utilz.Constants.GameConstants.*;
 import static utilz.LoadSave.cleanupSounds;
 import static utilz.LoadSave.preloadSounds;
-import static utilz.LoadSave.preloadSounds;
+
 
 import gamestates.Gamestate;
 import gamestates.Manual;
@@ -14,7 +14,7 @@ import gamestates.Menu;
 import gamestates.Playing;
 import sound.SoundPlayer;
 import sound.SoundManager;
-import utilz.LoadSave;
+
 
 public class Game implements Runnable {
 	private GameWindow gameWindow;

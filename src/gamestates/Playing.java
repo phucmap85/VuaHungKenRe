@@ -16,8 +16,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import entity.SummonSkill;
-import entity.UltiSkill;
+
 import entity.Character;
 import entity.Combat;
 

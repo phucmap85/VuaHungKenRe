@@ -7,11 +7,11 @@ import java.awt.image.BufferedImage;
 
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
-import static utilz.Constants.EffectConstants.LANDING_LEFT;
-import static utilz.Constants.EffectConstants.LANDING_RIGHT;
-import static utilz.Constants.EffectConstants.SMOKE_LEFT;
-import static utilz.Constants.EffectConstants.SMOKE_RIGHT;
-import static utilz.Constants.GameConstants.*;
+import static utilz.Constants.PlayerConstants.getFramesAmount;
+import static utilz.Constants.EffectConstants.*;
+
+
+
 import static utilz.LoadSave.*;
 
 import main.Game;
