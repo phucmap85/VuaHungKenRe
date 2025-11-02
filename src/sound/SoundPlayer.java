@@ -50,14 +50,24 @@ public class SoundPlayer {
         
         if ( clip == null || (clip != null && !clip.isRunning())) {
             clip = LoadSave.getSoundClip(se.getIndex());
+            if (clip != null) {
+                setClipVolume(clip, sfxVolume);
+                clip.setFramePosition(0);
+                clip.start();
         }
+        }
+
+    }
+
+    public void playOverlap(SoundManager se) {
+        if (se == null) return;
+        Clip clip = LoadSave.getSoundClip(se.getIndex());
 
         if (clip != null) {
             setClipVolume(clip, sfxVolume);
             clip.setFramePosition(0);
             clip.start();
         }
-
     }
     
 
