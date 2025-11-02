@@ -6,8 +6,10 @@ import utilz.LoadSave;
 
 public class SoundPlayer {
     private Clip currentMusicClip;
-    private Clip clip;
+    private Clip clipSonTinh;
+    private Clip clipThuyTinh;
     
+
     private float musicVolume = 0.5f;
     private float sfxVolume = 0.5f; // (0.0 đến 1.0)
 
@@ -45,28 +47,51 @@ public class SoundPlayer {
         }
     }
 
-    public void play(SoundManager se) {
+    public void play(SoundManager se, String name) {
         if (se == null) return;
+        if("SonTinh".equals(name)){
+            if (clipSonTinh == null || (clipSonTinh != null && !clipSonTinh.isRunning())) {
+                clipSonTinh = LoadSave.getSoundClip(se.getIndex());
+                if (clipSonTinh != null) {
+                    setClipVolume(clipSonTinh, sfxVolume);
+                    clipSonTinh.setFramePosition(0);
+                    clipSonTinh.start();
+                }
+            }
+        }
+        else if("ThuyTinh".equals(name)){
+            if (clipThuyTinh == null || (clipThuyTinh != null && !clipThuyTinh.isRunning())) {
+                clipThuyTinh = LoadSave.getSoundClip(se.getIndex());
+                if (clipThuyTinh != null) {
+                    setClipVolume(clipThuyTinh, sfxVolume);
+                    clipThuyTinh.setFramePosition(0);
+                    clipThuyTinh.start();
+                }
+            }
+        }
         
-        if ( clip == null || (clip != null && !clip.isRunning())) {
-            clip = LoadSave.getSoundClip(se.getIndex());
-            if (clip != null) {
-                setClipVolume(clip, sfxVolume);
-                clip.setFramePosition(0);
-                clip.start();
-        }
-        }
+ }
 
-    }
 
-    public void playOverlap(SoundManager se) {
+    public void playOverlap(SoundManager se, String name) {
         if (se == null) return;
-        Clip clip = LoadSave.getSoundClip(se.getIndex());
+        if("SonTinh".equals(name)){
+            clipSonTinh = LoadSave.getSoundClip(se.getIndex());
 
-        if (clip != null) {
-            setClipVolume(clip, sfxVolume);
-            clip.setFramePosition(0);
-            clip.start();
+            if (clipSonTinh != null) {
+                setClipVolume(clipSonTinh, sfxVolume);
+                clipSonTinh.setFramePosition(0);
+                clipSonTinh.start();
+            }
+        }
+        else if("ThuyTinh".equals(name)){
+            clipThuyTinh = LoadSave.getSoundClip(se.getIndex());
+
+            if (clipThuyTinh != null) {
+                setClipVolume(clipThuyTinh, sfxVolume);
+                clipThuyTinh.setFramePosition(0);
+                clipThuyTinh.start();
+            }
         }
     }
     
