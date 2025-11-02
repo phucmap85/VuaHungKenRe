@@ -7,11 +7,8 @@ import static utilz.HelpMethods.Collision;
 
 import java.awt.Graphics;
 
-import static utilz.Constants.EffectConstants;
-import static utilz.Constants.EffectConstants.IMPACT1_LEFT;
-import static utilz.Constants.EffectConstants.IMPACT1_RIGHT;
-import static utilz.Constants.EffectConstants.SLASH_LEFT;
-import static utilz.Constants.EffectConstants.SLASH_RIGHT;
+import static utilz.Constants.EffectConstants.*;
+
 public class Combat {
     private Character sonTinh;
     private Character thuyTinh;
@@ -26,7 +23,7 @@ public class Combat {
         this.thuyTinh = thuyTinh;
         this.sonTinhUI = sonTinhUI;
         this.thuyTinhUI = thuyTinhUI;
-        hog = new SummonSkill[5];
+        hog = new SummonSkill[6];
         effectManager = new EffectManager(3);
 
     }
@@ -44,7 +41,7 @@ public class Combat {
                             40f, 20f, 60f, 80f,
                             LEFT, sonTinh.getCharacterName());
                 }
-                sonTinhUI.takeMana(25);
+                sonTinhUI.takeMana(400);
                 sonTinh.setCallSummonedEntity(false);
             }
             if (hog[i] != null) {
@@ -56,7 +53,7 @@ public class Combat {
             if (!thuyTinh.falling() && System.currentTimeMillis() - thuyTinh.getLastTimeFalling() > TimeInVulnerable) {
                 if (hog[i] != null) {
                     if (Collision(hog[i].getHitBox(), thuyTinh.getHurtBox()) && !thuyTinh.dashing()) {
-        
+                        
                         if(!hog[i].getCollision()) hog[i].setCollision(true);
                         if (thuyTinh.defending() && thuyTinh.getDirection() != hog[i].getDirection()) {
                             thuyTinh.setDefendDamageSignal(true);
@@ -72,6 +69,7 @@ public class Combat {
                             if(!hog[i].getdoneTakeHealth()) {
                                 thuyTinhUI.takeDamage(8000);
                                 hog[i].setDoneTakeHealth(true);
+                                sonTinhUI.regenMana(200);
                             }
                             thuyTinh.setDirectionTakenHit(hog[i].getDirection());
                         }
@@ -85,7 +83,7 @@ public class Combat {
             if (sonTinh.punching() && sonTinh.punch()) {
                 sonTinh.updateAttackBox();
                 if (Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox()) && !thuyTinh.dashing()) {
-                    
+                    sonTinhUI.regenMana(1);
                     if (thuyTinh.defending() && thuyTinh.getDirection() != sonTinh.getDirection()) {
                         thuyTinh.setDefendDamageSignal(true);
                         thuyTinh.setHealthDefend(1);
@@ -98,8 +96,13 @@ public class Combat {
                         thuyTinh.setTakingHit(true);
                         thuyTinh.setHealthTakenPerCombo(1);
                         thuyTinhUI.takeDamage(150);
-                        if(thuyTinh.getDirection() == RIGHT) effectManager.addEffect(thuyTinh.getX() + 50, thuyTinh.getY() - 85, IMPACT1_RIGHT);
-                        else effectManager.addEffect(thuyTinh.getX() - 20, thuyTinh.getY() - 85, IMPACT1_LEFT);
+                        if(thuyTinh.getDirection() != sonTinh.getDirection()) {
+                            if(thuyTinh.getDirection() == RIGHT) {
+                                effectManager.addEffect(thuyTinh.getX() + 45, thuyTinh.getY() - 85, IMPACT1_RIGHT);
+                                
+                            }
+                            else effectManager.addEffect(thuyTinh.getX() - 15, thuyTinh.getY() - 85, IMPACT1_LEFT);
+                        }
                         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
                     }
                 }
@@ -110,7 +113,8 @@ public class Combat {
         if (sonTinh.callUltiEntity() && ulti == null) {
             ulti = new UltiSkill(0,0,0,0,0,0, sonTinh.getCharacterName());
             sonTinh.setCallUltiEntity(false);
-            sonTinhUI.takeMana(100);
+            sonTinhUI.takeMana(2000);
+     
         }
         if(ulti !=null) {
             ulti.update(thuyTinh.getX(), thuyTinh.getY());

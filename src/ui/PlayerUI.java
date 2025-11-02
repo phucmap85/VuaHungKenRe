@@ -37,4 +37,6 @@ public class PlayerUI {
     public int getHealth() { return healthBar.getHealth(); }
     public void setMana(int mana) { manaBar.setMana(mana); }
     public int getMana() { return manaBar.getMana(); }
+
+    public void regenMana(int amount) { manaBar.plusMana(amount); }
 }

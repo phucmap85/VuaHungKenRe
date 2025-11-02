@@ -57,7 +57,7 @@ public class Character extends Entity {
     // Update
     private int updateCounter = 0, updateSpeed = 5;
     private map.Map map;
-    private int mana;
+    private int mana, maxMana = 2000, summonManaCost = 400;
 
     private int dashCounter = 0, maxDashCount = 50;
     private float dashSpeed = 5.0f;
@@ -112,7 +112,7 @@ public class Character extends Entity {
         }
     }
     public void updateUlti(){
-        if(ulti && !ulting && !jumping && !takingHit && !falling && !inAir &&mana == 100){
+        if(ulti && !ulting && !jumping && !takingHit && !falling && !inAir && mana == maxMana){
             ulting = true;
             callUltiEntity = true;
         } else if(ulting == true && framesIndex == getFramesAmount(playerAction) -1 && framesCounter >= normalAniSpeed -1){
@@ -121,7 +121,7 @@ public class Character extends Entity {
     }
 
     public void updateSummon() {
-        if (summon && !summoning && !jumping && !takingHit && !falling && !inAir && mana >= 25) {
+        if (summon && !summoning && !jumping && !takingHit && !falling && !inAir && mana >= summonManaCost) {
             resetAllStates();
             summoning = true;
         } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {

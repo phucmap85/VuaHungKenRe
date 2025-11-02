@@ -12,8 +12,8 @@ public class ManaBar {
     private boolean blinkState;
 
     public ManaBar(boolean leftSide) {
-        this.maxMana = 100;
-        this.mana = maxMana / 4;
+        this.maxMana = 2000;
+        this.mana = 0;
         this.barWidth = 250;
         this.barHeight = 10;
         this.leftSide = leftSide;
@@ -68,7 +68,7 @@ public class ManaBar {
     public void update() {
         long now = System.currentTimeMillis();
         if (now - lastRegenTime >= 1000) {
-            mana = Math.min(maxMana, mana + 5);
+            mana = Math.min(maxMana, mana + 30);
             lastRegenTime = now;
         }
     }
@@ -82,4 +82,8 @@ public class ManaBar {
         mana = Math.min(maxMana, Math.max(0, amount));
     }
     public int getMana() { return mana; }
+
+    public void plusMana(int amount) {
+        mana = Math.min(maxMana, mana + amount);
+    }
 }
