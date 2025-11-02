@@ -477,7 +477,12 @@ public class Character extends Entity {
     }
 
     public void loadAnimations(String name) {
-        this.animations = getAnimations(name);
+        if (name == "SonTinh"){
+            this.animations = getSonTinhAnimations();
+        }
+        else {
+            this.animations = getThuyTinhAnimations();
+        }
     }
 
     public void resetAnimationTick() {

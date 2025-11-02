@@ -3,6 +3,10 @@ package utilz;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
@@ -57,8 +61,8 @@ public class LoadSave {
         if (allAnimationsLoaded) return;
         
         System.out.println("Loading all animations...");
-        sonTinhAnimations = getAnimations("SonTinh");
-        thuyTinhAnimations = getAnimations("ThuyTinh");
+        if(sonTinhAnimations == null) sonTinhAnimations = getAnimations("SonTinh");
+        if(thuyTinhAnimations == null) thuyTinhAnimations = getAnimations("ThuyTinh");
         loadSpecialAnimations();
         allAnimationsLoaded = true;
         System.out.println("All animations loaded!");
@@ -146,7 +150,7 @@ public class LoadSave {
      * Trả về animations của Sơn Tinh
      */
     public static BufferedImage[][] getSonTinhAnimations() {
-        if (!allAnimationsLoaded) loadAllAnimations();
+        if (sonTinhAnimations == null) loadAllAnimations();
         return sonTinhAnimations;
     }
 
@@ -154,7 +158,7 @@ public class LoadSave {
      * Trả về animations của Thủy Tinh
      */
     public static BufferedImage[][] getThuyTinhAnimations() {
-        if (!allAnimationsLoaded) loadAllAnimations();
+        if (thuyTinhAnimations == null) loadAllAnimations();
         return thuyTinhAnimations;
     }
 
@@ -222,16 +226,11 @@ public class LoadSave {
         return op.filter(img, null);
     }
 
-    public static BufferedImage[][] getAnimations(String player) {
-        if (allAnimationsLoaded) {
-            if ("SonTinh".equals(player)) return sonTinhAnimations;
-            if ("ThuyTinh".equals(player)) return thuyTinhAnimations;
-        }
-        
+    public static BufferedImage[][] getAnimations(String character) {
         BufferedImage[][] animations = new BufferedImage[22][20];
         String[][] animConfig = null;
 
-        if ("SonTinh".equals(player)) {
+        if ("SonTinh".equals(character)) {
             animConfig = new String[][] {
                 {"IDLE", "8", "NORMAL"}, {"MOVE", "8", "NORMAL"}, {"JUMP", "9", "NORMAL"},
                 {"PUNCH", "19", "NORMAL"}, {"DEFENSE", "3", "NORMAL"}, {"TAKINGHIT","3","NORMAL"},
@@ -248,32 +247,96 @@ public class LoadSave {
         }
 
         try {
-            int currentRow = 0;
+            int currentRow = 0; // Biến theo dõi hàng hiện tại trong mảng animations[][]
+            String path = String.format("/image/%s/%sSpriteAtlas.png", character, character);
+            InputStream is = LoadSave.class.getResourceAsStream(path);
+            if (is == null) {
+                System.err.println("ERROR: File not found: " + path);
+                throw new RuntimeException("Missing animation file: " + path);
+            }
+            BufferedImage img = ImageIO.read(is);
             for (int i = 0; i < animConfig.length; i++) {
                 String animName = animConfig[i][0];
                 int frameCount = Integer.parseInt(animConfig[i][1]);
                 String animType = animConfig[i][2];
 
+                //System.out.println("Loading: " + animName + " (" + frameCount + " frames, type: " + animType + ")");
+                
                 for (int j = 0; j < frameCount; j++) {
-                    String path = String.format("/image/%s/%s_%04d.png", player, animName, j + 1);
-                    InputStream is = LoadSave.class.getResourceAsStream(path);
-                    if (is != null) {
-                        BufferedImage img = ImageIO.read(is);
-                        if ("NORMAL".equals(animType)) {
-                            animations[currentRow][j] = img;
-                            animations[currentRow + 1][j] = flipHorizontally(img);
-                        } else {
-                            animations[currentRow][j] = img;
-                        }
-                        is.close();
+                    //String path = String.format("/image/%s/%s_%04d.png", player, animName, j + 1);
+                    
+                    
+                    // Logic tải ảnh dựa trên loại animation
+                    if ("NORMAL".equals(animType)) {
+                        // Tải vào 2 hàng: một hàng cho ảnh gốc, một hàng cho ảnh lật
+                        BufferedImage subImg = img.getSubimage(j * 64, i * 64, 64, 64);
+                        animations[currentRow][j] = subImg;
+                        animations[currentRow + 1][j] = flipHorizontally(subImg);
+                    } else if ("SINGLE".equals(animType)) {
+                        // Chỉ tải vào 1 hàng, không lật
+                        animations[currentRow][j] = img;
                     }
+
+                    is.close();
                 }
-                currentRow += "NORMAL".equals(animType) ? 2 : 1;
+
+                // Cập nhật chỉ số hàng cho animation tiếp theo
+                if ("NORMAL".equals(animType)) {
+                    currentRow += 2;
+                } else { // animType là "SINGLE"
+                    currentRow += 1;
+                }
+
+                System.out.println("✓ Loaded successfully into row(s) starting from " + (currentRow - ("NORMAL".equals(animType) ? 2 : 1)));
             }
+            System.out.println("Succesfully loaded for " + character);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // try {
+        //     BufferedImage merged = mergeImageGrid(animations);
+        //     ImageIO.write(merged, "png", new File(character + ".png"));
+        //     System.out.println("Merged image saved as merged_output.png");
+        // } catch (IOException e){
+        //     e.printStackTrace();
+        // }
+        
         return animations;
+    }
+   
+    public static BufferedImage mergeImageGrid(BufferedImage[][] images) {
+        int rows = 10;
+        int cols = 19;
+
+        int tileWidth = 0, tileHeight = 0;
+
+
+        tileWidth = Math.max(tileWidth, images[0][0].getWidth());
+        tileHeight = Math.max(tileHeight, images[0][0].getHeight());
+
+        // Total output dimensions
+        int totalWidth = cols * tileWidth;
+        int totalHeight = rows * tileHeight;
+
+        // Create output image with alpha (transparency) support
+        BufferedImage merged = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = merged.createGraphics();
+
+        // Optional: smoother scaling or background fill
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setComposite(AlphaComposite.SrcOver);
+
+        // Draw each image in grid
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int x = j * tileWidth;
+                int y = i * tileHeight;
+                g2d.drawImage(images[i * 2][j], x, y, null);
+            }
+        }
+
+        g2d.dispose();
+        return merged;
     }
 
     // ============= SOUND METHODS =============
@@ -294,8 +357,10 @@ public class LoadSave {
         try {
             String path = se.getPath();
             URL soundURL = LoadSave.class.getResource(path);
-            if (soundURL == null) return;
-
+            if (soundURL == null) {
+                System.out.println("Can't load sound: " + path);
+                return;
+            }
             Clip[] clips = new Clip[CACHE_SIZE];
             for (int i = 0; i < CACHE_SIZE; i++) {
                 AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
