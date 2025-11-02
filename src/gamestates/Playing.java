@@ -23,24 +23,24 @@ import entity.Combat;
 import sound.Sound;
 
 public class Playing extends State implements Statemethods {
-    boolean[] keysPressed = new boolean[256];
-    boolean paused = false;
-    PauseOverlay pauseOverlay;
+    private boolean[] keysPressed = new boolean[256];
+    private boolean paused = false;
+    private PauseOverlay pauseOverlay;
 
-    Map map;
-    Character sonTinh, thuyTinh;
-    PlayerUI playerUI1, playerUI2;
-    Combat combat1;
-    Combat combat2;
-    Sound sfx;
-    int selectedMapIndex;
+    private Map map;
+    private Character sonTinh, thuyTinh;
+    private PlayerUI playerUI1, playerUI2;
+    private Combat combat1;
+    private Combat combat2;
+    private Sound sfx;
+    private int selectedMapIndex;
 
     public Playing(Game game) {
         super(game);
         initClasses();
     }
-    
-    void initClasses() {
+
+    private void initClasses() {
 		map = new Map(game, selectedMapIndex);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
@@ -62,30 +62,30 @@ public class Playing extends State implements Statemethods {
     public void setMatchSettings(int mapID) {
         this.selectedMapIndex = mapID;
         cleanupOldInstances();
-        initClasses(); 
+        initClasses();
         /* init lai vi playing van dang o default map */
     }
 
-    void cleanupOldInstances() {
-        try {
-            map = null;
-            thuyTinh = null;
-            sonTinh = null;
-            playerUI1 = null;
-            playerUI2 = null;
-            combat1 = null;
-            combat2 = null;
-            if (sfx != null) {
-                sfx.cleanup();
-                sfx = null;
-            }
-            pauseOverlay = null;
-            System.gc();
-            System.out.println("[DEBUG] Old instances cleaned up successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void cleanupOldInstances() {
+    try {
+        map = null;
+        thuyTinh = null;
+        sonTinh = null;
+        playerUI1 = null;
+        playerUI2 = null;
+        combat1 = null;
+        combat2 = null;
+        if (sfx != null) {
+            sfx.cleanup();
+            sfx = null;
         }
+        pauseOverlay = null;
+        System.gc();
+        System.out.println("[DEBUG] Old instances cleaned up successfully.");
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
     public void windowFocusLost() {
 		sonTinh.resetAllBools();
         thuyTinh.resetAllBools();

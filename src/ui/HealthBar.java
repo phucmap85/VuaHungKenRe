@@ -93,6 +93,11 @@ public class HealthBar {
         this.animatedHealth = this.health;
     }
 
+    public void resetHealth(){
+        this.health = maxHealth;
+        this.animatedHealth = maxHealth;
+    }
+
     public int getHealth() {
         return health;
     }

@@ -143,9 +143,10 @@ public class PauseOverlay {
         }
         else if(isIn(e, replayB)) {
             if(replayB.isMousePressed()) {
-                Gamestate.state = Gamestate.PLAYING;
-                System.out.println("Replay");
+                playing.resetAllStates();
+                playing.unpauseGame();
             }
+
             replayB.setMousePressed(false);
         }
         else if(isIn(e, unpauseB)) {

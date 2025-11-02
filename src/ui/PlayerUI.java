@@ -31,8 +31,9 @@ public class PlayerUI {
 
     public void takeDamage(int dmg) { healthBar.takeDamage(dmg); }
     public void setHealth(int hp) { healthBar.setHealth(hp); }
+    public void resetAll() { healthBar.resetHealth();
+    manaBar.resetMana(); }
     public void takeMana(int mp) { manaBar.takeMana(mp); }
-
     public int getHealth() { return healthBar.getHealth(); }
     public void setMana(int mana) { manaBar.setMana(mana); }
     public int getMana() { return manaBar.getMana(); }
