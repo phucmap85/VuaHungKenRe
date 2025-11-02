@@ -27,6 +27,8 @@ public class Map {
             case 0:
                 img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap0);
                 break;
+            case 2:
+                break;
             default:
                 img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap1);
                 break;
@@ -42,6 +44,9 @@ public class Map {
                 platforms.add(new Platform(346f, 800f, 465f));
                 platforms.add(new Platform(118f, 268f, 540f));
                 platforms.add(new Platform(886f, 1030f, 401f));
+                break;
+            case 2:
+                groundY = 660f;
                 break;
             default: // Map 1
                 groundY = 640f;

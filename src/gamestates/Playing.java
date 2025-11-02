@@ -75,6 +75,8 @@ public class Playing extends State implements Statemethods {
         sonTinh.resetAllBools();
         thuyTinh.resetAllStates();
         sonTinh.resetAllStates();
+        thuyTinh.setDirection(RIGHT);
+        sonTinh.setDirection(LEFT);
         playerUI1.resetAll();
         playerUI2.resetAll();
         combat1.resetCombat(sonTinh, thuyTinh, playerUI2, playerUI1);

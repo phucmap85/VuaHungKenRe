@@ -536,6 +536,10 @@ public class Character extends Entity {
         ulting = false;
     }
 
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+    
     public boolean isLeft() {
         return left;
     }

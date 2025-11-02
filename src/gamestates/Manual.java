@@ -37,6 +37,7 @@ public class Manual extends Playing implements Statemethods{
     public Manual(Game game) {
         super(game);
         loadKeyButtons();
+        setMatchSettings(2);
     }
     
 //    private void initClasses() {
@@ -98,17 +99,11 @@ public class Manual extends Playing implements Statemethods{
 
     @Override
     public void update() {
-        if (!paused) {
-            sonTinh.update();
-            thuyTinh.update();
-            combat1.update();
-            combat2.update();
-            resetHealthMana();
-        }
-        else {
-            pauseOverlay.update();
-        }
-
+        sonTinh.update();
+        thuyTinh.update();
+        combat1.update();
+        combat2.update();
+        resetHealthMana();
         for (KeyButton kb : keyButtons){
             kb.update();
         }
@@ -233,6 +228,7 @@ public class Manual extends Playing implements Statemethods{
                     break;
                 case KeyEvent.VK_ESCAPE:
                     Gamestate.state = Gamestate.MENU;
+                    resetAllStates();
                     break;
                 default:
                     break;
