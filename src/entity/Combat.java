@@ -1,7 +1,5 @@
 package entity;
 
-import sound.Sound;
-import sound.SoundEffect;
 import ui.PlayerUI;
 
 import static utilz.Constants.PlayerConstants.*;
@@ -19,17 +17,15 @@ public class Combat {
     private Character thuyTinh;
     private PlayerUI sonTinhUI;
     private PlayerUI thuyTinhUI;
-    private Sound sfx;
     private SummonSkill[] hog;
     private UltiSkill ulti;
     private long TimeInVulnerable = 500;
     private EffectManager effectManager;
-    public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI, Sound sfx) {
+    public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
         this.sonTinh = sonTinh;
         this.thuyTinh = thuyTinh;
         this.sonTinhUI = sonTinhUI;
         this.thuyTinhUI = thuyTinhUI;
-        this.sfx = sfx;
         hog = new SummonSkill[5];
         effectManager = new EffectManager(3);
 
@@ -50,12 +46,6 @@ public class Combat {
                 }
                 sonTinhUI.takeMana(25);
                 sonTinh.setCallSummonedEntity(false);
-                if (sfx != null) {
-                    if (sonTinh.getName().equals("SonTinh"))
-                        sfx.play(SoundEffect.SONTINHSUMMON);
-                    else
-                        sfx.play(SoundEffect.THUYTINHSUMMON);
-                }
             }
             if (hog[i] != null) {
                 hog[i].update();
@@ -117,16 +107,10 @@ public class Combat {
             
         }
         effectManager.update();
-        if(sonTinh.callUltiEntity() && ulti == null) {
+        if (sonTinh.callUltiEntity() && ulti == null) {
             ulti = new UltiSkill(0,0,0,0,0,0, sonTinh.getCharacterName());
             sonTinh.setCallUltiEntity(false);
             sonTinhUI.takeMana(100);
-            if (sfx != null) {
-                if (sonTinh.getName().equals("SonTinh"))
-                    sfx.play(SoundEffect.SONTINHULTI);
-                else
-                    sfx.play(SoundEffect.THUYTINHULTI);
-            }
         }
         if(ulti !=null) {
             ulti.update(thuyTinh.getX(), thuyTinh.getY());

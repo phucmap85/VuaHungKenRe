@@ -3,30 +3,39 @@ package main;
 import java.awt.Graphics;
 
 import static utilz.Constants.GameConstants.*;
+import static utilz.LoadSave.cleanupSounds;
+import static utilz.LoadSave.preloadSounds;
+import static utilz.LoadSave.preloadSounds;
 
 import gamestates.Gamestate;
 import gamestates.Manual;
 import gamestates.MatchSetup;
 import gamestates.Menu;
 import gamestates.Playing;
-import sound.Sound;
+import sound.SoundPlayer;
+import sound.SoundManager;
+import utilz.LoadSave;
 
 public class Game implements Runnable {
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Thread gameThread;
-	private Sound sound = new Sound();
 	private Playing playing;
 	private Menu menu;
 	private Manual manual;
 	private MatchSetup matchSetup;
+
+	public static SoundPlayer soundPlayer;
+    private Gamestate oldState = Gamestate.MENU;
 	public Game() {
+		preloadSounds();
+		soundPlayer = new SoundPlayer();
 		initClasses();
 
 		gamePanel = new GamePanel(this);
 		gameWindow = new GameWindow(gamePanel);
 		gamePanel.requestFocus();
-
+		soundPlayer.loop(SoundManager.MENU);
 		startGameLoop();
 	}
 
@@ -35,7 +44,6 @@ public class Game implements Runnable {
 		playing = new Playing(this);
 		manual = new Manual(this);
 		matchSetup = new MatchSetup(this);
-		playMusic(0);
 	}
 
 	private void startGameLoop() {
@@ -44,6 +52,23 @@ public class Game implements Runnable {
 	}
 
 	public void update() {
+		if (oldState != Gamestate.state) {
+            soundPlayer.stopMusic(); // Dừng nhạc cũ
+            switch (Gamestate.state) {
+                case MENU:
+                    soundPlayer.loop(SoundManager.MENU);
+                    break;
+                case PLAYING:
+                    soundPlayer.loop(SoundManager.PLAYING);
+                    break;
+				case MANUAL:
+                    soundPlayer.loop(SoundManager.PLAYING);
+                    break;
+				default:
+					break;
+            }
+            oldState = Gamestate.state; // Cập nhật state cũ
+        }
 		switch (Gamestate.state) {
 			case MENU:
 				menu.update();
@@ -60,6 +85,7 @@ public class Game implements Runnable {
 			case OPTIONS:
 			case QUIT:
 			default:
+				cleanupSounds();
 				System.exit(0);
 				break;
 		}
@@ -127,19 +153,6 @@ public class Game implements Runnable {
 
 	}
 
-	public void playMusic(int i) {
-		sound.setFile(i);
-		sound.play();
-		sound.loop();
-	}
-	public void stopMusic() {
-		sound.stop();
-	}
-	public void playSE(int i) {
-		sound.setFile(i);
-		sound.play();
-	}
-
 	public void windowFocusLost() {
 		if (Gamestate.state == Gamestate.PLAYING) {
 			playing.windowFocusLost();
@@ -158,5 +171,8 @@ public class Game implements Runnable {
 	}
 	public MatchSetup getMatchSetup() {
         return matchSetup;
+    }
+	public static SoundPlayer getSoundPlayer() {
+        return soundPlayer;
     }
 }

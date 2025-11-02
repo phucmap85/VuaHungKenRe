@@ -7,6 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+import sound.SoundManager;
+
 public class LoadSave {
     public static String BattleMap0 = "map_0001.png";
     public static String BattleMap1 = "map_0002.png";
@@ -20,6 +29,10 @@ public class LoadSave {
     public static String MatchSetupBackground = "MatchSetup/MatchSetupBackground.png";
     public static String MatchSetupTitle = "MatchSetup/mapselection.png";
     public static String NextButton = "MatchSetup/nextbutton.png";
+
+    private static final Map<Integer, Clip[]> soundCache = new HashMap<>();
+    private static final int CACHE_SIZE = 3; // Số lượng clip đệm cho mỗi âm thanh
+    private static boolean soundsPreloaded = false;
     // Static cache cho animations
     private static BufferedImage[][] sonTinhSummonedEntity = null;
     private static BufferedImage[][] thuyTinhSummonedEntity = null;
@@ -327,6 +340,77 @@ public class LoadSave {
         return animations;
     }
 
+    public static void preloadSounds() {
+        if (soundsPreloaded) return;
+        
+        System.out.println("Preloading sounds...");
+        for (SoundManager se : SoundManager.values()) {
+            if (!soundCache.containsKey(se.getIndex())) {
+                loadSoundIntoCache(se);
+            }
+        }
+        System.out.println("Sound preloading complete!");
+        soundsPreloaded = true;
+    }
+
+    private static void loadSoundIntoCache(SoundManager se) {
+        if (se == null) return;
+
+        try {
+            String path = se.getPath();
+            URL soundURL = LoadSave.class.getResource(path);
+            if (soundURL == null) {
+                System.err.println("Could not find sound file: " + path);
+                return;
+            }
+
+            Clip[] clips = new Clip[CACHE_SIZE];
+            for (int i = 0; i < CACHE_SIZE; i++) {
+                AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
+                Clip clip = AudioSystem.getClip();
+                clip.open(ais);
+                clip.addLineListener(event -> {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        clip.setFramePosition(0);
+                    }
+                });
+                
+                clips[i] = clip;
+            }
+            soundCache.put(se.getIndex(), clips);
+            
+        } catch (Exception e) {
+        }
+    }
+
+    public static Clip getSoundClip(int soundIndex) {
+        Clip[] clips = soundCache.get(soundIndex);
+        if (clips == null) {
+            return null;
+        }
+
+        for (Clip clip : clips) {
+            if (!clip.isRunning()) {
+                return clip;
+            }
+        }
+        return clips[0];
+    }
+    
+    public static void cleanupSounds() {
+        for (Clip[] clips : soundCache.values()) {
+            for (Clip clip : clips) {
+                try {
+                    if (clip.isRunning()) clip.stop();
+                    clip.close();
+                } catch (Exception e) {
+                    System.err.println("Error closing clip: " + e.getMessage());
+                }
+            }
+        }
+        soundCache.clear();
+        soundsPreloaded = false;
+    }
     /**
      * Loads all effect animations from Effects folder
      * Returns 2D array where each row corresponds to an effect direction constant
@@ -396,5 +480,7 @@ public class LoadSave {
         
         return effects;
     }
+
+    
 
 }

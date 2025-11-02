@@ -3,7 +3,7 @@ package entity;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import sound.Sound;
+ 
 
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
@@ -14,13 +14,15 @@ import static utilz.Constants.EffectConstants.SMOKE_RIGHT;
 import static utilz.Constants.GameConstants.*;
 import static utilz.LoadSave.*;
 
+import main.Game;
+import sound.SoundManager;
+
 public class Character extends Entity {
     private String name;
     private int direction;
     
     // Get from key input
     private boolean left, right, jump, defend, punch, summon, ulti, dash;
-    private Sound sound;
 
     // States of character
     private boolean moving, defending, jumping, punching, summoning, dashing,
@@ -162,6 +164,11 @@ public class Character extends Entity {
         if (punch && !jumping && !summoning && !takingHit && !falling && !inAir) {
             resetAllStates();
             punching = true;
+            if ("SonTinh".equals(name)) {
+                Game.soundPlayer.play(SoundManager.SONTINHPUNCH);
+            } else {
+                Game.soundPlayer.play(SoundManager.THUYTINHPUNCH);
+            }
         }
         if (punching && !punch && System.currentTimeMillis() - lastPunchTime >= PUNCH_RESET_TIME) {
             punching = false;
@@ -181,6 +188,11 @@ public class Character extends Entity {
     public void updateJumping() {
         if (jump && !jumping && !takingHit && !summoning && !falling) {
             jumping = true;
+            if ("SonTinh".equals(name)) {
+                Game.soundPlayer.play(SoundManager.SONTINHJUMP);
+            } else {
+                Game.soundPlayer.play(SoundManager.THUYTINHJUMP);
+            }
         }
     }
 

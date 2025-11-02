@@ -20,7 +20,6 @@ import entity.SummonSkill;
 import entity.UltiSkill;
 import entity.Character;
 import entity.Combat;
-import sound.Sound;
 
 public class Playing extends State implements Statemethods {
     boolean[] keysPressed = new boolean[256];
@@ -32,7 +31,7 @@ public class Playing extends State implements Statemethods {
     PlayerUI playerUI1, playerUI2;
     Combat combat1;
     Combat combat2;
-    Sound sfx;
+
     int selectedMapIndex;
 
     public Playing(Game game) {
@@ -46,9 +45,8 @@ public class Playing extends State implements Statemethods {
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
         playerUI1 = new PlayerUI(200000, true);
         playerUI2 = new PlayerUI(200000, false);
-        this.sfx = new Sound();
-        combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1, this.sfx);
-        combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2, this.sfx);
+        combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
+        combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         loadLightningAnimation("SonTinh");
         loadLightningAnimation("ThuyTinh");
         loadSummonedEntityAnimation("SonTinh");

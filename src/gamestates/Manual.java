@@ -14,56 +14,27 @@ import java.awt.event.MouseEvent;
 
 import entity.Combat;
 import main.Game;
-import sound.Sound;
 import map.Map;
 import ui.KeyButton;
 import ui.PlayerUI;
 
-import entity.SummonSkill;
-import entity.Character;
-import entity.Combat;
 
-public class Manual extends Playing implements Statemethods{
+
+
+
+public class Manual extends Playing{
 
 //    private boolean[] keysPressed = new boolean[256];
     private KeyButton[] keyButtons = new KeyButton[19];
-//    private Map map;
-//    private Character sonTinh, thuyTinh;
-//    private PlayerUI playerUI1, playerUI2;
-//    private Combat combat1;
-//    private Combat combat2;
-//    private Sound sfx;
+
 
     public Manual(Game game) {
         super(game);
         loadKeyButtons();
         setMatchSettings(2);
     }
-    
-//    private void initClasses() {
-//        loadLightningAnimation("SonTinh");
-//        loadLightningAnimation("ThuyTinh");
-//        loadSummonedEntityAnimation("SonTinh");
-//        loadSummonedEntityAnimation("ThuyTinh");
-//        loadUltiCreatureAnimation("SonTinh");
-//        loadUltiCreatureAnimation("ThuyTinh");
-//        getEffectSprites();
-//		map = new Map(game, 0);
-//		thuyTinh = new Character(200f, 500f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
-//        sonTinh = new Character(800f, 500f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-//        playerUI1 = new PlayerUI(1000, true);
-//        playerUI2 = new PlayerUI(1000, false);
-//
-//    this.sfx = new Sound();
-//    combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1, this.sfx);
-//    combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2, this.sfx);
-//
-//	}
 
-//    public void windowFocusLost() {
-//		sonTinh.resetAllBools();
-//        thuyTinh.resetAllBools();
-//	}
+
 
     void loadKeyButtons(){
         keyButtons[0] = new KeyButton(K_XPOS, K_YPOS, 0); // "A"

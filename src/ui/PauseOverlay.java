@@ -14,7 +14,6 @@ import static utilz.Constants.UI.URMButton.*;
 import static utilz.Constants.UI.VolumeButton.*;
 
 public class PauseOverlay {
-
     private Playing playing;
     private BufferedImage backgroundImg;
     private int bgX, bgY, bgW, bgH;
@@ -197,4 +196,5 @@ public class PauseOverlay {
     private boolean isIn(MouseEvent e, PauseButton pb) {
         return pb.getBounds().contains(e.getX(), e.getY());
     }
+
 }
