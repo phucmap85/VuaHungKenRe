@@ -164,4 +164,11 @@ public class Combat {
         }
       
     }
+    public void resetCombat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
+        this.sonTinh = sonTinh;
+        this.thuyTinh = thuyTinh;
+        this.sonTinhUI = sonTinhUI;
+        this.thuyTinhUI = thuyTinhUI;
+        
+    }
 }

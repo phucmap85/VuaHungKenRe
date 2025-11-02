@@ -61,31 +61,25 @@ public class Playing extends State implements Statemethods {
 
     public void setMatchSettings(int mapID) {
         this.selectedMapIndex = mapID;
-        cleanupOldInstances();
-        initClasses(); 
-        /* init lai vi playing van dang o default map */
+        map = new Map(game, selectedMapIndex);
+        thuyTinh.setMap(map);
+        sonTinh.setMap(map);
+        resetAllStates();
     }
 
-    private void cleanupOldInstances() {
-    try {
-        map = null;
-        thuyTinh = null;
-        sonTinh = null;
-        playerUI1 = null;
-        playerUI2 = null;
-        combat1 = null;
-        combat2 = null;
-        if (sfx != null) {
-            sfx.cleanup();
-            sfx = null;
-        }
-        pauseOverlay = null;
-        System.gc(); 
-        System.out.println("[DEBUG] Old instances cleaned up successfully.");
-    } catch (Exception e) {
-        e.printStackTrace();
+    public void resetAllStates(){
+        thuyTinh.setPosition(200f, 535f);
+        sonTinh.setPosition(800f, 535f);
+        thuyTinh.resetAllBools();
+        sonTinh.resetAllBools();
+        thuyTinh.resetAllStates();
+        sonTinh.resetAllStates();
+        playerUI1.resetAll();
+        playerUI2.resetAll();
+        combat1.resetCombat(sonTinh, thuyTinh, playerUI2, playerUI1);
+        combat2.resetCombat(thuyTinh, sonTinh, playerUI1, playerUI2);
     }
-}
+
     public void windowFocusLost() {
 		sonTinh.resetAllBools();
         thuyTinh.resetAllBools();

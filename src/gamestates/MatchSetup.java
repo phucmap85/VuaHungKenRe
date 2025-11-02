@@ -36,9 +36,6 @@ public class MatchSetup extends State implements Statemethods {
 
     // State variables
     private int selectedMapIndex = 0;
-    private int currentRoundIndex = 1; // Default: 3 hiệp
-    private int currentTimeIndex = 1;  // Default: 99s
-    private int selectedOption = 0;    // 0 = Round, 1 = Time, 2 = Map
 
     public MatchSetup(Game game) {
         super(game);
@@ -79,14 +76,6 @@ public void draw(Graphics g) {
     BufferedImage background = LoadSave.GetSpriteAtlas(LoadSave.MatchSetupBackground);
     g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 
-    // FONT PREPARATION
-    g.setColor(Color.WHITE);
-    g.setFont(new Font("Arial", Font.BOLD, 30));
-
-    int textY = 100;
-    int textX = GAME_WIDTH / 2 - 400;
-    int valueX = GAME_WIDTH / 2 - 50;
-
     // DRAW TITLE
 
     if (title != null) {
@@ -97,7 +86,6 @@ public void draw(Graphics g) {
         }
     
     // --- MAP PREVIEW ---
-    textY += 50;
     if (mapPreviews[selectedMapIndex] != null) {
         int previewWidth = 710;
         int previewHeight = 463;
@@ -126,6 +114,7 @@ public void draw(Graphics g) {
     if (fadeAlpha < 1.0f) {
     Graphics g2 = g.create();
     g2.setColor(new Color(0, 0, 0, 1f - fadeAlpha)); // lớp mờ
+    
     // Chỉ phủ lên vùng map preview
     int previewWidth = 710;
     int previewHeight = 463;
@@ -158,15 +147,15 @@ public void draw(Graphics g) {
                 lastPressTimeRight = System.currentTimeMillis();
                 break;
 
-        case KeyEvent.VK_ENTER:
-            game.getPlaying().setMatchSettings(mapValues[selectedMapIndex]);
-            Gamestate.state = Gamestate.PLAYING;
-            break;
-        case KeyEvent.VK_ESCAPE:
-            Gamestate.state = Gamestate.MENU;
-            break;
+            case KeyEvent.VK_ENTER:
+                game.getPlaying().setMatchSettings(mapValues[selectedMapIndex]);
+                Gamestate.state = Gamestate.PLAYING;
+                break;
+            case KeyEvent.VK_ESCAPE:
+                Gamestate.state = Gamestate.MENU;
+                break;
+        }
     }
-}
 
 
 public void update() {

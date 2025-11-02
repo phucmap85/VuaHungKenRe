@@ -175,6 +175,9 @@ public class Character extends Entity {
         }
     }
 
+    public void setMap(map.Map map){
+        this.map = map;
+    }
     public void updateJumping() {
         if (jump && !jumping && !takingHit && !summoning && !falling) {
             jumping = true;
@@ -320,6 +323,7 @@ public class Character extends Entity {
         updateBoxes();
     }
 
+    
     public void setAnimations() {
         int startAnim = playerAction;
 
@@ -503,6 +507,12 @@ public class Character extends Entity {
     public void setCallUltiEntity(boolean callUltiEntity) {
         this.callUltiEntity = callUltiEntity;
     }
+    public void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+        updateBoxes();
+    }
+    
     public void resetAllBools() {
         left = false;
         right = false;

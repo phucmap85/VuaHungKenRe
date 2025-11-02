@@ -76,6 +76,13 @@ public class ManaBar {
     public void takeMana(int amount) {
         mana = Math.max(0, mana - amount);
     }
-
+    
+    public void setMana(int amount) {
+        mana = Math.min(maxMana, Math.max(0, amount));
+    }
+    
+    public void resetMana() {
+        mana = 0;
+    }
     public int getMana() { return mana; }
 }

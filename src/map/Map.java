@@ -54,6 +54,9 @@ public class Map {
         return platforms;
     }
 
+    public int getMapID() {
+        return mapID;
+    }
     public float getGroundY() {
         return groundY;
     }
