@@ -141,6 +141,9 @@ public class UltiSkill extends Entity {
     public boolean lightningAppeared(){
         return lightningAppeared;
     }
+    public boolean setActive(boolean val){
+        return this.isActive = val;
+    }
     public int getDirection(){
         return direction;
     }   
