@@ -97,7 +97,7 @@ public class Character extends Entity {
         if (!falling && takingHit && healthTakenPerCombo >= healthThresholdForFalling) {
             resetAllStates();
             falling = true;
-            if("sonTinh".equals(name)){
+            if("SonTinh".equals(name)){
                 Game.soundPlayer.playOverlap(SoundManager.SONTINHFALL, name);
             }
             else{
@@ -121,7 +121,7 @@ public class Character extends Entity {
         if(ulti && !ulting && !jumping && !takingHit && !falling && !inAir && mana == maxMana){
             ulting = true;
             callUltiEntity = true;
-            if("sonTinh".equals(name)){
+            if("SonTinh".equals(name)){
                 Game.soundPlayer.playOverlap(SoundManager.SONTINHULTI, name);
             }
             else{
@@ -136,7 +136,7 @@ public class Character extends Entity {
         if (summon && !summoning && !jumping && !takingHit && !falling && !inAir && mana >= summonManaCost) {
             resetAllStates();
             summoning = true;
-            if("sonTinh".equals(name)){
+            if("SonTinh".equals(name)){
                 Game.soundPlayer.play(SoundManager.SONTINHSUMMON, name);
             }
             else{
