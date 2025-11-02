@@ -98,10 +98,10 @@ public class Character extends Entity {
             resetAllStates();
             falling = true;
             if("sonTinh".equals(name)){
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHFALL);
+                Game.soundPlayer.playOverlap(SoundManager.SONTINHFALL, name);
             }
             else{
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHFALL);
+                Game.soundPlayer.playOverlap(SoundManager.THUYTINHFALL, name);
             }
         }
     }
@@ -122,10 +122,10 @@ public class Character extends Entity {
             ulting = true;
             callUltiEntity = true;
             if("sonTinh".equals(name)){
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHULTI);
+                Game.soundPlayer.playOverlap(SoundManager.SONTINHULTI, name);
             }
             else{
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHULTI);
+                Game.soundPlayer.playOverlap(SoundManager.THUYTINHULTI, name);
             }
         } else if(ulting == true && framesIndex == getFramesAmount(playerAction) -1 && framesCounter >= normalAniSpeed -1){
             ulting = false;
@@ -137,10 +137,10 @@ public class Character extends Entity {
             resetAllStates();
             summoning = true;
             if("sonTinh".equals(name)){
-                Game.soundPlayer.play(SoundManager.SONTINHSUMMON);
+                Game.soundPlayer.play(SoundManager.SONTINHSUMMON, name);
             }
             else{
-                Game.soundPlayer.play(SoundManager.THUYTINHSUMMON);
+                Game.soundPlayer.play(SoundManager.THUYTINHSUMMON, name);
             }
         } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {
             callSummonedEntity = true;
@@ -152,11 +152,11 @@ public class Character extends Entity {
     public void updateDash(){
         if(dash && !dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
             dashing = true;
-            if("sonTinh".equals(name)){
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHDASH);
+            if("SonTinh".equals(name)){
+                Game.soundPlayer.playOverlap(SoundManager.SONTINHDASH, name);
             }
             else{
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHDASH);
+                Game.soundPlayer.playOverlap(SoundManager.THUYTINHDASH, name);
             }
             dashCounter = 0;
             if(direction == RIGHT){
@@ -178,9 +178,9 @@ public class Character extends Entity {
         if (defend && !defending && !jumping && !summoning && !takingHit && !falling) {
             defending = true;
             if("SonTinh".equals(name)) {
-                Game.soundPlayer.play(SoundManager.SONTINHBLOCK);
+                Game.soundPlayer.play(SoundManager.SONTINHBLOCK, name);
             } else {
-                Game.soundPlayer.play(SoundManager.THUYTINHBLOCK);
+                Game.soundPlayer.play(SoundManager.THUYTINHBLOCK, name);
             }
         } else if (!defend || (defending && healthDefend >= healthThresholdForDefend)) {
             defending = false;
@@ -196,9 +196,9 @@ public class Character extends Entity {
         }
         if (punching) {
             if ("SonTinh".equals(name)) {
-                Game.soundPlayer.play(SoundManager.SONTINHPUNCH);
+                Game.soundPlayer.play(SoundManager.SONTINHPUNCH, name);
             } else {
-                Game.soundPlayer.play(SoundManager.THUYTINHPUNCH);
+                Game.soundPlayer.play(SoundManager.THUYTINHPUNCH, name);
             }
         }
         if (punching && !punch && System.currentTimeMillis() - lastPunchTime >= PUNCH_RESET_TIME) {
@@ -221,9 +221,9 @@ public class Character extends Entity {
         if (jump && !jumping && !takingHit && !summoning && !falling) {
             jumping = true;
             if ("SonTinh".equals(name)) {
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHJUMP);
+                Game.soundPlayer.playOverlap(SoundManager.SONTINHJUMP, name);
             } else {
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHJUMP);
+                Game.soundPlayer.playOverlap(SoundManager.THUYTINHJUMP, name);
             }
         }
     }
