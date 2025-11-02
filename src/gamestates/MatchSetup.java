@@ -28,6 +28,7 @@ public class MatchSetup extends State implements Statemethods {
     private static final float FADE_SPEED = 0.05f; // tốc độ mờ (0.05f = nhanh, giảm xuống để chậm hơn)
     private Map map;
     private BufferedImage[] mapPreviews;
+    private BufferedImage background;
 
     private String[] mapOptions = { "Map 1 (Default)", "Map 2 (New)"};
     
@@ -40,6 +41,7 @@ public class MatchSetup extends State implements Statemethods {
     public MatchSetup(Game game) {
         super(game);
         loadMapPreviews();
+        loadBackground();
         loadButtons();
         loadTitle();
     }
@@ -70,10 +72,13 @@ public class MatchSetup extends State implements Statemethods {
         prevButtonFrames[1] = LoadSave.flipHorizontally(nextButtonFrames[1]);
 }
 
+    private void loadBackground() {
+    background = LoadSave.GetSpriteAtlas(LoadSave.MatchSetupBackground);
+}
+
     @Override
 public void draw(Graphics g) {
     // BACKGROUND
-    BufferedImage background = LoadSave.GetSpriteAtlas(LoadSave.MatchSetupBackground);
     g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 
     // DRAW TITLE
