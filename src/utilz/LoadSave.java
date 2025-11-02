@@ -88,6 +88,7 @@ public class LoadSave {
                 {"TAKINGHIT","3","NORMAL"},
                 {"FALLINGBACKDEATH","12","NORMAL"},
                 {"SUMMONSKILL","6","NORMAL"},
+                {"DASH", "1","NORMAL"},
                 {"SUMMONULTI","6","NORMAL"}        // Con lốc xoáy chỉ có 1 chiều -> animations[12]
             };
         }
