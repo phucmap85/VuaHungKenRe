@@ -70,66 +70,65 @@ public class MatchSetup extends State implements Statemethods {
         prevButtonFrames = new BufferedImage[2];
         prevButtonFrames[0] = LoadSave.flipHorizontally(nextButtonFrames[0]);
         prevButtonFrames[1] = LoadSave.flipHorizontally(nextButtonFrames[1]);
-}
+    }
 
     private void loadBackground() {
-    background = LoadSave.GetSpriteAtlas(LoadSave.MatchSetupBackground);
-}
+        background = LoadSave.GetSpriteAtlas(LoadSave.MatchSetupBackground);
+    }
 
     @Override
-public void draw(Graphics g) {
-    // BACKGROUND
-    g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
+    public void draw(Graphics g) {
+        // BACKGROUND
+        g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 
-    // DRAW TITLE
+        // DRAW TITLE
 
-    if (title != null) {
+        if (title != null) {
             int scaledW = (int) (title.getWidth() * 0.3);
             int scaledH = (int) (title.getHeight() * 0.3);
             int titleX = 395;
             g.drawImage(title, titleX, -90, scaledW, scaledH, null);
         }
-    
-    // --- MAP PREVIEW ---
-    if (mapPreviews[selectedMapIndex] != null) {
-        int previewWidth = 710;
-        int previewHeight = 463;
-        int previewX = 194;
-        int previewY = 152;
+        
+        // --- MAP PREVIEW ---
+        if (mapPreviews[selectedMapIndex] != null) {
+            int previewWidth = 710;
+            int previewHeight = 463;
+            int previewX = 194;
+            int previewY = 152;
 
-        g.drawImage(mapPreviews[selectedMapIndex], previewX, previewY, previewWidth, previewHeight, null);
-        g.setColor(Color.GRAY);
-        g.drawRect(previewX, previewY, previewWidth, previewHeight);
-        g.setFont(new Font("Arial", Font.BOLD, 18));
+            g.drawImage(mapPreviews[selectedMapIndex], previewX, previewY, previewWidth, previewHeight, null);
+            g.setColor(Color.GRAY);
+            g.drawRect(previewX, previewY, previewWidth, previewHeight);
+            g.setFont(new Font("Arial", Font.BOLD, 18));
+        }
+
+        // --- DRAW ARROWS ---
+        int arrowY = 307;
+        int arrowW = 64, arrowH = 128;
+
+        int leftX = (GAME_WIDTH / 2) - 500;
+        int leftFrame = leftPressed ? 1 : 0;
+        g.drawImage(prevButtonFrames[leftFrame], leftX, arrowY, arrowW, arrowH, null);
+
+        int rightX = GAME_WIDTH / 2 + 436;
+        int rightFrame = rightPressed ? 1 : 0;
+        g.drawImage(nextButtonFrames[rightFrame], rightX, arrowY, arrowW, arrowH, null);
+
+        // --- FADE EFFECT ---
+        if (fadeAlpha < 1.0f) {
+            Graphics g2 = g.create();
+            g2.setColor(new Color(0, 0, 0, 1f - fadeAlpha)); // lớp mờ
+            
+            // Chỉ phủ lên vùng map preview
+            int previewWidth = 710;
+            int previewHeight = 463;
+            int previewX = 194;
+            int previewY = 152;
+            g2.fillRect(previewX, previewY, previewWidth, previewHeight);
+            g2.dispose();
+        }
     }
-
-    // --- DRAW ARROWS ---
-    int arrowY = 307;
-    int arrowW = 64, arrowH = 128;
-
-    int leftX = (GAME_WIDTH / 2) - 500;
-    int leftFrame = leftPressed ? 1 : 0;
-    g.drawImage(prevButtonFrames[leftFrame], leftX, arrowY, arrowW, arrowH, null);
-
-    int rightX = GAME_WIDTH / 2 + 436;
-    int rightFrame = rightPressed ? 1 : 0;
-    g.drawImage(nextButtonFrames[rightFrame], rightX, arrowY, arrowW, arrowH, null);
-
-    // --- FADE EFFECT ---
-    if (fadeAlpha < 1.0f) {
-    Graphics g2 = g.create();
-    g2.setColor(new Color(0, 0, 0, 1f - fadeAlpha)); // lớp mờ
-    
-    // Chỉ phủ lên vùng map preview
-    int previewWidth = 710;
-    int previewHeight = 463;
-    int previewX = 194;
-    int previewY = 152;
-    g2.fillRect(previewX, previewY, previewWidth, previewHeight);
-    g2.dispose();
-}
-}
-
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -163,35 +162,31 @@ public void draw(Graphics g) {
     }
 
 
-public void update() {
-    long now = System.currentTimeMillis();
-    if (rightPressed && now - lastPressTimeRight > PRESS_DURATION) rightPressed = false;
-    if (leftPressed && now - lastPressTimeLeft > PRESS_DURATION) leftPressed = false;
+    public void update() {
+        long now = System.currentTimeMillis();
+        if (rightPressed && now - lastPressTimeRight > PRESS_DURATION) rightPressed = false;
+        if (leftPressed && now - lastPressTimeLeft > PRESS_DURATION) leftPressed = false;
 
-    // --- Hiệu ứng mờ ---
-    if (fadingOut) {
-        fadeAlpha -= FADE_SPEED;
-        if (fadeAlpha <= 0f) {
-            fadeAlpha = 0f;
-            fadingOut = false;
-            selectedMapIndex = nextMapIndex; // đổi map
-            fadingIn = true; // bắt đầu sáng lại
-        }
-    } else if (fadingIn) {
-        fadeAlpha += FADE_SPEED;
-        if (fadeAlpha >= 1f) {
-            fadeAlpha = 1f;
-            fadingIn = false;
+        // --- Hiệu ứng mờ ---
+        if (fadingOut) {
+            fadeAlpha -= FADE_SPEED;
+            if (fadeAlpha <= 0f) {
+                fadeAlpha = 0f;
+                fadingOut = false;
+                selectedMapIndex = nextMapIndex; // đổi map
+                fadingIn = true; // bắt đầu sáng lại
+            }
+        } else if (fadingIn) {
+            fadeAlpha += FADE_SPEED;
+            if (fadeAlpha >= 1f) {
+                fadeAlpha = 1f;
+                fadingIn = false;
+            }
         }
     }
-}
 
     @Override public void keyPressed(KeyEvent e) {}
-    @Override public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        System.out.println("[DEBUG] Mouse clicked at: X=" + x + ", Y=" + y);
-    }
+    @Override public void mouseClicked(MouseEvent e) {}
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}
     @Override public void mouseMoved(MouseEvent e) {}
