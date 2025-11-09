@@ -24,7 +24,7 @@ public class Combat {
         this.sonTinhUI = sonTinhUI;
         this.thuyTinhUI = thuyTinhUI;
         hog = new SummonSkill[6];
-        effectManager = new EffectManager(3);
+        effectManager = new EffectManager(1);
 
     }
 

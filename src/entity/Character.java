@@ -150,8 +150,9 @@ public class Character extends Entity {
     }
 
     public void updateDash(){
-        if(dash && !dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
+        if(dash &&!dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
             dashing = true;
+            punching = false;
             if("SonTinh".equals(name)){
                 Game.soundPlayer.playOverlap(SoundManager.SONTINHDASH, name);
             }
