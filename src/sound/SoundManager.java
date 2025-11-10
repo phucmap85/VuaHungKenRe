@@ -5,23 +5,34 @@ public enum SoundManager {
     PLAYING(1, "/sound/audio/playing.wav"),
     ENDING(2, "/sound/audio/ending.wav"),
 
-    SONTINHPUNCH(3, "/sound/audio/sontinh_punch.wav"),
-    SONTINHSUMMON(4, "/sound/audio/sontinh_summon.wav"),
-    SONTINHULTI(5, "/sound/audio/sontinh_ulti.wav"),
-    SONTINHBLOCK(6, "/sound/audio/sontinh_block.wav"),
-    SONTINHDASH(7, "/sound/audio/sontinh_dash.wav"),
-    SONTINHJUMP(8, "/sound/audio/sontinh_jump.wav"),
-    SONTINHFALL(9, "/sound/audio/sontinh_fall.wav"),
+    SONTINHPUNCH1(3, "/sound/audio/sontinh_punch1.wav"),
+    SONTINHPUNCH2(4, "/sound/audio/sontinh_punch2.wav"),
+    SONTINHSUMMON(5, "/sound/audio/sontinh_summon.wav"),
+    SONTINHULTI(6, "/sound/audio/sontinh_ulti.wav"),
+    SONTINHBLOCK(7, "/sound/audio/sontinh_block.wav"),
+    SONTINHDASH(8, "/sound/audio/sontinh_dash.wav"),
+    SONTINHJUMP(9, "/sound/audio/sontinh_jump.wav"),
+    SONTINHFALL(10, "/sound/audio/sontinh_fall.wav"),
+    SONTINHMOVING(11, "/sound/audio/sontinh_moving.wav"),
+    SONTINHLANDING(12, "/sound/audio/sontinh_landing.wav"),
+    SQUID(13, "/sound/audio/squid.wav"),
 
-    THUYTINHPUNCH(10, "/sound/audio/thuytinh_punch.wav"),
-    THUYTINHSUMMON(11, "/sound/audio/thuytinh_summon.wav"),
-    THUYTINHULTI(12, "/sound/audio/thuytinh_ulti.wav"),
-    THUYTINHBLOCK(13, "/sound/audio/thuytinh_block.wav"),
-    THUYTINHDASH(14, "/sound/audio/thuytinh_dash.wav"),
-    THUYTINHJUMP(15, "/sound/audio/thuytinh_jump.wav"),
-    THUYTINHFALL(16, "/sound/audio/thuytinh_fall.wav"),
+    THUYTINHPUNCH1(14, "/sound/audio/thuytinh_punch1.wav"),
+    THUYTINHPUNCH2(15, "/sound/audio/thuytinh_punch2.wav"),
+    THUYTINHSUMMON(16, "/sound/audio/thuytinh_summon.wav"),
+    THUYTINHULTI(17, "/sound/audio/thuytinh_ulti.wav"),
+    THUYTINHBLOCK(18, "/sound/audio/thuytinh_block.wav"),
+    THUYTINHDASH(19, "/sound/audio/thuytinh_dash.wav"),
+    THUYTINHJUMP(20, "/sound/audio/thuytinh_jump.wav"),
+    THUYTINHFALL(21, "/sound/audio/thuytinh_fall.wav"),
+    THUYTINHMOVING(22, "/sound/audio/thuytinh_moving.wav"),
+    THUYTINHLANDING(23, "/sound/audio/thuytinh_landing.wav"),
+    PHOENIX(24, "/sound/audio/phoenix.wav"),
 
-    CLICKBUTTON(17, "/sound/audio/click_button.wav");
+    LIGHTNING(25, "/sound/audio/lightning.wav"),
+    BOMB(26, "/sound/audio/bomb.wav"),
+
+    CLICKBUTTON(27, "/sound/audio/click_button.wav");
 
     private final int index;
     private final String path;

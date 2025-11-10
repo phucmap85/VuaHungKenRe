@@ -48,8 +48,7 @@ public class LoadSave {
     private static boolean allAnimationsLoaded = false;
 
     // ============= SOUND CACHE =============
-    private static final Map<Integer, Clip[]> soundCache = new HashMap<>();
-    private static final int CACHE_SIZE = 3;
+    private static final Map<Integer, Clip> soundCache = new HashMap<>();
     private static boolean soundsPreloaded = false;
 
     // ============= MAIN LOADING METHODS =============
@@ -361,8 +360,6 @@ public class LoadSave {
                 System.out.println("Can't load sound: " + path);
                 return;
             }
-            Clip[] clips = new Clip[CACHE_SIZE];
-            for (int i = 0; i < CACHE_SIZE; i++) {
                 AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
                 Clip clip = AudioSystem.getClip();
                 clip.open(ais);
@@ -371,35 +368,14 @@ public class LoadSave {
                         clip.setFramePosition(0);
                     }
                 });
-                clips[i] = clip;
-            }
-            soundCache.put(se.getIndex(), clips);
+            soundCache.put(se.getIndex(), clip);
         } catch (Exception e) {
-            // Silent fail
+            e.printStackTrace();
         }
     }
 
     public static Clip getSoundClip(int soundIndex) {
-        Clip[] clips = soundCache.get(soundIndex);
-        if (clips == null) return null;
-        for (Clip clip : clips) {
-            if (!clip.isRunning()) return clip;
-        }
-        return clips[0];
+        return soundCache.get(soundIndex);
     }
-    
-    public static void cleanupSounds() {
-        for (Clip[] clips : soundCache.values()) {
-            for (Clip clip : clips) {
-                try {
-                    if (clip.isRunning()) clip.stop();
-                    clip.close();
-                } catch (Exception e) {
-                    // Silent fail
-                }
-            }
-        }
-        soundCache.clear();
-        soundsPreloaded = false;
-    }
+
 }

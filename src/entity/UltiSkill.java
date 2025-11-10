@@ -8,6 +8,9 @@ import static utilz.LoadSave.loadUltiCreatureAnimation;
 import static utilz.Constants.GameConstants.GAME_WIDTH;
 import static utilz.Constants.PlayerConstants.*;
 
+import main.Game;
+import sound.SoundManager;
+
 public class UltiSkill extends Entity {
     private String characterName;
     // image
@@ -97,6 +100,11 @@ public class UltiSkill extends Entity {
         else {
             if(framesCounterforMonster >= aniSpeedForMonster){
                 framesCounterforMonster = 0;
+                if(framesIndexforMonster == 5)  {
+                    if("SonTinh".equals(characterName)){
+                    Game.soundPlayer.play(SoundManager.PHOENIX);}
+                    else Game.soundPlayer.play(SoundManager.SQUID);
+                }
                 framesIndexforMonster++;
                 if(framesIndexforMonster >= maxFramesMonster){
                     monsterAppeared = false;
@@ -109,6 +117,9 @@ public class UltiSkill extends Entity {
             framesCounterforLightning++;
             if(framesCounterforLightning >= aniSpeedForLightning){
                 framesCounterforLightning = 0;
+                if(framesIndexforLightning == 1)  Game.soundPlayer.play(SoundManager.LIGHTNING);
+                if(framesIndexforLightning == 1)  Game.soundPlayer.play(SoundManager.BOMB);
+                if(framesIndexforLightning == 14)  Game.soundPlayer.play(SoundManager.BOMB);
                 framesIndexforLightning++;
                 if(framesIndexforLightning >= maxFramesLightning){
                     lightningAppeared = false;

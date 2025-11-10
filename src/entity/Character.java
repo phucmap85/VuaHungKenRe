@@ -98,10 +98,10 @@ public class Character extends Entity {
             resetAllStates();
             falling = true;
             if("SonTinh".equals(name)){
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHFALL, name);
+                Game.soundPlayer.play(SoundManager.SONTINHFALL);
             }
             else{
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHFALL, name);
+                Game.soundPlayer.play(SoundManager.THUYTINHFALL);
             }
         }
     }
@@ -121,12 +121,6 @@ public class Character extends Entity {
         if(ulti && !ulting && !jumping && !takingHit && !falling && !inAir && mana == maxMana){
             ulting = true;
             callUltiEntity = true;
-            if("SonTinh".equals(name)){
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHULTI, name);
-            }
-            else{
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHULTI, name);
-            }
         } else if(ulting == true && framesIndex == getFramesAmount(playerAction) -1 && framesCounter >= normalAniSpeed -1){
             ulting = false;
         }
@@ -137,10 +131,10 @@ public class Character extends Entity {
             resetAllStates();
             summoning = true;
             if("SonTinh".equals(name)){
-                Game.soundPlayer.play(SoundManager.SONTINHSUMMON, name);
+                Game.soundPlayer.play(SoundManager.SONTINHSUMMON);
             }
             else{
-                Game.soundPlayer.play(SoundManager.THUYTINHSUMMON, name);
+                Game.soundPlayer.play(SoundManager.THUYTINHSUMMON);
             }
         } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {
             callSummonedEntity = true;
@@ -153,18 +147,24 @@ public class Character extends Entity {
         if(dash &&!dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
             dashing = true;
             punching = false;
-            if("SonTinh".equals(name)){
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHDASH, name);
-            }
-            else{
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHDASH, name);
-            }
             dashCounter = 0;
             if(direction == RIGHT){
                 effectManager.addEffect(x-100, y, SMOKE_RIGHT);
+                if("SonTinh".equals(name)){
+                    Game.soundPlayer.play(SoundManager.SONTINHDASH);
+            }
+                else{
+                    Game.soundPlayer.play(SoundManager.THUYTINHDASH);
+            }
             }
             else{
                 effectManager.addEffect(x+100, y, SMOKE_LEFT);
+                if("SonTinh".equals(name)){
+                    Game.soundPlayer.play(SoundManager.SONTINHDASH);
+            }
+                else{
+                    Game.soundPlayer.play(SoundManager.THUYTINHDASH);
+            }
             }
         }
         if(dashing){
@@ -179,9 +179,9 @@ public class Character extends Entity {
         if (defend && !defending && !jumping && !summoning && !takingHit && !falling) {
             defending = true;
             if("SonTinh".equals(name)) {
-                Game.soundPlayer.play(SoundManager.SONTINHBLOCK, name);
+                Game.soundPlayer.play(SoundManager.SONTINHBLOCK);
             } else {
-                Game.soundPlayer.play(SoundManager.THUYTINHBLOCK, name);
+                Game.soundPlayer.play(SoundManager.THUYTINHBLOCK);
             }
         } else if (!defend || (defending && healthDefend >= healthThresholdForDefend)) {
             defending = false;
@@ -195,13 +195,7 @@ public class Character extends Entity {
             resetAllStates();
             punching = true;
         }
-        if (punching) {
-            if ("SonTinh".equals(name)) {
-                Game.soundPlayer.play(SoundManager.SONTINHPUNCH, name);
-            } else {
-                Game.soundPlayer.play(SoundManager.THUYTINHPUNCH, name);
-            }
-        }
+
         if (punching && !punch && System.currentTimeMillis() - lastPunchTime >= PUNCH_RESET_TIME) {
             punching = false;
         }
@@ -222,9 +216,9 @@ public class Character extends Entity {
         if (jump && !jumping && !takingHit && !summoning && !falling) {
             jumping = true;
             if ("SonTinh".equals(name)) {
-                Game.soundPlayer.playOverlap(SoundManager.SONTINHJUMP, name);
+                Game.soundPlayer.play(SoundManager.SONTINHJUMP);
             } else {
-                Game.soundPlayer.playOverlap(SoundManager.THUYTINHJUMP, name);
+                Game.soundPlayer.play(SoundManager.THUYTINHJUMP);
             }
         }
     }
@@ -354,12 +348,24 @@ public class Character extends Entity {
             }
         }
         effectManager.addEffect(x , y + 50, LANDING_RIGHT);
+        if("SonTinh".equals(name)){
+            Game.soundPlayer.play(SoundManager.SONTINHLANDING);
+        }
+        else{
+            Game.soundPlayer.play(SoundManager.THUYTINHLANDING);
+        }
     } else if (willHitGround(hurtBox, velocityY, groundY)) {
         y = groundY - hurtBox.height - y_OffSetHurtBox;
         velocityY = 0;
         inAir = false;
         jumping = false;
         effectManager.addEffect(x , y + 50, LANDING_RIGHT);
+        if("SonTinh".equals(name)){
+            Game.soundPlayer.play(SoundManager.SONTINHLANDING);
+        }
+        else{
+            Game.soundPlayer.play(SoundManager.THUYTINHLANDING);
+        }
     } else {
         y += velocityY;
     }
@@ -450,6 +456,33 @@ public class Character extends Entity {
             if (framesCounter >= currentSpeed) {
                 framesCounter = 0;
                 framesIndex++;
+                if (framesIndex == 2 && (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT)) {
+                    if ("SonTinh".equals(name)) {
+                        Game.soundPlayer.play(SoundManager.SONTINHPUNCH1);
+                    } else {
+                        Game.soundPlayer.play(SoundManager.THUYTINHPUNCH1);
+                    }
+                } else if (framesIndex == 12 && (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT)) {
+                    if ("SonTinh".equals(name)) {
+                        Game.soundPlayer.play(SoundManager.SONTINHPUNCH2);
+                    } else {
+                        Game.soundPlayer.play(SoundManager.THUYTINHPUNCH2);
+                    }
+                }
+                if (framesIndex == 1 && (playerAction == MOVE_LEFT || playerAction == MOVE_RIGHT)) {
+                    if ("SonTinh".equals(name)) {
+                        Game.soundPlayer.play(SoundManager.SONTINHMOVING);
+                    } else {
+                        Game.soundPlayer.play(SoundManager.THUYTINHMOVING);
+                    }
+                }
+                if (framesIndex == 3 && (playerAction == MOVE_LEFT || playerAction == MOVE_RIGHT)) {
+                    if ("SonTinh".equals(name)) {
+                        Game.soundPlayer.play(SoundManager.SONTINHMOVING);
+                    } else {
+                        Game.soundPlayer.play(SoundManager.THUYTINHMOVING);
+                    }
+                }
                 if (framesIndex >= getFramesAmount(playerAction)) {
                     framesIndex = 0;
                 }

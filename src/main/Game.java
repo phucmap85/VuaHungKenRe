@@ -3,7 +3,6 @@ package main;
 import java.awt.Graphics;
 
 import static utilz.Constants.GameConstants.*;
-import static utilz.LoadSave.cleanupSounds;
 import static utilz.LoadSave.preloadSounds;
 
 
@@ -85,7 +84,6 @@ public class Game implements Runnable {
 			case OPTIONS:
 			case QUIT:
 			default:
-				cleanupSounds();
 				System.exit(0);
 				break;
 		}
