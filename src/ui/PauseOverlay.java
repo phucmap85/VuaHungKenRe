@@ -22,6 +22,8 @@ public class PauseOverlay {
     private SoundButton musicButton, sfxButton;
     private UrmButton menuB, replayB, unpauseB;
     private VolumeButton volumeButton;
+    private float lastMusicVolume = 0.5f;
+    private float lastSfxVolume = 0.5f;
 
     public PauseOverlay(Playing playing) {
         this.playing = playing;
@@ -98,27 +100,43 @@ public class PauseOverlay {
     public void mouseDragged(MouseEvent e) {
         if(volumeButton.isMousePressed()) {
             volumeButton.changeVolume(e.getX());
+            float newVolume = volumeButton.getVolumeLevel();
+            if(musicButton.isMuted()) {
+                lastMusicVolume = newVolume;
+            }
+            else {
+                Game.soundPlayer.setMusicVolume(newVolume);
+            }
+            
         }
     }
 
     public void mousePressed(MouseEvent e) {
         if(isIn(e, musicButton)) {
             musicButton.setMousePressed(true);
+            Game.soundPlayer.play(SoundManager.CLICKBUTTON);
         } 
         else if(isIn(e, sfxButton)) {
             sfxButton.setMousePressed(true);
+            Game.soundPlayer.play(SoundManager.CLICKBUTTON);
         }
         else if(isIn(e, menuB)) {
             menuB.setMousePressed(true);
+            Game.soundPlayer.play(SoundManager.CLICKBUTTON);
         }
         else if(isIn(e, replayB)) {
             replayB.setMousePressed(true);
+            Game.soundPlayer.play(SoundManager.CLICKBUTTON);
         }
         else if(isIn(e, unpauseB)) {
             unpauseB.setMousePressed(true);
+            Game.soundPlayer.play(SoundManager.CLICKBUTTON);
         }
         else if(isIn(e, volumeButton)) {
             volumeButton.setMousePressed(true);
+            Game.soundPlayer.play(SoundManager.CLICKBUTTON);
+            volumeButton.changeVolume(e.getX());
+            lastMusicVolume = volumeButton.getVolumeLevel();
         }
     }
 
@@ -126,12 +144,14 @@ public class PauseOverlay {
         if(isIn(e, musicButton)) {
             if(musicButton.isMousePressed()) {
                 musicButton.setMuted(!musicButton.isMuted());
+                Game.soundPlayer.setMusicVolume(musicButton.isMuted() ? 0 : lastMusicVolume);
             }
             musicButton.setMousePressed(false);
         } 
         else if(isIn(e, sfxButton)) {
             if(sfxButton.isMousePressed()) {
                 sfxButton.setMuted(!sfxButton.isMuted());
+                Game.soundPlayer.setSfxVolume(sfxButton.isMuted() ? 0 : lastSfxVolume);
             }
             sfxButton.setMousePressed(false);
         }

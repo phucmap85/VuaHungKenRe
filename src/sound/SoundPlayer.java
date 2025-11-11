@@ -8,7 +8,7 @@ public class SoundPlayer {
     private Clip currentMusicClip;
     
 
-    private float musicVolume = 0.3f;
+    private float musicVolume = 0.5f;
     private float sfxVolume = 0.5f; // (0.0 đến 1.0)
 
     public void setMusicVolume(float volume) {

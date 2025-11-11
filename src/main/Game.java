@@ -52,6 +52,7 @@ public class Game implements Runnable {
 
 	public void update() {
 		if (oldState != Gamestate.state) {
+			Game.soundPlayer.play(SoundManager.CLICKBUTTON);
             soundPlayer.stopMusic(); // Dừng nhạc cũ
             switch (Gamestate.state) {
                 case MENU:
@@ -63,6 +64,9 @@ public class Game implements Runnable {
 				case MANUAL:
                     soundPlayer.loop(SoundManager.PLAYING);
                     break;
+				case MATCH_SETUP:
+					soundPlayer.loop(SoundManager.SELECTION);
+					break;
 				default:
 					break;
             }

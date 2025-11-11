@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import utilz.LoadSave;
 import static utilz.Constants.GameConstants.*;
 import main.Game;
+import sound.SoundManager;
 import map.Map;
 
 public class MatchSetup extends State implements Statemethods {
@@ -137,6 +138,7 @@ public class MatchSetup extends State implements Statemethods {
                 if (!fadingOut && !fadingIn) { // chỉ cho fade nếu không đang hiệu ứng
                     nextMapIndex = (selectedMapIndex - 1 + mapOptions.length) % mapOptions.length;
                     fadingOut = true;
+                    Game.soundPlayer.play(SoundManager.CLICKBUTTON);
                 }
                 leftPressed = true;
                 lastPressTimeLeft = System.currentTimeMillis();
@@ -146,6 +148,7 @@ public class MatchSetup extends State implements Statemethods {
                 if (!fadingOut && !fadingIn) {
                     nextMapIndex = (selectedMapIndex + 1) % mapOptions.length;
                     fadingOut = true;
+                    Game.soundPlayer.play(SoundManager.CLICKBUTTON);
                 }
                 rightPressed = true;
                 lastPressTimeRight = System.currentTimeMillis();
