@@ -3,10 +3,12 @@ package sound;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import utilz.LoadSave;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SoundPlayer {
     private Clip currentMusicClip;
-    
+    private ConcurrentLinkedQueue<Clip> activeSfxClips = new ConcurrentLinkedQueue<>();
+    private static final int MAX_SIMULTANEOUS_SFX = 15;
 
     private float musicVolume = 0.5f;
     private float sfxVolume = 0.5f; // (0.0 đến 1.0)
@@ -49,11 +51,46 @@ public class SoundPlayer {
 
     public void play(SoundManager se) {
         if (se == null) return;
-        Clip clip = LoadSave.getSoundClip(se.getIndex());
-
+        
+        // Cleanup các clip đã phát xong
+        activeSfxClips.removeIf(c -> !c.isRunning());
+        
+        // Giới hạn số lượng SFX đồng thời
+        if (activeSfxClips.size() >= MAX_SIMULTANEOUS_SFX) {
+            Clip oldest = activeSfxClips.poll();
+            if (oldest != null) {
+                oldest.stop();
+            }
+        }
+        
+        // Lấy clip từ pool/cache
+        Clip clip = LoadSave.getAvailableSfxClip(se.getIndex());
+        
         if (clip != null) {
             setClipVolume(clip, sfxVolume);
             clip.setFramePosition(0);
+            activeSfxClips.add(clip);
+            clip.start();
+        }
+    }
+    public void play(Clip clip) {
+        if (clip == null) return;
+        
+        // Cleanup các clip đã phát xong
+        activeSfxClips.removeIf(c -> !c.isRunning());
+        
+        // Giới hạn số lượng SFX đồng thời
+        if (activeSfxClips.size() >= MAX_SIMULTANEOUS_SFX) {
+            Clip oldest = activeSfxClips.poll();
+            if (oldest != null) {
+                oldest.stop();
+            }
+        }
+        
+        if (clip != null) {
+            setClipVolume(clip, sfxVolume);
+            clip.setFramePosition(0);
+            activeSfxClips.add(clip);
             clip.start();
         }
     }
@@ -74,6 +111,31 @@ public class SoundPlayer {
         if (currentMusicClip != null) {
             currentMusicClip.stop();
             currentMusicClip.setFramePosition(0);
+        }
+    }
+    
+    /**
+     * Dừng tất cả âm thanh SFX đang phát
+     */
+    public void stopAllSfx() {
+        for (Clip clip : activeSfxClips) {
+            if (clip != null && clip.isRunning()) {
+                clip.stop();
+                clip.close();
+            }
+        }
+        activeSfxClips.clear();
+    }
+    
+    /**
+     * Cleanup tất cả resources
+     */
+    public void cleanup() {
+        stopMusic();
+        stopAllSfx();
+        if (currentMusicClip != null) {
+            currentMusicClip.close();
+            currentMusicClip = null;
         }
     }
 }

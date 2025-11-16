@@ -238,7 +238,7 @@ public class Playing extends State implements Statemethods {
                 break;
             case KeyEvent.VK_U:
                 thuyTinh.setSummon(false);  
-                    break;
+                break;
             case KeyEvent.VK_L:
                 thuyTinh.setDash(false);
                 break;
@@ -259,12 +259,13 @@ public class Playing extends State implements Statemethods {
                 break;      
             case KeyEvent.VK_NUMPAD1:
                 sonTinh.setPunch(false);
-                    break;
+                break;
             case KeyEvent.VK_NUMPAD4:
                 sonTinh.setSummon(false);  
                 break;
             case KeyEvent.VK_NUMPAD5:
                 sonTinh.setUlti(false);
+                break;
             case KeyEvent.VK_NUMPAD3:
                 sonTinh.setDash(false);
                 break;

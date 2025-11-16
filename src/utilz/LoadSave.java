@@ -6,13 +6,13 @@ import java.awt.image.BufferedImage;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -21,7 +21,7 @@ import javax.sound.sampled.LineEvent;
 import sound.SoundManager;
 
 public class LoadSave {
-    // ============= CONSTANTS =============
+    // ===== IMAGE PATH CONSTANTS =====
     public static String BattleMap0 = "map_0001.png";
     public static String BattleMap1 = "map_0002.png";
     public static String MenuButton = "MainMenu/menu_button_atlas.png";
@@ -34,8 +34,11 @@ public class LoadSave {
     public static String MatchSetupBackground = "MatchSetup/MatchSetupBackground.png";
     public static String MatchSetupTitle = "MatchSetup/mapselection.png";
     public static String NextButton = "MatchSetup/nextbutton.png";
+    
+    private static final int SPRITE_SIZE = 64;
+    private static final int DIRECTION_COUNT = 2;
 
-    // ============= ANIMATION CACHE =============
+    // ===== ANIMATION CACHE =====
     private static BufferedImage[][] sonTinhAnimations = null;
     private static BufferedImage[][] thuyTinhAnimations = null;
     private static BufferedImage[][] sonTinhSummonedEntity = null;
@@ -47,175 +50,130 @@ public class LoadSave {
     private static BufferedImage[][] effectSprites = null;
     private static boolean allAnimationsLoaded = false;
 
-    // ============= SOUND CACHE =============
-    private static final Map<Integer, Clip> soundCache = new HashMap<>();
+    // ===== SOUND CACHE =====
+    private static final Map<Integer, List<Clip>> sfxPool = new HashMap<>();
+    private static final int SFX_POOL_SIZE = 4;
     private static boolean soundsPreloaded = false;
 
-    // ============= MAIN LOADING METHODS =============
+    // ===== ANIMATION LOADING =====
     
-    /**
-     * Load tất cả animations một lần - gọi ở đầu game
-     */
     public static void loadAllAnimations() {
         if (allAnimationsLoaded) return;
         
         System.out.println("Loading all animations...");
-        if(sonTinhAnimations == null) sonTinhAnimations = getAnimations("SonTinh");
-        if(thuyTinhAnimations == null) thuyTinhAnimations = getAnimations("ThuyTinh");
+        sonTinhAnimations = getAnimations("SonTinh");
+        thuyTinhAnimations = getAnimations("ThuyTinh");
         loadSpecialAnimations();
         allAnimationsLoaded = true;
         System.out.println("All animations loaded!");
     }
 
-    /**
-     * Load special animations (summoned, lightning, ulti, effects)
-     */
     private static void loadSpecialAnimations() {
-        // SonTinh special animations
         sonTinhSummonedEntity = loadFrames("SonTinh", "HOG", 8);
         sonTinhLightning = loadFrames("SonTinh", "LIGHTNING", 27);
         sonTinhUltiCreature = loadFrames("SonTinh", "PHOENIX", 19);
         
-        // ThuyTinh special animations
         thuyTinhSummonedEntity = loadFrames("ThuyTinh", "TORNADO", 17);
         thuyTinhLightning = loadFrames("ThuyTinh", "LIGHTNING", 20);
         thuyTinhUltiCreature = loadFrames("ThuyTinh", "SQUID", 20);
         
-        // Effects
         loadEffects();
     }
 
-    /**
-     * Helper method để load animation frames
-     */
     private static BufferedImage[][] loadFrames(String character, String animation, int frameCount) {
-        BufferedImage[][] frames = new BufferedImage[2][frameCount];
-        try {
-            for (int i = 0; i < frameCount; i++) {
-                String path = String.format("/image/%s/%s_%04d.png", character, animation, i + 1);
-                InputStream is = LoadSave.class.getResourceAsStream(path);
+        BufferedImage[][] frames = new BufferedImage[DIRECTION_COUNT][frameCount];
+        
+        for (int i = 0; i < frameCount; i++) {
+            String path = String.format("/image/%s/%s_%04d.png", character, animation, i + 1);
+            try (InputStream is = LoadSave.class.getResourceAsStream(path)) {
                 if (is != null) {
                     BufferedImage img = ImageIO.read(is);
                     frames[0][i] = img;
                     frames[1][i] = flipHorizontally(img);
-                    is.close();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return frames;
     }
 
-    /**
-     * Load effect animations
-     */
     private static void loadEffects() {
-        String[][] effects = {
+        String[][] effectConfigs = {
             {"IMPACT1", "3"}, {"IMPACT2", "9"}, {"PUNCHSLASH", "5"}, {"SHIELD", "2"},
             {"SLASH", "4"}, {"SMEAR", "5"}, {"SMOKE", "9"}, {"LANDING", "9"}
         };
         
         effectSprites = new BufferedImage[16][];
-        try {
-            int row = 0;
-            for (String[] effect : effects) {
-                String name = effect[0];
-                int frameCount = Integer.parseInt(effect[1]);
-                
-                effectSprites[row] = new BufferedImage[frameCount];
-                effectSprites[row + 1] = new BufferedImage[frameCount];
-                
-                for (int i = 0; i < frameCount; i++) {
-                    String path = String.format("/image/Effects/%s_%04d.png", name, i + 1);
-                    InputStream is = LoadSave.class.getResourceAsStream(path);
+        int row = 0;
+        
+        for (String[] config : effectConfigs) {
+            String name = config[0];
+            int frameCount = Integer.parseInt(config[1]);
+            
+            effectSprites[row] = new BufferedImage[frameCount];
+            effectSprites[row + 1] = new BufferedImage[frameCount];
+            
+            for (int i = 0; i < frameCount; i++) {
+                String path = String.format("/image/Effects/%s_%04d.png", name, i + 1);
+                try (InputStream is = LoadSave.class.getResourceAsStream(path)) {
                     if (is != null) {
                         BufferedImage img = ImageIO.read(is);
                         effectSprites[row][i] = img;
                         effectSprites[row + 1][i] = flipHorizontally(img);
-                        is.close();
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                row += 2;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            row += 2;
         }
     }
 
-    // ============= PUBLIC GETTER METHODS =============
+    // ===== ANIMATION GETTERS =====
     
-    /**
-     * Trả về animations của Sơn Tinh
-     */
     public static BufferedImage[][] getSonTinhAnimations() {
         if (sonTinhAnimations == null) loadAllAnimations();
         return sonTinhAnimations;
     }
 
-    /**
-     * Trả về animations của Thủy Tinh
-     */
     public static BufferedImage[][] getThuyTinhAnimations() {
         if (thuyTinhAnimations == null) loadAllAnimations();
         return thuyTinhAnimations;
     }
 
-    /**
-     * Load summoned entity animation
-     */
     public static BufferedImage[][] loadSummonedEntityAnimation(String characterName) {
         if (!allAnimationsLoaded) loadAllAnimations();
-        if ("SonTinh".equals(characterName)) return sonTinhSummonedEntity;
-        if ("ThuyTinh".equals(characterName)) return thuyTinhSummonedEntity;
-        return new BufferedImage[2][1];
+        return "SonTinh".equals(characterName) ? sonTinhSummonedEntity : thuyTinhSummonedEntity;
     }
 
-    /**
-     * Load lightning animation
-     */
     public static BufferedImage[][] loadLightningAnimation(String characterName) {
         if (!allAnimationsLoaded) loadAllAnimations();
-        if ("SonTinh".equals(characterName)) return sonTinhLightning;
-        if ("ThuyTinh".equals(characterName)) return thuyTinhLightning;
-        return new BufferedImage[2][1];
+        return "SonTinh".equals(characterName) ? sonTinhLightning : thuyTinhLightning;
     }
 
-    /**
-     * Load ulti creature animation
-     */
     public static BufferedImage[][] loadUltiCreatureAnimation(String characterName) {
         if (!allAnimationsLoaded) loadAllAnimations();
-        if ("SonTinh".equals(characterName)) return sonTinhUltiCreature;
-        if ("ThuyTinh".equals(characterName)) return thuyTinhUltiCreature;
-        return new BufferedImage[2][1];
+        return "SonTinh".equals(characterName) ? sonTinhUltiCreature : thuyTinhUltiCreature;
     }
 
-    /**
-     * Load effect sprites
-     */
     public static BufferedImage[][] getEffectSprites() {
         if (!allAnimationsLoaded) loadAllAnimations();
         return effectSprites;
     }
 
-    // ============= LEGACY METHODS =============
+    // ===== IMAGE UTILITIES =====
     
     public static BufferedImage GetSpriteAtlas(String fileName) {
-        BufferedImage img = null;
-        InputStream is = LoadSave.class.getResourceAsStream("/image/" + fileName);
-        try {
-            img = ImageIO.read(is);
+        String path = "/image/" + fileName;
+        try (InputStream is = LoadSave.class.getResourceAsStream(path)) {
+            if (is != null) {
+                return ImageIO.read(is);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-        return img;
+        return null;
     }
 
     public static BufferedImage flipHorizontally(BufferedImage img) {
@@ -227,155 +185,171 @@ public class LoadSave {
 
     public static BufferedImage[][] getAnimations(String character) {
         BufferedImage[][] animations = new BufferedImage[22][20];
-        String[][] animConfig = null;
-
-        if ("SonTinh".equals(character)) {
-            animConfig = new String[][] {
-                {"IDLE", "8", "NORMAL"}, {"MOVE", "8", "NORMAL"}, {"JUMP", "9", "NORMAL"},
-                {"PUNCH", "19", "NORMAL"}, {"DEFENSE", "3", "NORMAL"}, {"TAKINGHIT","3","NORMAL"},
-                {"FALLINGBACKDEATH","12","NORMAL"}, {"SUMMONSKILL","6","NORMAL"}, {"DASH","1","NORMAL"},
-                {"SUMMONULTI","6","NORMAL"}
-            };
-        } else {
-            animConfig = new String[][] {
-                {"IDLE", "8", "NORMAL"}, {"MOVE", "4", "NORMAL"}, {"JUMP", "9", "NORMAL"},
-                {"PUNCH", "19", "NORMAL"}, {"DEFENSE", "3", "NORMAL"}, {"TAKINGHIT","3","NORMAL"},
-                {"FALLINGBACKDEATH","12","NORMAL"}, {"SUMMONSKILL","6","NORMAL"}, {"DASH", "1","NORMAL"},
-                {"SUMMONULTI","6","NORMAL"}
-            };
-        }
-
-        try {
-            int currentRow = 0; // Biến theo dõi hàng hiện tại trong mảng animations[][]
-            String path = String.format("/image/%s/%sSpriteAtlas.png", character, character);
-            InputStream is = LoadSave.class.getResourceAsStream(path);
+        String[][] animConfig = getAnimationConfig(character);
+        
+        String atlasPath = String.format("/image/%s/%sSpriteAtlas.png", character, character);
+        try (InputStream is = LoadSave.class.getResourceAsStream(atlasPath)) {
             if (is == null) {
-                System.err.println("ERROR: File not found: " + path);
-                throw new RuntimeException("Missing animation file: " + path);
+                throw new RuntimeException("Missing animation file: " + atlasPath);
             }
-            BufferedImage img = ImageIO.read(is);
-            for (int i = 0; i < animConfig.length; i++) {
-                String animName = animConfig[i][0];
-                int frameCount = Integer.parseInt(animConfig[i][1]);
-                String animType = animConfig[i][2];
-
-                //System.out.println("Loading: " + animName + " (" + frameCount + " frames, type: " + animType + ")");
-                
-                for (int j = 0; j < frameCount; j++) {
-                    //String path = String.format("/image/%s/%s_%04d.png", player, animName, j + 1);
-                    
-                    
-                    // Logic tải ảnh dựa trên loại animation
-                    if ("NORMAL".equals(animType)) {
-                        // Tải vào 2 hàng: một hàng cho ảnh gốc, một hàng cho ảnh lật
-                        BufferedImage subImg = img.getSubimage(j * 64, i * 64, 64, 64);
-                        animations[currentRow][j] = subImg;
-                        animations[currentRow + 1][j] = flipHorizontally(subImg);
-                    } else if ("SINGLE".equals(animType)) {
-                        // Chỉ tải vào 1 hàng, không lật
-                        animations[currentRow][j] = img;
-                    }
-
-                    is.close();
-                }
-
-                // Cập nhật chỉ số hàng cho animation tiếp theo
-                if ("NORMAL".equals(animType)) {
-                    currentRow += 2;
-                } else { // animType là "SINGLE"
-                    currentRow += 1;
-                }
-
-                System.out.println("✓ Loaded successfully into row(s) starting from " + (currentRow - ("NORMAL".equals(animType) ? 2 : 1)));
-            }
-            System.out.println("Succesfully loaded for " + character);
+            
+            BufferedImage atlas = ImageIO.read(is);
+            loadAnimationsFromAtlas(animations, atlas, animConfig);
+            System.out.println("Successfully loaded for " + character);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // try {
-        //     BufferedImage merged = mergeImageGrid(animations);
-        //     ImageIO.write(merged, "png", new File(character + ".png"));
-        //     System.out.println("Merged image saved as merged_output.png");
-        // } catch (IOException e){
-        //     e.printStackTrace();
-        // }
         
         return animations;
     }
-   
+    
+    private static String[][] getAnimationConfig(String character) {
+        if ("SonTinh".equals(character)) {
+            return new String[][] {
+                {"IDLE", "8"}, {"MOVE", "8"}, {"JUMP", "9"},
+                {"PUNCH", "19"}, {"DEFENSE", "3"}, {"TAKINGHIT", "3"},
+                {"FALLINGBACKDEATH", "12"}, {"SUMMONSKILL", "6"}, {"DASH", "1"},
+                {"SUMMONULTI", "6"}
+            };
+        } else {
+            return new String[][] {
+                {"IDLE", "8"}, {"MOVE", "4"}, {"JUMP", "9"},
+                {"PUNCH", "19"}, {"DEFENSE", "3"}, {"TAKINGHIT", "3"},
+                {"FALLINGBACKDEATH", "12"}, {"SUMMONSKILL", "6"}, {"DASH", "1"},
+                {"SUMMONULTI", "6"}
+            };
+        }
+    }
+    
+    private static void loadAnimationsFromAtlas(BufferedImage[][] animations, BufferedImage atlas, String[][] config) {
+        int currentRow = 0;
+        
+        for (int i = 0; i < config.length; i++) {
+            int frameCount = Integer.parseInt(config[i][1]);
+            
+            for (int j = 0; j < frameCount; j++) {
+                BufferedImage subImg = atlas.getSubimage(j * SPRITE_SIZE, i * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+                animations[currentRow][j] = subImg;
+                animations[currentRow + 1][j] = flipHorizontally(subImg);
+            }
+            
+            currentRow += 2;
+        }
+    }
+
     public static BufferedImage mergeImageGrid(BufferedImage[][] images) {
-        int rows = 10;
-        int cols = 19;
-
-        int tileWidth = 0, tileHeight = 0;
-
-
-        tileWidth = Math.max(tileWidth, images[0][0].getWidth());
-        tileHeight = Math.max(tileHeight, images[0][0].getHeight());
-
-        // Total output dimensions
-        int totalWidth = cols * tileWidth;
-        int totalHeight = rows * tileHeight;
-
-        // Create output image with alpha (transparency) support
-        BufferedImage merged = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
+        int rows = 10, cols = 19;
+        int tileWidth = images[0][0].getWidth();
+        int tileHeight = images[0][0].getHeight();
+        
+        BufferedImage merged = new BufferedImage(cols * tileWidth, rows * tileHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = merged.createGraphics();
-
-        // Optional: smoother scaling or background fill
+        
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setComposite(AlphaComposite.SrcOver);
-
-        // Draw each image in grid
+        
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                int x = j * tileWidth;
-                int y = i * tileHeight;
-                g2d.drawImage(images[i * 2][j], x, y, null);
+                g2d.drawImage(images[i * 2][j], j * tileWidth, i * tileHeight, null);
             }
         }
-
+        
         g2d.dispose();
         return merged;
     }
 
-    // ============= SOUND METHODS =============
+    // ===== SOUND LOADING =====
     
     public static void preloadSounds() {
         if (soundsPreloaded) return;
+        
         System.out.println("Preloading sounds...");
         for (SoundManager se : SoundManager.values()) {
-            if (!soundCache.containsKey(se.getIndex())) {
-                loadSoundIntoCache(se);
-            }
+            int poolSize = getSoundPoolSize(se.getIndex());
+            loadSfxPool(se, poolSize);
         }
         soundsPreloaded = true;
+        System.out.println("Sounds preloaded successfully!");
+    }
+    
+    private static int getSoundPoolSize(int index) {
+        if (index < 4) return 1; // Music
+        if (index == 12 || index == 23) return 1; // Special sounds
+        return SFX_POOL_SIZE; // SFX
     }
 
-    private static void loadSoundIntoCache(SoundManager se) {
+    private static void loadSfxPool(SoundManager se, int poolSize) {
         if (se == null) return;
+        
         try {
-            String path = se.getPath();
-            URL soundURL = LoadSave.class.getResource(path);
+            URL soundURL = LoadSave.class.getResource(se.getPath());
             if (soundURL == null) {
-                System.out.println("Can't load sound: " + path);
+                System.out.println("Can't load sound pool: " + se.getPath());
                 return;
             }
-                AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
-                Clip clip = AudioSystem.getClip();
-                clip.open(ais);
-                clip.addLineListener(event -> {
-                    if (event.getType() == LineEvent.Type.STOP) {
-                        clip.setFramePosition(0);
-                    }
-                });
-            soundCache.put(se.getIndex(), clip);
+            
+            List<Clip> pool = new ArrayList<>();
+            for (int i = 0; i < poolSize; i++) {
+                Clip clip = createClip(soundURL);
+                if (clip != null) pool.add(clip);
+            }
+            
+            sfxPool.put(se.getIndex(), pool);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public static Clip getSoundClip(int soundIndex) {
-        return soundCache.get(soundIndex);
+    
+    private static Clip createClip(URL soundURL) {
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL);
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    clip.setFramePosition(0);
+                }
+            });
+            return clip;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
+    // ===== SOUND GETTERS =====
+    
+    public static Clip getAvailableSfxClip(int soundIndex) {
+        List<Clip> pool = sfxPool.get(soundIndex);
+        if (pool == null || pool.isEmpty()) return null;
+        
+        for (Clip clip : pool) {
+            if (!clip.isRunning()) return clip;
+        }
+        
+        return pool.get(0);
+    }
+
+    public static Clip getSoundClip(int soundIndex) {
+        List<Clip> pool = sfxPool.get(soundIndex);
+        return (pool != null && !pool.isEmpty()) ? pool.get(0) : null;
+    }
+
+    public static void stopAllInstancesOfSound(int soundIndex) {
+        List<Clip> pool = sfxPool.get(soundIndex);
+        if (pool == null) return;
+        
+        for (Clip clip : pool) {
+            if (clip != null && clip.isRunning()) {
+                clip.stop();
+                clip.setFramePosition(0);
+            }
+        }
+    }
+
+    public static void stopAllInstancesOfSound(SoundManager se) {
+        if (se != null) {
+            stopAllInstancesOfSound(se.getIndex());
+        }
+    }
 }

@@ -3,36 +3,31 @@ package entity;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
- 
 
 import static utilz.HelpMethods.*;
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.Constants.PlayerConstants.getFramesAmount;
 import static utilz.Constants.EffectConstants.*;
-
-
-
 import static utilz.LoadSave.*;
 
 import main.Game;
 import sound.SoundManager;
 
 public class Character extends Entity {
+    // Character info
     private String name;
     private int direction;
     
-    // Get from key input
+    // Input flags
     private boolean left, right, jump, defend, punch, summon, ulti, dash;
 
-    // States of character
-    private boolean moving, defending, jumping, punching, summoning, dashing,
-    ulting, inAir; // Internal states
-    private boolean takingHit, falling; // States from outside
-    // Signals calling skills
+    // State flags
+    private boolean moving, defending, jumping, punching, summoning, dashing, ulting, inAir;
+    private boolean takingHit, falling;
     private boolean callSummonedEntity, callUltiEntity;
     private boolean defendDamageSignal = false;
     
-    // Animations
+    // Animation
     private int playerAction = (direction == RIGHT) ? IDLE_RIGHT : IDLE_LEFT;
     private BufferedImage[][] animations;
     private int framesCounter, framesIndex;
@@ -42,26 +37,23 @@ public class Character extends Entity {
     // Physics
     private float speed = 2.0f, punchSpeed = 0.2f;
     private float jumpSpeed = -6.5f, gravity = 0.1f, velocityY = 0;
-    private float velocityX = 0, punchStrength = 1.5f, gravityX = -0.3f;
     private float gravityFalling = 0.025f, fallStrength = 1.0f;
-    // Timings
-    private long lastPunchTime, PUNCH_RESET_TIME = 300;
-    private long lastTimeFalling;
-
+    
     // Combat
     private int directionTakenHit, healthTakenPerCombo;
     private int healthThresholdForFalling = 100;
-    private boolean vulnerable = true;
     private int healthDefend, healthThresholdForDefend = 200;
+    private long lastPunchTime, PUNCH_RESET_TIME = 300;
+    private long lastTimeFalling;
 
-    // Update
-    private int updateCounter = 0, updateSpeed = 5;
-    private map.Map map;
-    private int mana, maxMana = 2000, summonManaCost = 400;
-
+    // Dash
     private int dashCounter = 0, maxDashCount = 50;
     private float dashSpeed = 5.0f;
     private long lastTimeDash = 0, DASH_RESET_TIME = 200;
+    
+    // Resources
+    private int mana, maxMana = 2000, summonManaCost = 400;
+    private map.Map map;
     private EffectManager effectManager;
 
     public Character(float x, float y,
@@ -72,8 +64,8 @@ public class Character extends Entity {
               x_OffSetHurtBox, y_OffSetHurtBox, widthHurtBox, heightHurtBox);
         this.name = name;
         this.direction = direction;
-        loadAnimations(name);
         this.map = map;
+        loadAnimations(name);
         effectManager = new EffectManager(10);
     }
 
@@ -93,16 +85,13 @@ public class Character extends Entity {
         effectManager.update();
     }
 
+    // === UPDATE METHODS ===
+    
     public void updateFalling() {
         if (!falling && takingHit && healthTakenPerCombo >= healthThresholdForFalling) {
             resetAllStates();
             falling = true;
-            if("SonTinh".equals(name)){
-                Game.soundPlayer.play(SoundManager.SONTINHFALL);
-            }
-            else{
-                Game.soundPlayer.play(SoundManager.THUYTINHFALL);
-            }
+            playSoundForCharacter(SoundManager.SONTINHFALL, SoundManager.THUYTINHFALL);
         }
     }
 
@@ -112,16 +101,17 @@ public class Character extends Entity {
             takingHit = true;
             direction = (directionTakenHit == RIGHT) ? LEFT : RIGHT;
         }
-        if(!takingHit) {
+        if (!takingHit) {
             healthTakenPerCombo = 0;
             setThressholdForFalling(100);
         }
     }
-    public void updateUlti(){
-        if(ulti && !ulting && !jumping && !takingHit && !falling && !inAir && mana == maxMana){
+    
+    public void updateUlti() {
+        if (ulti && !ulting && !jumping && !takingHit && !falling && !inAir && mana == maxMana) {
             ulting = true;
             callUltiEntity = true;
-        } else if(ulting == true && framesIndex == getFramesAmount(playerAction) -1 && framesCounter >= normalAniSpeed -1){
+        } else if (ulting && framesIndex == getFramesAmount(playerAction) - 1 && framesCounter >= normalAniSpeed - 1) {
             ulting = false;
         }
     }
@@ -130,59 +120,36 @@ public class Character extends Entity {
         if (summon && !summoning && !jumping && !takingHit && !falling && !inAir && mana >= summonManaCost) {
             resetAllStates();
             summoning = true;
-            if("SonTinh".equals(name)){
-                Game.soundPlayer.play(SoundManager.SONTINHSUMMON);
-            }
-            else{
-                Game.soundPlayer.play(SoundManager.THUYTINHSUMMON);
-            }
-        } else if (summoning == true && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {
+        } else if (summoning && framesIndex == getFramesAmount(playerAction) - 2 && framesCounter == 0) {
             callSummonedEntity = true;
         } else if (summoning && framesIndex == getFramesAmount(playerAction) - 1 && framesCounter >= summonAniSpeed - 1) {
             summoning = false;
         }
     }
 
-    public void updateDash(){
-        if(dash &&!dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME){
+    public void updateDash() {
+        if (dash && !dashing && !takingHit && !falling && System.currentTimeMillis() - lastTimeDash >= DASH_RESET_TIME) {
             dashing = true;
             punching = false;
             dashCounter = 0;
-            if(direction == RIGHT){
-                effectManager.addEffect(x-100, y, SMOKE_RIGHT);
-                if("SonTinh".equals(name)){
-                    Game.soundPlayer.play(SoundManager.SONTINHDASH);
-            }
-                else{
-                    Game.soundPlayer.play(SoundManager.THUYTINHDASH);
-            }
-            }
-            else{
-                effectManager.addEffect(x+100, y, SMOKE_LEFT);
-                if("SonTinh".equals(name)){
-                    Game.soundPlayer.play(SoundManager.SONTINHDASH);
-            }
-                else{
-                    Game.soundPlayer.play(SoundManager.THUYTINHDASH);
-            }
-            }
+            int effectType = (direction == RIGHT) ? SMOKE_RIGHT : SMOKE_LEFT;
+            int effectX = (direction == RIGHT) ? (int)(x - 100) : (int)(x + 100);
+            effectManager.addEffect(effectX, y, effectType);
+            playSoundForCharacter(SoundManager.SONTINHDASH, SoundManager.THUYTINHDASH);
         }
-        if(dashing){
+        if (dashing) {
             dashCounter++;
-            if(dashCounter >=  maxDashCount){
+            if (dashCounter >= maxDashCount) {
                 dashing = false;
                 lastTimeDash = System.currentTimeMillis();
             }
         }
     }
+    
     public void updateDefend() {
         if (defend && !defending && !jumping && !summoning && !takingHit && !falling) {
             defending = true;
-            if("SonTinh".equals(name)) {
-                Game.soundPlayer.play(SoundManager.SONTINHBLOCK);
-            } else {
-                Game.soundPlayer.play(SoundManager.THUYTINHBLOCK);
-            }
+            playSoundForCharacter(SoundManager.SONTINHBLOCK, SoundManager.THUYTINHBLOCK);
         } else if (!defend || (defending && healthDefend >= healthThresholdForDefend)) {
             defending = false;
             healthDefend = 0;
@@ -195,11 +162,9 @@ public class Character extends Entity {
             resetAllStates();
             punching = true;
         }
-
         if (punching && !punch && System.currentTimeMillis() - lastPunchTime >= PUNCH_RESET_TIME) {
             punching = false;
         }
-        
     }
 
     public void updateAttackBox() {
@@ -209,17 +174,10 @@ public class Character extends Entity {
         }
     }
 
-    public void setMap(map.Map map){
-        this.map = map;
-    }
     public void updateJumping() {
         if (jump && !jumping && !takingHit && !summoning && !falling) {
             jumping = true;
-            if ("SonTinh".equals(name)) {
-                Game.soundPlayer.play(SoundManager.SONTINHJUMP);
-            } else {
-                Game.soundPlayer.play(SoundManager.THUYTINHJUMP);
-            }
+            playSoundForCharacter(SoundManager.SONTINHJUMP, SoundManager.THUYTINHJUMP);
         }
     }
 
@@ -237,144 +195,111 @@ public class Character extends Entity {
     }
 
     public void updatePosition() {
-        // Handle horizontal movement based on character state
+        updateHorizontalMovement();
+        updateBoxes();
+        updateVerticalMovement();
+        updateBoxes();
+    }
+    
+    private void updateHorizontalMovement() {
         if (falling) {
             if (framesIndex <= 5) {
-                if (directionTakenHit == RIGHT) {
-                    if (canMoveHere(hurtBox, 10*punchSpeed)) {
-                        x += 10*punchSpeed;
-                    }
-                } else {
-                    if (canMoveHere(hurtBox, -10*punchSpeed)) {
-                        x -= 10*punchSpeed;
-                    }
-                }
-                y-= fallStrength;
+                float moveSpeed = 10 * punchSpeed;
+                moveHorizontally(directionTakenHit, moveSpeed);
+                y -= fallStrength;
             }
         } else if (takingHit) {
-            if (directionTakenHit == RIGHT) {
-                if (canMoveHere(hurtBox, punchSpeed)) {
-                    x += punchSpeed;
-                }
-            } else {
-                if (canMoveHere(hurtBox, -punchSpeed)) {
-                    x -= punchSpeed;
-                }
-            }
-        } 
-        else if(ulting){
-            // No horizontal movement during ulti
-        }
-         else if (punching) {
-            if (direction == RIGHT) {
-                if (canMoveHere(hurtBox, punchSpeed)) {
-                    x += punchSpeed;
-                }
-            } else {
-                if (canMoveHere(hurtBox, -punchSpeed)) {
-                    x -= punchSpeed;
-                }
-            }
-        }else if(dashing){
-            if(direction == RIGHT){
-                if(canMoveHere(hurtBox, dashSpeed)){
-                    x += dashSpeed;
-                }
-            }
-            else{
-                if(canMoveHere(hurtBox, -dashSpeed)){
-                    x -= dashSpeed;
-                }
-            }
-        }
-         else if (defending) {
+            moveHorizontally(directionTakenHit, punchSpeed);
+        } else if (ulting) {
+            // No movement
+        } else if (punching) {
+            moveHorizontally(direction, punchSpeed);
+        } else if (dashing) {
+            moveHorizontally(direction, dashSpeed);
+        } else if (defending) {
             if (defendDamageSignal) {
-                if (directionTakenHit == RIGHT) {
-                    if (canMoveHere(hurtBox, punchSpeed)) {
-                        x += punchSpeed;
-                    }
-                } else {
-                    if (canMoveHere(hurtBox, -punchSpeed)) {
-                        x -= punchSpeed;
-                    }
-                }
+                moveHorizontally(directionTakenHit, punchSpeed);
                 defendDamageSignal = false;
             }
-        } else {
-            if (moving) {
-                if (direction == RIGHT) {
-                    if (canMoveHere(hurtBox, speed)) {
-                        x += speed;
-                    }
-                } else {
-                    if (canMoveHere(hurtBox, -speed)) {
-                        x -= speed;
-                    }
-                }
-            }
+        } else if (moving) {
+            moveHorizontally(direction, speed);
         }
-
-        updateBoxes();
-
-       // Handle vertical movement and jumping
+    }
+    
+    private void moveHorizontally(int dir, float moveSpeed) {
+        float delta = (dir == RIGHT) ? moveSpeed : -moveSpeed;
+        if (canMoveHere(hurtBox, delta)) {
+            x += delta;
+        }
+    }
+    
+    private void updateVerticalMovement() {
         float groundY = map.getGroundY();
         var platforms = map.getPlatforms();
 
         if ((jumping || isInAir(hurtBox, groundY, platforms)) && !inAir) {
-        if (jump && !takingHit && !falling) {
+            if (jump && !takingHit && !falling) {
                 velocityY = jumpSpeed;
             }
             inAir = true;
         }
 
         if (inAir) {
-            if (falling)
-                velocityY += gravityFalling;
-            else
-                velocityY += gravity;
+            velocityY += falling ? gravityFalling : gravity;
 
-    if (willHitPlatform(hurtBox, velocityY, platforms)) {
-        // Xác định platform mà player sắp chạm
-        for (var p : platforms) {
+            if (willHitPlatform(hurtBox, velocityY, platforms)) {
+                handlePlatformLanding(platforms);
+            } else if (willHitGround(hurtBox, velocityY, groundY)) {
+                handleGroundLanding(groundY);
+            } else {
+                y += velocityY;
+            }
+        }
+    }
+    
+    private void handlePlatformLanding(java.util.List<map.Platform> platforms) {
+        for (map.Platform p : platforms) {
+            float boxBottom = hurtBox.y + hurtBox.height;
             boolean withinX = (hurtBox.x + hurtBox.width >= p.x1) && (hurtBox.x <= p.x2);
-            boolean above = (hurtBox.y + hurtBox.height <= p.y);
-            boolean willCross = (hurtBox.y + hurtBox.height + velocityY >= p.y);
-            if (withinX && above && willCross) {
+            boolean movingDown = (velocityY > 0);
+            boolean above = (boxBottom <= p.y);
+            boolean willCross = (boxBottom + velocityY >= p.y);
+            
+            if (withinX && movingDown && above && willCross) {
                 y = p.y - hurtBox.height - y_OffSetHurtBox;
                 velocityY = 0;
                 inAir = false;
                 jumping = false;
+                playLandingEffectAndSound();
                 break;
             }
         }
-        effectManager.addEffect(x , y + 50, LANDING_RIGHT);
-        if("SonTinh".equals(name)){
-            Game.soundPlayer.play(SoundManager.SONTINHLANDING);
-        }
-        else{
-            Game.soundPlayer.play(SoundManager.THUYTINHLANDING);
-        }
-    } else if (willHitGround(hurtBox, velocityY, groundY)) {
+    }
+    
+    private void handleGroundLanding(float groundY) {
         y = groundY - hurtBox.height - y_OffSetHurtBox;
         velocityY = 0;
         inAir = false;
         jumping = false;
-        effectManager.addEffect(x , y + 50, LANDING_RIGHT);
-        if("SonTinh".equals(name)){
-            Game.soundPlayer.play(SoundManager.SONTINHLANDING);
-        }
-        else{
-            Game.soundPlayer.play(SoundManager.THUYTINHLANDING);
-        }
-    } else {
-        y += velocityY;
+        playLandingEffectAndSound();
     }
-}
-
-        updateBoxes();
-    }
-
     
+    private void playLandingEffectAndSound() {
+        effectManager.addEffect(x, y + 50, LANDING_RIGHT);
+        playSoundForCharacter(SoundManager.SONTINHLANDING, SoundManager.THUYTINHLANDING);
+    }
+    
+    // === HELPER METHODS ===
+    
+    private void playSoundForCharacter(SoundManager sonTinhSound, SoundManager thuyTinhSound) {
+        Game.soundPlayer.play("SonTinh".equals(name) ? sonTinhSound : thuyTinhSound);
+    }
+
+    public void setMap(map.Map map) {
+        this.map = map;
+    }
+    
+    // === ANIMATION METHODS ===
     public void setAnimations() {
         int startAnim = playerAction;
 
@@ -411,120 +336,118 @@ public class Character extends Entity {
         int currentSpeed = normalAniSpeed;
         framesCounter++;
 
-        if (playerAction == FALLING_LEFT || playerAction == FALLING_RIGHT) {
-            if (framesIndex < 2) {
-                framesIndex = 2; // Bắt đầu từ frame thứ 3
-            } else if (framesIndex != 6 && framesCounter >= currentSpeed) {
-                framesCounter = 0;
-                framesIndex++;
-                if (framesIndex >= getFramesAmount(playerAction)) {
-                    framesIndex = 0;
-                    falling = false;
-                    lastTimeFalling = System.currentTimeMillis();
-                }
-            } else {
-                if (framesCounter >= DelayForGettingUp) {
-                    framesCounter = 0;
-                    framesIndex++;
-                }
-            }
-        } else if (playerAction == TAKING_HIT_LEFT || playerAction == TAKING_HIT_RIGHT) {
-            if (framesIndex < 2 && framesCounter >= currentSpeed) { // 2 is last frame of taking hit
-                framesCounter = 0;
-                framesIndex++;
-            } else {
-                if (framesCounter >= DelayForTakingHit) {
-                    resetAnimationTick();
-                    takingHit = false; // Done taking hit
-                }
-            }
-        } else if (playerAction == DEFEND_LEFT || playerAction == DEFEND_RIGHT) {
-            if (framesCounter >= currentSpeed) {
-                framesCounter = 0;
-                framesIndex++;
-                if (framesIndex >= getFramesAmount(playerAction)) {
-                    framesIndex = getFramesAmount(playerAction) - 1; // Giữ khung cuối cùng
-                }
-            }
+        if (isFallingAnimation()) {
+            updateFallingAnimation(currentSpeed);
+        } else if (isTakingHitAnimation()) {
+            updateTakingHitAnimation(currentSpeed);
+        } else if (isDefendAnimation()) {
+            updateDefendAnimation(currentSpeed);
         } else {
-            if (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT) {
-                currentSpeed = punchAniSpeed;
+            updateNormalAnimation();
+        }
+    }
+    
+    private boolean isFallingAnimation() {
+        return playerAction == FALLING_LEFT || playerAction == FALLING_RIGHT;
+    }
+    
+    private boolean isTakingHitAnimation() {
+        return playerAction == TAKING_HIT_LEFT || playerAction == TAKING_HIT_RIGHT;
+    }
+    
+    private boolean isDefendAnimation() {
+        return playerAction == DEFEND_LEFT || playerAction == DEFEND_RIGHT;
+    }
+    
+    private void updateFallingAnimation(int currentSpeed) {
+        if (framesIndex < 2) {
+            framesIndex = 2;
+        } else if (framesIndex != 6 && framesCounter >= currentSpeed) {
+            framesCounter = 0;
+            framesIndex++;
+            if (framesIndex >= getFramesAmount(playerAction)) {
+                framesIndex = 0;
+                falling = false;
+                lastTimeFalling = System.currentTimeMillis();
             }
-            else if(playerAction == SUMMONSKILL_LEFT || playerAction == SUMMONSKILL_RIGHT){
-                currentSpeed = summonAniSpeed;
+        } else if (framesCounter >= DelayForGettingUp) {
+            framesCounter = 0;
+            framesIndex++;
+        }
+    }
+    
+    private void updateTakingHitAnimation(int currentSpeed) {
+        if (framesIndex < 2 && framesCounter >= currentSpeed) {
+            framesCounter = 0;
+            framesIndex++;
+        } else if (framesCounter >= DelayForTakingHit) {
+            resetAnimationTick();
+            takingHit = false;
+        }
+    }
+    
+    private void updateDefendAnimation(int currentSpeed) {
+        if (framesCounter >= currentSpeed) {
+            framesCounter = 0;
+            framesIndex++;
+            if (framesIndex >= getFramesAmount(playerAction)) {
+                framesIndex = getFramesAmount(playerAction) - 1;
             }
-            if (framesCounter >= currentSpeed) {
-                framesCounter = 0;
-                framesIndex++;
-                if (framesIndex == 2 && (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT)) {
-                    if ("SonTinh".equals(name)) {
-                        Game.soundPlayer.play(SoundManager.SONTINHPUNCH1);
-                    } else {
-                        Game.soundPlayer.play(SoundManager.THUYTINHPUNCH1);
-                    }
-                } else if (framesIndex == 12 && (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT)) {
-                    if ("SonTinh".equals(name)) {
-                        Game.soundPlayer.play(SoundManager.SONTINHPUNCH2);
-                    } else {
-                        Game.soundPlayer.play(SoundManager.THUYTINHPUNCH2);
-                    }
-                }
-                if (framesIndex == 1 && (playerAction == MOVE_LEFT || playerAction == MOVE_RIGHT)) {
-                    if ("SonTinh".equals(name)) {
-                        Game.soundPlayer.play(SoundManager.SONTINHMOVING);
-                    } else {
-                        Game.soundPlayer.play(SoundManager.THUYTINHMOVING);
-                    }
-                }
-                if (framesIndex == 3 && (playerAction == MOVE_LEFT || playerAction == MOVE_RIGHT)) {
-                    if ("SonTinh".equals(name)) {
-                        Game.soundPlayer.play(SoundManager.SONTINHMOVING);
-                    } else {
-                        Game.soundPlayer.play(SoundManager.THUYTINHMOVING);
-                    }
-                }
-                if (framesIndex >= getFramesAmount(playerAction)) {
-                    framesIndex = 0;
-                }
+        }
+    }
+    
+    private void updateNormalAnimation() {
+        int currentSpeed = (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT) ? punchAniSpeed :
+                          (playerAction == SUMMONSKILL_LEFT || playerAction == SUMMONSKILL_RIGHT) ? summonAniSpeed :
+                          normalAniSpeed;
+        
+        if (framesCounter >= currentSpeed) {
+            framesCounter = 0;
+            framesIndex++;
+            
+            playAnimationSounds();
+            
+            if (framesIndex >= getFramesAmount(playerAction)) {
+                framesIndex = 0;
             }
+        }
+    }
+    
+    private void playAnimationSounds() {
+        boolean isPunch = (playerAction == PUNCH_LEFT || playerAction == PUNCH_RIGHT);
+        boolean isMove = (playerAction == MOVE_LEFT || playerAction == MOVE_RIGHT);
+        
+        if (isPunch && framesIndex == 2) {
+            playSoundForCharacter(SoundManager.SONTINHPUNCH1, SoundManager.THUYTINHPUNCH1);
+        } else if (isPunch && framesIndex == 12) {
+            playSoundForCharacter(SoundManager.SONTINHPUNCH2, SoundManager.THUYTINHPUNCH2);
+        } else if (isMove && (framesIndex == 1 || framesIndex == 3)) {
+            playSoundForCharacter(SoundManager.SONTINHMOVING, SoundManager.THUYTINHMOVING);
         }
     }
 
     public void render(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        if(playerAction == FALLING_LEFT || playerAction == FALLING_RIGHT) {
-            if(framesIndex <= 6){
-                int a;
-                if(name == "SonTinh"){
-                     a = 5;
-                }
-                else a = 2;
-
-                g2.drawImage(animations[playerAction][framesIndex],(int) x, (int) y + a*framesIndex, 128, 128, null);
-            }
-            else g2.drawImage(animations[playerAction][framesIndex], (int) x, (int) y, 128, 128, null);
+        int offsetY = 0;
+        
+        if ((playerAction == FALLING_LEFT || playerAction == FALLING_RIGHT) && framesIndex <= 6) {
+            offsetY = ("SonTinh".equals(name) ? 5 : 2) * framesIndex;
         }
-        // Draw và update tất cả effects
-        else g2.drawImage(animations[playerAction][framesIndex], (int) x, (int) y, 128, 128, null);
+        
+        g2.drawImage(animations[playerAction][framesIndex], (int)x, (int)y + offsetY, 128, 128, null);
         effectManager.draw(g);
-        // drawBoxes(g);
     }
 
-    public void loadAnimations(String name) {
-        if (name == "SonTinh"){
-            this.animations = getSonTinhAnimations();
-        }
-        else {
-            this.animations = getThuyTinhAnimations();
-        }
+    public void loadAnimations(String characterName) {
+        this.animations = "SonTinh".equals(characterName) ? getSonTinhAnimations() : getThuyTinhAnimations();
     }
 
     public void resetAnimationTick() {
         framesCounter = 0;
         framesIndex = 0;
     }
-
-    // Getter and setters for key inputs
+    
+    // === SETTERS ===
     public void setLeft(boolean left) {
         this.left = left;
     }
@@ -547,15 +470,14 @@ public class Character extends Entity {
 
     public void setTakingHit(boolean takingHit) {
         this.takingHit = takingHit;
-        if(this.takingHit && takingHit && framesIndex == 2){
+        if (this.takingHit && framesIndex == 2) {
             framesCounter = 0;
         }
     }
+    
     public void setPunch(boolean punch) {
         this.punch = punch;
-        
-            lastPunchTime = System.currentTimeMillis();
-        
+        lastPunchTime = System.currentTimeMillis();
     }
 
     public void setDash(boolean dash) {
@@ -590,11 +512,30 @@ public class Character extends Entity {
     public void setCallUltiEntity(boolean callUltiEntity) {
         this.callUltiEntity = callUltiEntity;
     }
+    
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
         updateBoxes();
     }
+    
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+    
+    public void setThressholdForFalling(int threshold) {
+        this.healthThresholdForFalling = threshold;
+    }
+    
+    public void setFalling(boolean falling) {
+        this.falling = falling;
+    }
+    
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+    
+    // === GETTERS ===
     
     public void resetAllBools() {
         left = false;
@@ -617,10 +558,6 @@ public class Character extends Entity {
         falling = false;
         dashing = false;
         ulting = false;
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction;
     }
     
     public boolean isLeft() {
@@ -661,8 +598,8 @@ public class Character extends Entity {
 
     public boolean punch() {
         return punch;
-    }   
-
+    }
+    
     public boolean summoning() {
         return summoning;
     }
@@ -703,23 +640,12 @@ public class Character extends Entity {
         return name;
     }
 
-    public void setMana(int mana){
-        this.mana = mana;
-    }
-    
-    public void setThressholdForFalling(int threshold){
-        this.healthThresholdForFalling = threshold;
-    }
-
-    public long getLastTimeFalling(){
+    public long getLastTimeFalling() {
         return lastTimeFalling;
-    }   
-
-    public void setFalling(boolean falling){
-        this.falling = falling;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 }
+
