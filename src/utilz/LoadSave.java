@@ -25,7 +25,7 @@ public class LoadSave {
     public static String BattleMap0 = "map_0001.png";
     public static String BattleMap1 = "map_0002.png";
     public static String MenuButton = "MainMenu/menu_button_atlas.png";
-    public static String MenuBackground = "MainMenu/menu_background.png";
+    public static String MenuBackground = "MainMenu/frames/";
     public static String KeyButton = "KeyButton/keys.png";
     public static String PauseBackground = "PauseMenu/pause_menu.png";
     public static String SoundButton = "PauseMenu/sound_button.png";

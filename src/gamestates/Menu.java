@@ -1,6 +1,7 @@
 package gamestates;
 
 import static utilz.Constants.GameConstants.*;
+import static utilz.Constants.UI.MenuButton.*;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -13,19 +14,29 @@ import utilz.LoadSave;
 
 public class Menu extends State implements Statemethods {
 	private MenuButton[] buttons = new MenuButton[3];
-	private BufferedImage backgroundImg;
 	private int menuX, menuY, menuWidth, menuHeight;
+	
+	// Animation frames
+	private BufferedImage[] animationFrames;
+	private int currentFrame = 0;
+	private int animationSpeed = 10;
+	private int animationTick = 0;
 
 	public Menu(Game game) {
 		super(game);
 		loadButtons();
-		loadBackground();
+		loadFrames();
 	}
+	
+	private void loadFrames() {
+		animationFrames = new BufferedImage[TOTAL_FRAMES];
+		for (int i = 0; i < TOTAL_FRAMES; i++) {
+			String frameName = String.format(LoadSave.MenuBackground + "out-%03d.png", i + 1);
+			animationFrames[i] = LoadSave.GetSpriteAtlas(frameName);
+		}
 
-	private void loadBackground() {
-		backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MenuBackground);
-		menuWidth = backgroundImg.getWidth();
-		menuHeight = backgroundImg.getHeight();
+		menuWidth = animationFrames[0].getWidth();
+		menuHeight = animationFrames[0].getHeight();
 		menuX = GAME_WIDTH / 2 - menuWidth / 2 - 80;
 		menuY = 0;
 	}
@@ -39,11 +50,23 @@ public class Menu extends State implements Statemethods {
 	@Override
 	public void update() {
 		for (MenuButton mb : buttons) mb.update();
+		updateAnimation();
+	}
+	
+	private void updateAnimation() {
+		animationTick++;
+		if (animationTick >= animationSpeed) {
+			animationTick = 0;
+			currentFrame++;
+			if (currentFrame >= TOTAL_FRAMES) currentFrame = 0;
+		}
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
+		if (animationFrames != null && animationFrames[currentFrame] != null) {
+			g.drawImage(animationFrames[currentFrame], menuX, menuY, menuWidth, menuHeight, null);
+		}
 
 		for (MenuButton mb : buttons) mb.draw(g);
 	}
