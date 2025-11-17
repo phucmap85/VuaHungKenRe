@@ -68,7 +68,7 @@ public class ManaBar {
     public void update() {
         long now = System.currentTimeMillis();
         if (now - lastRegenTime >= 1000) {
-            mana = Math.min(maxMana, mana + 30);
+            mana = Math.min(maxMana, mana);
             lastRegenTime = now;
         }
     }

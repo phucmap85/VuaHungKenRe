@@ -81,6 +81,7 @@ public class Combat {
             applyDefendDamage(thuyTinh, hog[index].getDirection(), 2);
         } else {
             applySummonDamage(index);
+            
         }
     }
     
@@ -92,7 +93,7 @@ public class Combat {
         if (!hog[index].getdoneTakeHealth()) {
             thuyTinhUI.takeDamage(8000);
             hog[index].setDoneTakeHealth(true);
-            sonTinhUI.regenMana(200);
+            sonTinhUI.regenMana(400);
         }
     }
     
@@ -104,12 +105,13 @@ public class Combat {
         
         if (!Collision(sonTinh.getHitBox(), thuyTinh.getHurtBox()) || thuyTinh.dashing()) return;
         
-        sonTinhUI.regenMana(1);
+
         
         if (isDefendingAgainst(thuyTinh, sonTinh.getDirection())) {
             applyDefendDamage(thuyTinh, sonTinh.getDirection(), 1);
         } else {
             applyPunchDamage();
+            
         }
     }
     
@@ -118,6 +120,7 @@ public class Combat {
         thuyTinh.setHealthTakenPerCombo(1);
         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
         thuyTinhUI.takeDamage(150);
+        sonTinhUI.regenMana(3);
         
         if (thuyTinh.getDirection() != sonTinh.getDirection()) {
             addImpactEffect(thuyTinh);

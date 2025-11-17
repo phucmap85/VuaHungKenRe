@@ -66,7 +66,7 @@ public class Character extends Entity {
         this.direction = direction;
         this.map = map;
         loadAnimations(name);
-        effectManager = new EffectManager(10);
+        effectManager = new EffectManager(5);
     }
 
     public void update() {
