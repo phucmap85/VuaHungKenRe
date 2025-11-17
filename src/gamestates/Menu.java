@@ -13,13 +13,13 @@ import ui.MenuButton;
 import utilz.LoadSave;
 
 public class Menu extends State implements Statemethods {
-	private MenuButton[] buttons = new MenuButton[3];
+	private MenuButton[] buttons = new MenuButton[4];
 	private int menuX, menuY, menuWidth, menuHeight;
 	
 	// Animation frames
 	private BufferedImage[] animationFrames;
 	private int currentFrame = 0;
-	private int animationSpeed = 10;
+	private int animationSpeed = 5;
 	private int animationTick = 0;
 
 	public Menu(Game game) {
@@ -43,8 +43,9 @@ public class Menu extends State implements Statemethods {
 
 	private void loadButtons() {
 		buttons[0] = new MenuButton(GAME_WIDTH - 180, 295 + 200, 0, Gamestate.MATCH_SETUP);
-		buttons[2] = new MenuButton(GAME_WIDTH - 180, 435 + 200, 2, Gamestate.QUIT);
-		buttons[1] = new MenuButton(GAME_WIDTH - 180, 365 + 200, 3, Gamestate.MANUAL);		
+		buttons[1] = new MenuButton(GAME_WIDTH - 180, 365 + 200, 3, Gamestate.MANUAL);
+		buttons[2] = new MenuButton(GAME_WIDTH - 180, 435 + 200, 1, Gamestate.OPTIONS);	
+		buttons[3] = new MenuButton(GAME_WIDTH - 180, 505 + 200, 2, Gamestate.QUIT);
 	}
 
 	@Override
