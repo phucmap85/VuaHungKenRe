@@ -6,7 +6,7 @@ public class Constants {
 			public static final int B_WIDTH = 140;
 			public static final int B_HEIGHT = 56;
 
-            public static final int TOTAL_FRAMES = 294;
+            public static final int TOTAL_FRAMES = 147;
 		}
 
         public static class KeyButton {

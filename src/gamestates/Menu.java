@@ -19,7 +19,7 @@ public class Menu extends State implements Statemethods {
 	// Animation frames
 	private BufferedImage[] animationFrames;
 	private int currentFrame = 0;
-	private int animationSpeed = 5;
+	private int animationSpeed = 10;
 	private int animationTick = 0;
 
 	public Menu(Game game) {
