@@ -10,8 +10,8 @@ public class SoundPlayer {
     private ConcurrentLinkedQueue<Clip> activeSfxClips = new ConcurrentLinkedQueue<>();
     private static final int MAX_SIMULTANEOUS_SFX = 15;
 
-    private float musicVolume = 0.5f;
-    private float sfxVolume = 0.5f; // (0.0 đến 1.0)
+    private float musicVolume = 1.0f;
+    private float sfxVolume = 1.0f;
 
     public void setMusicVolume(float volume) {
         this.musicVolume = Math.max(0.0f, Math.min(1.0f, volume));

@@ -12,6 +12,7 @@ import gamestates.MatchSetup;
 import gamestates.Menu;
 import gamestates.Playing;
 import sound.SoundPlayer;
+import ui.AudioOption;
 import sound.SoundManager;
 
 
@@ -23,6 +24,7 @@ public class Game implements Runnable {
 	private Menu menu;
 	private Manual manual;
 	private MatchSetup matchSetup;
+	private AudioOption audioOption;
 
 	public static SoundPlayer soundPlayer;
     private Gamestate oldState = Gamestate.MENU;
@@ -39,6 +41,7 @@ public class Game implements Runnable {
 	}
 
 	private void initClasses() {
+		audioOption = new AudioOption();
 		menu = new Menu(this);
 		playing = new Playing(this);
 		manual = new Manual(this);
@@ -53,10 +56,10 @@ public class Game implements Runnable {
 	public void update() {
 		if (oldState != Gamestate.state) {
 			Game.soundPlayer.play(SoundManager.CLICKBUTTON);
-            soundPlayer.stopMusic(); // Dừng nhạc cũ
+			soundPlayer.stopMusic(); // Dừng nhạc cũ
             switch (Gamestate.state) {
                 case MENU:
-                    soundPlayer.loop(SoundManager.MENU);
+					soundPlayer.loop(SoundManager.MENU);
                     break;
                 case PLAYING:
                     soundPlayer.loop(SoundManager.PLAYING);
@@ -85,7 +88,6 @@ public class Game implements Runnable {
 			case MATCH_SETUP:
 				matchSetup.update();
 				break;
-			case OPTIONS:
 			case QUIT:
 			default:
 				System.exit(0);
@@ -177,4 +179,7 @@ public class Game implements Runnable {
 	public static SoundPlayer getSoundPlayer() {
         return soundPlayer;
     }
+	public AudioOption getAudioOption() {
+		return audioOption;
+	}
 }

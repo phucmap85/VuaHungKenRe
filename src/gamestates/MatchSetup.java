@@ -193,4 +193,5 @@ public class MatchSetup extends State implements Statemethods {
     @Override public void mousePressed(MouseEvent e) {}
     @Override public void mouseReleased(MouseEvent e) {}
     @Override public void mouseMoved(MouseEvent e) {}
+    @Override public void mouseDragged(MouseEvent e) {}
 }

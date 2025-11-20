@@ -9,6 +9,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import main.Game;
+import sound.SoundManager;
+import ui.GameOption;
 import ui.MenuButton;
 import utilz.LoadSave;
 
@@ -16,6 +18,10 @@ public class Menu extends State implements Statemethods {
 	private MenuButton[] buttons = new MenuButton[4];
 	private int menuX, menuY, menuWidth, menuHeight;
 	
+	// Game option
+	private GameOption gameOption;
+	private boolean option = false;
+
 	// Animation frames
 	private BufferedImage[] animationFrames;
 	private int currentFrame = 0;
@@ -26,6 +32,8 @@ public class Menu extends State implements Statemethods {
 		super(game);
 		loadButtons();
 		loadFrames();
+
+		gameOption = new GameOption(this);
 	}
 	
 	private void loadFrames() {
@@ -44,7 +52,7 @@ public class Menu extends State implements Statemethods {
 	private void loadButtons() {
 		buttons[0] = new MenuButton(GAME_WIDTH - 180, 295 + 200, 0, Gamestate.MATCH_SETUP);
 		buttons[1] = new MenuButton(GAME_WIDTH - 180, 365 + 200, 3, Gamestate.MANUAL);
-		buttons[2] = new MenuButton(GAME_WIDTH - 180, 435 + 200, 1, Gamestate.OPTIONS);	
+		buttons[2] = new MenuButton(GAME_WIDTH - 180, 435 + 200, 1, Gamestate.MENU);
 		buttons[3] = new MenuButton(GAME_WIDTH - 180, 505 + 200, 2, Gamestate.QUIT);
 	}
 
@@ -52,6 +60,8 @@ public class Menu extends State implements Statemethods {
 	public void update() {
 		for (MenuButton mb : buttons) mb.update();
 		updateAnimation();
+
+		if (option) gameOption.update();
 	}
 	
 	private void updateAnimation() {
@@ -69,12 +79,15 @@ public class Menu extends State implements Statemethods {
 			g.drawImage(animationFrames[currentFrame], menuX, menuY, menuWidth, menuHeight, null);
 		}
 
-		for (MenuButton mb : buttons) mb.draw(g);
+		if (option) gameOption.draw(g);
+		else {
+			for (MenuButton mb : buttons) mb.draw(g);
+		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		if (option) gameOption.mousePressed(e);
 	}
 
 	@Override
@@ -82,18 +95,29 @@ public class Menu extends State implements Statemethods {
 		for (MenuButton mb : buttons) {
 			if (isIn(e, mb)) mb.setMousePressed(true);
 		}
+
+		if (option) gameOption.mousePressed(e);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		for (MenuButton mb : buttons) {
 			if (isIn(e, mb)) {
-				if (mb.isMousePressed()) mb.applyGamestate();
+				if (mb.isMousePressed()) {
+					if (mb == buttons[2]) {
+						Game.soundPlayer.play(SoundManager.CLICKBUTTON);
+						option = true;
+					} else {
+						mb.applyGamestate();
+					}
+				}
 				break;
 			}
 		}
 
 		resetButtons();
+
+		if (option) gameOption.mouseReleased(e);
 	}
 
 	private void resetButtons() {
@@ -110,6 +134,13 @@ public class Menu extends State implements Statemethods {
 				break;
 			}
         }
+
+		if (option) gameOption.mouseMoved(e);
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (option) gameOption.mouseDragged(e);
 	}
 
 	@Override
@@ -120,5 +151,9 @@ public class Menu extends State implements Statemethods {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
+	}
+
+	public void setOption(boolean status) {
+		option = status;
 	}
 }

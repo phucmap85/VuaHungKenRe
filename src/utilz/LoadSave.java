@@ -22,11 +22,12 @@ import sound.SoundManager;
 
 public class LoadSave {
     // ===== IMAGE PATH CONSTANTS =====
-    public static String BattleMap0 = "map_0001.png";
-    public static String BattleMap1 = "map_0002.png";
+    public static String BattleMap0 = "Maps/map_0001.png";
+    public static String BattleMap1 = "Maps/map_0002.png";
     public static String MenuButton = "MainMenu/menu_button_atlas.png";
     public static String MenuBackground = "MainMenu/frames/";
     public static String KeyButton = "KeyButton/keys.png";
+    public static String OptionBackground = "OptionMenu/options_background.png";
     public static String PauseBackground = "PauseMenu/pause_menu.png";
     public static String SoundButton = "PauseMenu/sound_button.png";
     public static String UrmButton = "PauseMenu/urm_button.png";

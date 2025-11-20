@@ -17,11 +17,12 @@ public class VolumeButton extends PauseButton {
     public VolumeButton(int x, int y, int width, int height) {
         super(x + width / 2, y, VOLUME_WIDTH, height);
         bounds.x -= VOLUME_WIDTH / 2;
-        this.buttonX = x + width / 2;
         this.x = x;
         this.width = width;
         this.minX = x + VOLUME_WIDTH / 2;
         this.maxX = x + width - VOLUME_WIDTH / 2;
+
+        changeVolume(this.maxX);
 
         loadImgs();
     }
@@ -58,8 +59,7 @@ public class VolumeButton extends PauseButton {
     public float getVolumeLevel() {
         float range = (float)(maxX - minX);
         float currentPos = (float)(buttonX - minX);
-        if (range == 0) return 0;
-        return currentPos / range;
+        return range > 0 ? currentPos / range : 0;
     }
     
     public void resetBools() {
