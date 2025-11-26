@@ -24,6 +24,8 @@ public class LoadSave {
     // ===== IMAGE PATH CONSTANTS =====
     public static String BattleMap0 = "Maps/map_0001.png";
     public static String BattleMap1 = "Maps/map_0002.png";
+    public static String BattleMap2 = "Maps/ending_1.png";
+    public static String BattleMap3 = "Maps/ending_2.png";
     public static String MenuButton = "MainMenu/menu_button_atlas.png";
     public static String MenuBackground = "MainMenu/frames/";
     public static String KeyButton = "KeyButton/keys.png";
@@ -42,6 +44,8 @@ public class LoadSave {
     // ===== ANIMATION CACHE =====
     private static BufferedImage[][] sonTinhAnimations = null;
     private static BufferedImage[][] thuyTinhAnimations = null;
+    private static BufferedImage[][] vuaHungAnimations = null;
+    private static BufferedImage[][] myNuongAnimations = null;
     private static BufferedImage[][] sonTinhSummonedEntity = null;
     private static BufferedImage[][] thuyTinhSummonedEntity = null;
     private static BufferedImage[][] sonTinhLightning = null;
@@ -64,6 +68,8 @@ public class LoadSave {
         System.out.println("Loading all animations...");
         sonTinhAnimations = getAnimations("SonTinh");
         thuyTinhAnimations = getAnimations("ThuyTinh");
+        vuaHungAnimations = getAnimations("VuaHung");
+        myNuongAnimations = getAnimations("MyNuong");
         loadSpecialAnimations();
         allAnimationsLoaded = true;
         System.out.println("All animations loaded!");
@@ -143,6 +149,16 @@ public class LoadSave {
         return thuyTinhAnimations;
     }
 
+    public static BufferedImage[][] getVuaHungAnimations() {
+        if (vuaHungAnimations == null) loadAllAnimations();
+        return vuaHungAnimations;
+    }
+
+    public static BufferedImage[][] getMyNuongAnimations() {
+        if (myNuongAnimations == null) loadAllAnimations();
+        return myNuongAnimations;
+    }
+
     public static BufferedImage[][] loadSummonedEntityAnimation(String characterName) {
         if (!allAnimationsLoaded) loadAllAnimations();
         return "SonTinh".equals(characterName) ? sonTinhSummonedEntity : thuyTinhSummonedEntity;
@@ -212,12 +228,16 @@ public class LoadSave {
                 {"FALLINGBACKDEATH", "12"}, {"SUMMONSKILL", "6"}, {"DASH", "1"},
                 {"SUMMONULTI", "6"}
             };
-        } else {
+        } else if ("ThuyTinh".equals(character)) {
             return new String[][] {
                 {"IDLE", "8"}, {"MOVE", "4"}, {"JUMP", "9"},
                 {"PUNCH", "19"}, {"DEFENSE", "3"}, {"TAKINGHIT", "3"},
                 {"FALLINGBACKDEATH", "12"}, {"SUMMONSKILL", "6"}, {"DASH", "1"},
                 {"SUMMONULTI", "6"}
+            };
+        } else {
+            return new String[][] {
+                {"IDLE", "4"}, {"MOVE", "8"}
             };
         }
     }

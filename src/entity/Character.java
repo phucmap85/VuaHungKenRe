@@ -439,7 +439,22 @@ public class Character extends Entity {
     }
 
     public void loadAnimations(String characterName) {
-        this.animations = "SonTinh".equals(characterName) ? getSonTinhAnimations() : getThuyTinhAnimations();
+        switch (characterName) {
+            case "SonTinh":
+                animations = getSonTinhAnimations();
+                break;
+            case "ThuyTinh":
+                animations = getThuyTinhAnimations();
+                break;
+            case "VuaHung":
+                animations = getVuaHungAnimations();
+                break;
+            case "MyNuong":
+                animations = getMyNuongAnimations();
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown character name: " + characterName);
+        }
     }
 
     public void resetAnimationTick() {

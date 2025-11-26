@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import static utilz.Constants.GameConstants.*;
 import static utilz.LoadSave.preloadSounds;
 
-
+import gamestates.Ending;
 import gamestates.Gamestate;
 import gamestates.Manual;
 import gamestates.MatchSetup;
@@ -23,6 +23,7 @@ public class Game implements Runnable {
 	private Playing playing;
 	private Menu menu;
 	private Manual manual;
+	private Ending ending;
 	private MatchSetup matchSetup;
 	private AudioOption audioOption;
 
@@ -45,6 +46,7 @@ public class Game implements Runnable {
 		menu = new Menu(this);
 		playing = new Playing(this);
 		manual = new Manual(this);
+		ending = new Ending(this);
 		matchSetup = new MatchSetup(this);
 	}
 
@@ -67,6 +69,9 @@ public class Game implements Runnable {
 				case MANUAL:
                     soundPlayer.loop(SoundManager.PLAYING);
                     break;
+				case ENDING:
+					soundPlayer.loop(SoundManager.ENDING);
+					break;
 				case MATCH_SETUP:
 					soundPlayer.loop(SoundManager.SELECTION);
 					break;
@@ -84,6 +89,9 @@ public class Game implements Runnable {
 				break;
 			case MANUAL:
 				manual.update();
+				break;
+			case ENDING:
+				ending.update();
 				break;
 			case MATCH_SETUP:
 				matchSetup.update();
@@ -105,6 +113,9 @@ public class Game implements Runnable {
 				break;
 			case MANUAL:
 				manual.draw(g);
+				break;
+			case ENDING:
+				ending.draw(g);
 				break;
 			case MATCH_SETUP:
 				matchSetup.draw(g);	
@@ -172,6 +183,9 @@ public class Game implements Runnable {
 	}
 	public Manual getManual(){
 		return manual;
+	}
+	public Ending getEnding() {
+		return ending;
 	}
 	public MatchSetup getMatchSetup() {
         return matchSetup;

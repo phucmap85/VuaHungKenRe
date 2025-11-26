@@ -24,13 +24,17 @@ public class Map {
 
     private void importMap() {
         switch (mapID) {
-            case 0:
-                img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap0);
+            case 1:
+                img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap1);
                 break;
             case 2:
+                img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap2);
+                break;
+            case 3:
+                img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap3);
                 break;
             default:
-                img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap1);
+                img = LoadSave.GetSpriteAtlas(LoadSave.BattleMap0);
                 break;
         }
     }
@@ -46,6 +50,12 @@ public class Map {
                 platforms.add(new Platform(886f, 1030f, 401f));
                 break;
             case 2:
+                groundY = 660f;
+                break;
+            case 3:
+                groundY = 640f;
+                break;
+            case 4:
                 groundY = 660f;
                 break;
             default: // Map 1

@@ -85,6 +85,14 @@ public class Playing extends State implements Statemethods {
             combat2.update();
             playerUI1.update();
             playerUI2.update();
+
+            if (playerUI1.getHealth() <= 0) {
+                game.getEnding().setMap(0);
+                Gamestate.state = Gamestate.ENDING;
+            } else if (playerUI2.getHealth() <= 0) {
+                game.getEnding().setMap(1);
+                Gamestate.state = Gamestate.ENDING;
+            }
         }
         else {
             pauseOverlay.update();
