@@ -324,7 +324,9 @@ public class Character extends Entity {
         } else if (moving) {
             playerAction = (direction == RIGHT) ? MOVE_RIGHT : MOVE_LEFT;
         } else {
-            playerAction = (direction == RIGHT) ? IDLE_RIGHT : IDLE_LEFT;
+            if("VuaHung".equals(name) || "MyNuong".equals(name)){
+                playerAction = IDLE_SOUTH;
+            }else playerAction = (direction == RIGHT) ? IDLE_RIGHT : IDLE_LEFT;
         }
 
         if (startAnim != playerAction) {
@@ -434,7 +436,7 @@ public class Character extends Entity {
             offsetY = ("SonTinh".equals(name) ? 5 : 2) * framesIndex;
         }
         
-        g2.drawImage(animations[playerAction][framesIndex], (int)x, (int)y + offsetY, 128, 128, null);
+        g2.drawImage(animations[playerAction == IDLE_SOUTH ? IDLE_LEFT : playerAction][framesIndex], (int)x, (int)y + offsetY, 128, 128, null);
         effectManager.draw(g);
     }
 

@@ -73,11 +73,14 @@ public class Constants {
         public static final int SUMMONULTI_RIGHT = 18;
         public static final int SUMMONULTI_LEFT = 19;
 
+        public static final int IDLE_SOUTH = 20;
         public static int getFramesAmount(int player_action) {
             switch (player_action) {
                 case IDLE_LEFT:
                 case IDLE_RIGHT:
                     return 8;
+                case IDLE_SOUTH:
+                    return 4;
                 case MOVE_LEFT:
                 case MOVE_RIGHT:
                     return 4;
