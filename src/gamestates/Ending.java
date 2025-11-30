@@ -5,6 +5,9 @@ import map.Map;
 import ui.EndingOverlay;
 import utilz.LoadSave;
 
+import static utilz.Constants.PlayerConstants.IDLE_LEFT;
+import static utilz.Constants.PlayerConstants.IDLE_RIGHT;
+import static utilz.Constants.PlayerConstants.IDLE_SOUTH;
 import static utilz.Constants.PlayerConstants.LEFT;
 import static utilz.Constants.PlayerConstants.RIGHT;
 import static utilz.LoadSave.GetSpriteAtlas;
@@ -33,10 +36,10 @@ public class Ending extends State implements Statemethods {
     void initClasses() {
         loadAllAnimations();
 		map = new Map(game, selectedMapIndex);
-		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
-        sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        vuaHung = new Character(440f, 535f, 50f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "VuaHung", LEFT, map);
-        myNuong = new Character(540f, 535f, 40f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "MyNuong", RIGHT, map);
+		thuyTinh = new Character(550f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
+        sonTinh = new Character(550f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
+        vuaHung = new Character(400f, 535f, 50f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "VuaHung", LEFT, map);
+        myNuong = new Character(500f, 535f, 40f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "MyNuong", RIGHT, map);
         endingOverlay = new EndingOverlay(this);
         loadDialogue();
 	}
@@ -52,17 +55,12 @@ public class Ending extends State implements Statemethods {
     }
 
     public void resetAllStates(){
-        thuyTinh.resetAllBools();
-        sonTinh.resetAllBools();
-        vuaHung.resetAllBools();
-        myNuong.resetAllBools();
-        thuyTinh.resetAllStates();
-        sonTinh.resetAllStates();
-        vuaHung.resetAllStates();
-        myNuong.resetAllStates();
-        thuyTinh.setDirection(RIGHT);
-        sonTinh.setDirection(LEFT);
+        thuyTinh.setPlayerAction(IDLE_SOUTH);
+        sonTinh.setPlayerAction(IDLE_SOUTH);
+        vuaHung.setPlayerAction(IDLE_SOUTH);   // Giờ VuaHung cũng có IDLE_SOUTH
+        myNuong.setPlayerAction(IDLE_SOUTH);   // Giờ MyNuong cũng có IDLE_SOUTH
     }
+    
 
     private void loadDialogue() {
         BufferedImage fullImg = LoadSave.GetSpriteAtlas(LoadSave.Dialogue);
@@ -86,29 +84,29 @@ public class Ending extends State implements Statemethods {
 
     @Override
     public void update() {
-        sonTinh.update();
-        thuyTinh.update();
-        vuaHung.update();
-        myNuong.update();
+        sonTinh.updateForEnding();
+        thuyTinh.updateForEnding();
+        vuaHung.updateForEnding();
+        myNuong.updateForEnding();
         endingOverlay.update();
     }
 
     @Override
     public void draw(Graphics g) {
         map.draw(g);
-        thuyTinh.render(g);
-        sonTinh.render(g);
+        if(selectedMapIndex == 3) thuyTinh.renderforEnding(g);
+        else sonTinh.renderforEnding(g);
         vuaHung.render(g);
         myNuong.render(g);
         endingOverlay.draw(g);
         int scaledW = (int) (dialogue[0].getWidth() * 0.6);
         int scaledH = (int) (dialogue[0].getHeight() * 0.6);
-        int dialogueX = 440;
+        int dialogueX = 390;
        
         if(this.selectedMapIndex == 3){
-             g.drawImage(dialogue[1], dialogueX, 410, scaledW, scaledH, null);
-        }else if(this.selectedMapIndex == 4){
-            g.drawImage(dialogue[0], dialogueX, 600, scaledW, scaledH, null);
+             g.drawImage(dialogue[1], dialogueX, 450, scaledW, scaledH, null);
+        }else if(this.selectedMapIndex == 2){
+            g.drawImage(dialogue[0], dialogueX, 450, scaledW, scaledH, null);
         }  
     }
 

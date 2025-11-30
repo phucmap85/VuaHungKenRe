@@ -53,7 +53,7 @@ public class Map {
                 groundY = 660f;
                 break;
             case 3:
-                groundY = 640f;
+                groundY = 660f;
                 break;
             case 4:
                 groundY = 660f;

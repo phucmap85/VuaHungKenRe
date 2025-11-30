@@ -54,7 +54,13 @@ public class LoadSave {
     private static BufferedImage[][] sonTinhUltiCreature = null;
     private static BufferedImage[][] thuyTinhUltiCreature = null;
     private static BufferedImage[][] effectSprites = null;
+    private static BufferedImage[][] sonTinhIdleSouth = null;
+    private static BufferedImage[][] thuyTinhIdleSouth = null;
+    private static BufferedImage[] koAnimation = null;
     private static boolean allAnimationsLoaded = false;
+
+    // ===== IMAGE CACHE =====
+    private static final Map<String, BufferedImage> imageCache = new HashMap<>();
 
     // ===== SOUND CACHE =====
     private static final Map<Integer, List<Clip>> sfxPool = new HashMap<>();
@@ -80,11 +86,14 @@ public class LoadSave {
         sonTinhSummonedEntity = loadFrames("SonTinh", "HOG", 8);
         sonTinhLightning = loadFrames("SonTinh", "LIGHTNING", 27);
         sonTinhUltiCreature = loadFrames("SonTinh", "PHOENIX", 19);
+        // IDLE_SOUTH loaded in getAnimations() - avoid duplicate
         
         thuyTinhSummonedEntity = loadFrames("ThuyTinh", "TORNADO", 17);
         thuyTinhLightning = loadFrames("ThuyTinh", "LIGHTNING", 20);
         thuyTinhUltiCreature = loadFrames("ThuyTinh", "SQUID", 20);
+        // IDLE_SOUTH loaded in getAnimations() - avoid duplicate
         
+        loadKOAnimation();
         loadEffects();
     }
 
@@ -104,6 +113,25 @@ public class LoadSave {
             }
         }
         return frames;
+    }
+
+    private static void loadKOAnimation() {
+        koAnimation = new BufferedImage[11]; // 11 frames: ko_0001 to ko_0011
+        
+        for (int i = 0; i < 11; i++) {
+            String path = String.format("/image/Ending/ko_%04d.png", i + 1);
+            try (InputStream is = LoadSave.class.getResourceAsStream(path)) {
+                if (is != null) {
+                    koAnimation[i] = ImageIO.read(is);
+                } else {
+                    System.err.println("Could not find K.O frame: " + path);
+                }
+            } catch (IOException e) {
+                System.err.println("Failed to load K.O frame " + (i+1));
+                e.printStackTrace();
+            }
+        }
+        System.out.println("K.O animation loaded with 11 frames");
     }
 
     private static void loadEffects() {
@@ -175,6 +203,17 @@ public class LoadSave {
         return "SonTinh".equals(characterName) ? sonTinhUltiCreature : thuyTinhUltiCreature;
     }
 
+    public static BufferedImage[][] loadIdleSouthAnimation(String characterName) {
+        if (!allAnimationsLoaded) loadAllAnimations();
+        return "SonTinh".equals(characterName) ? sonTinhIdleSouth : thuyTinhIdleSouth;
+    }
+
+    public static BufferedImage[] getKOAnimation() {
+        if (!allAnimationsLoaded) loadAllAnimations();
+        return koAnimation;
+    }
+
+
     public static BufferedImage[][] getEffectSprites() {
         if (!allAnimationsLoaded) loadAllAnimations();
         return effectSprites;
@@ -183,10 +222,18 @@ public class LoadSave {
     // ===== IMAGE UTILITIES =====
     
     public static BufferedImage GetSpriteAtlas(String fileName) {
+        // Check cache first
+        if (imageCache.containsKey(fileName)) {
+            return imageCache.get(fileName);
+        }
+        
+        // Load and cache
         String path = "/image/" + fileName;
         try (InputStream is = LoadSave.class.getResourceAsStream(path)) {
             if (is != null) {
-                return ImageIO.read(is);
+                BufferedImage img = ImageIO.read(is);
+                imageCache.put(fileName, img);
+                return img;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -202,7 +249,7 @@ public class LoadSave {
     }
 
     public static BufferedImage[][] getAnimations(String character) {
-        BufferedImage[][] animations = new BufferedImage[22][20];
+        BufferedImage[][] animations = new BufferedImage[23][20];
         String[][] animConfig = getAnimationConfig(character);
         
         String atlasPath = String.format("/image/%s/%sSpriteAtlas.png", character, character);
@@ -213,12 +260,52 @@ public class LoadSave {
             
             BufferedImage atlas = ImageIO.read(is);
             loadAnimationsFromAtlas(animations, atlas, animConfig);
+            
+            // Load IDLE_SOUTH for all characters
+            loadIdleSouthFrames(animations, character);
+            
             System.out.println("Successfully loaded for " + character);
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         return animations;
+    }
+    
+    private static void loadIdleSouthFrames(BufferedImage[][] animations, String character) {
+        // IDLE_SOUTH is at index 20, has 4 frames
+        if ("SonTinh".equals(character) || "ThuyTinh".equals(character)) {
+            // Load from separate IDLESOUTH files and cache
+            BufferedImage[][] idleSouthFrames = new BufferedImage[2][4];
+            for (int i = 0; i < 4; i++) {
+                String path = String.format("/image/%s/IDLESOUTH_%04d.png", character, i + 1);
+                try (InputStream is = LoadSave.class.getResourceAsStream(path)) {
+                    if (is != null) {
+                        BufferedImage img = ImageIO.read(is);
+                        animations[20][i] = img;
+                        idleSouthFrames[0][i] = img;
+                        idleSouthFrames[1][i] = img; // Same for both directions
+                    }
+                } catch (IOException e) {
+                    System.err.println("Failed to load IDLE_SOUTH frame " + (i+1) + " for " + character);
+                    e.printStackTrace();
+                }
+            }
+            // Cache for loadIdleSouthAnimation() getter
+            if ("SonTinh".equals(character)) {
+                sonTinhIdleSouth = idleSouthFrames;
+            } else {
+                thuyTinhIdleSouth = idleSouthFrames;
+            }
+        } else {
+            // For VuaHung and MyNuong, reference IDLE frames (index 0) to IDLE_SOUTH (index 20)
+            // No copy needed - just reference to save memory
+            for (int i = 0; i < 4; i++) {
+                if (animations[0] != null && animations[0][i] != null) {
+                    animations[20][i] = animations[0][i];
+                }
+            }
+        }
     }
     
     private static String[][] getAnimationConfig(String character) {

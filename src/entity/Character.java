@@ -84,6 +84,11 @@ public class Character extends Entity {
         updateAnimationTick();
         effectManager.update();
     }
+    public void updateForEnding(){
+        updatePosition();
+        updateAnimationTick();
+        effectManager.update();
+    }
 
     // === UPDATE METHODS ===
     
@@ -436,8 +441,19 @@ public class Character extends Entity {
             offsetY = ("SonTinh".equals(name) ? 5 : 2) * framesIndex;
         }
         
-        g2.drawImage(animations[playerAction == IDLE_SOUTH ? IDLE_LEFT : playerAction][framesIndex], (int)x, (int)y + offsetY, 128, 128, null);
+        // Debug: Check if animation exists
+        if (animations != null && playerAction < animations.length && 
+            animations[playerAction] != null && framesIndex < animations[playerAction].length &&
+            animations[playerAction][framesIndex] != null) {
+            g2.drawImage(animations[playerAction][framesIndex], (int)x, (int)y + offsetY, 128, 128, null);
+        } else {
+            System.err.println("Missing animation for " + name + " - Action: " + playerAction + ", Frame: " + framesIndex);
+        }
         effectManager.draw(g);
+    }
+    public void renderforEnding(Graphics g){
+        Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(animations[playerAction][framesIndex], (int)x, (int)y-10, 128, 128, null);
     }
 
     public void loadAnimations(String characterName) {
@@ -663,6 +679,9 @@ public class Character extends Entity {
 
     public String getName() {
         return name;
+    }
+    public void setPlayerAction(int action){
+        this.playerAction = action;
     }
 }
 

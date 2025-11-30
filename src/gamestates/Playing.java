@@ -8,11 +8,13 @@ import main.Game;
 import map.Map;
 import ui.PauseOverlay;
 import ui.PlayerUI;
+import utilz.LoadSave;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
+import java.awt.image.BufferedImage;
 
 import entity.Character;
 import entity.Combat;
@@ -30,6 +32,12 @@ public class Playing extends State implements Statemethods {
 
     int selectedMapIndex;
 
+    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 50;
+    boolean switchEnding;
+    BufferedImage[] ko = null;
+    int countUpdate = 0;
+    int thresholdUpdate = 2;
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -40,11 +48,13 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game, selectedMapIndex);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        playerUI1 = new PlayerUI(200000, true);
-        playerUI2 = new PlayerUI(200000, false);
+        playerUI1 = new PlayerUI(20000, true);
+        playerUI2 = new PlayerUI(20000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         pauseOverlay = new PauseOverlay(this);
+        ko = LoadSave.getKOAnimation();
+        switchEnding = false;
 	}
 
     public void setMatchSettings(int mapID) {
@@ -79,26 +89,73 @@ public class Playing extends State implements Statemethods {
     @Override
     public void update() {
         if (!paused) {
-            sonTinh.update();
-            thuyTinh.update();
-            combat1.update();
-            combat2.update();
-            playerUI1.update();
-            playerUI2.update();
-
             if (playerUI1.getHealth() <= 0) {
-                game.getEnding().setMap(0);
-                Gamestate.state = Gamestate.ENDING;
+                if (!switchEnding) switchEnding = true;
+                countUpdate++;
+                if (countUpdate >= thresholdUpdate) {
+                    countUpdate = 0;
+                    thuyTinh.updateForEnding();
+                    sonTinh.update();
+                    combat1.update();
+                    combat2.update();
+                }
+                framesCounter++;
+                if(framesIndex == maxFrames - 1) {
+                    framesSpeed = delayForLastFrame;
+                }
+                if (framesCounter >= framesSpeed) {
+                    framesCounter = 0;
+                    framesIndex++;
+                    if (framesIndex >= maxFrames) {
+                        framesIndex = 0;
+                        switchEnding = false;
+                        framesSpeed = 20;
+                        game.getEnding().setMap(0);
+                        Gamestate.state = Gamestate.ENDING;
+                    }
+                }
             } else if (playerUI2.getHealth() <= 0) {
-                game.getEnding().setMap(1);
-                Gamestate.state = Gamestate.ENDING;
+                if (!switchEnding) switchEnding = true;
+                countUpdate++;
+                if (countUpdate >= thresholdUpdate) {
+                    countUpdate = 0;
+                    sonTinh.updateForEnding();
+                    thuyTinh.update();
+                    combat1.update();
+                    combat2.update();
+                }
+                framesCounter++;
+                 if(framesIndex == maxFrames - 1) {
+                    framesSpeed = delayForLastFrame;
+                }
+                if (framesCounter >= framesSpeed) {
+                    framesCounter = 0;
+                    framesIndex++;
+                    if (framesIndex >= maxFrames) {
+                        framesIndex = 0;
+                        switchEnding = false;
+                        framesSpeed = 20;
+                        game.getEnding().setMap(1);
+                        Gamestate.state = Gamestate.ENDING;
+                    }
+                }
+            } else {
+                sonTinh.update();
+                thuyTinh.update();
+                combat1.update();
+                combat2.update();
+                playerUI1.update();
+                playerUI2.update();
             }
-        }
-        else {
+        } else {
             pauseOverlay.update();
         }
     }
 
+    public void renderKo(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(ko[framesIndex], -70, 0, 1280, 720, null);
+    }
     @Override
     public void draw(Graphics g) {
         map.draw(g);
@@ -117,7 +174,7 @@ public class Playing extends State implements Statemethods {
         playerUI2.draw(g, GAME_WIDTH);
         combat1.render(g);
         combat2.render(g);
-
+        if(switchEnding) renderKo(g);
         if(paused) pauseOverlay.draw(g);
     }
 
