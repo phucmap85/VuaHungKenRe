@@ -23,6 +23,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			case PLAYING:
 				gamePanel.getGame().getPlaying().mouseDragged(e);
 				break;
+			case ENDING:
+				gamePanel.getGame().getEnding().mouseDragged(e);
+				break;
 			default:
 				break;
 		}
@@ -39,6 +42,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 				break;
 			case MATCH_SETUP:
 				gamePanel.getGame().getMatchSetup().mouseMoved(e);
+				break;
+			case ENDING:
+				gamePanel.getGame().getEnding().mouseMoved(e);
 				break;
 			default:
 				break;
@@ -71,6 +77,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			case MATCH_SETUP:
 				gamePanel.getGame().getMatchSetup().mousePressed(e);
 				break;
+			case ENDING:
+				gamePanel.getGame().getEnding().mousePressed(e);
+				break;
 			default:
 				break;
 		}
@@ -87,6 +96,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 				break;
 			case MATCH_SETUP:
 				gamePanel.getGame().getMatchSetup().mouseReleased(e);
+				break;
+			case ENDING:
+				gamePanel.getGame().getEnding().mouseReleased(e);
 				break;
 			default:
 				break;
