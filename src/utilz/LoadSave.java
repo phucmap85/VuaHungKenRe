@@ -37,6 +37,7 @@ public class LoadSave {
     public static String MatchSetupBackground = "MatchSetup/MatchSetupBackground.png";
     public static String MatchSetupTitle = "MatchSetup/mapselection.png";
     public static String NextButton = "MatchSetup/nextbutton.png";
+    public static String Dialogue = "Ending/dialogue.png";
     
     private static final int SPRITE_SIZE = 64;
     private static final int DIRECTION_COUNT = 2;
