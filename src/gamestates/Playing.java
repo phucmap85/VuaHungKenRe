@@ -33,11 +33,12 @@ public class Playing extends State implements Statemethods {
 
     int selectedMapIndex;
 
-    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 450;
+    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 1000;
     boolean switchEnding = false;
     BufferedImage[] ko = null;
     int countUpdate = 0;
     int thresholdUpdate = 3;
+    boolean sonTinhWin = false, doneCheck = false;
 
     public Playing(Game game) {
         super(game);
@@ -84,6 +85,7 @@ public class Playing extends State implements Statemethods {
         framesIndex = 0;
         framesCounter = 0;
         framesSpeed = 20;
+        doneCheck = false;
     }
 
     public void windowFocusLost() {
@@ -94,7 +96,18 @@ public class Playing extends State implements Statemethods {
     @Override
     public void update() {
         if (!paused) {
-            if (playerUI1.getHealth() <= 0) {
+            if(!doneCheck){
+            if(playerUI1.getHealth() <= 0) {
+                sonTinhWin = true;
+                doneCheck = true;
+            }
+            else if(playerUI2.getHealth() <= 0) {
+                sonTinhWin = false;
+                doneCheck = true;
+            }
+        
+        }
+            if (doneCheck && sonTinhWin) {
                 if (!switchEnding) {
                     Game.soundPlayer.play(SoundManager.KO);
                     switchEnding = true;
@@ -116,8 +129,7 @@ public class Playing extends State implements Statemethods {
                     sonTinh.update();
                     combat1.update();
                     combat2.update();
-                    playerUI1.update();
-                    playerUI2.update();
+                
                 }
             
                 
@@ -133,11 +145,12 @@ public class Playing extends State implements Statemethods {
                         framesIndex = 0;
                         switchEnding = false;
                         framesSpeed = 20;
+                        doneCheck = false;
                         game.getEnding().setMap(0);
                         Gamestate.state = Gamestate.ENDING;
                     }
                 }
-            } else if (playerUI2.getHealth() <= 0) {
+            } else if(doneCheck && !sonTinhWin) {
                 if (!switchEnding) {
                     Game.soundPlayer.play(SoundManager.KO);
                     switchEnding = true;
@@ -159,8 +172,7 @@ public class Playing extends State implements Statemethods {
                     thuyTinh.update();
                     combat1.update();
                     combat2.update();
-                    playerUI1.update();
-                    playerUI2.update();
+                   
                 }
                 
                 
@@ -175,6 +187,7 @@ public class Playing extends State implements Statemethods {
                         framesIndex = 0;
                         switchEnding = false;
                         framesSpeed = 20;
+                        doneCheck = false;
                         game.getEnding().setMap(1);
                     
                         Gamestate.state = Gamestate.ENDING;
@@ -187,6 +200,7 @@ public class Playing extends State implements Statemethods {
                 combat2.update();
                 playerUI1.update();
                 playerUI2.update();
+               
             }
         } else {
             pauseOverlay.update();
