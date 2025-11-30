@@ -17,6 +17,7 @@ public class Combat {
     private UltiSkill ulti;
     private EffectManager effectManager;
     private final long TimeInVulnerable = 500;
+    private boolean doneSet = false;
 
     public Combat(Character sonTinh, Character thuyTinh, PlayerUI sonTinhUI, PlayerUI thuyTinhUI) {
         this.sonTinh = sonTinh;
@@ -119,8 +120,8 @@ public class Combat {
         thuyTinh.setTakingHit(true);
         thuyTinh.setHealthTakenPerCombo(1);
         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
-        thuyTinhUI.takeDamage(150);
-        sonTinhUI.regenMana(3);
+        thuyTinhUI.takeDamage(149);
+        sonTinhUI.regenMana(300);
         
         if (thuyTinh.getDirection() != sonTinh.getDirection()) {
             addImpactEffect(thuyTinh);
@@ -158,15 +159,18 @@ public class Combat {
         int damage = "SonTinh".equals(sonTinh.getCharacterName()) ? 199 : 269;
         thuyTinhUI.takeDamage(damage);
         
-        if ("SonTinh".equals(sonTinh.getName())) {
+        if ("SonTinh".equals(sonTinh.getName()) && !doneSet) {
             thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
+            doneSet = true;
         }
     }
     
     private void deactivateUlti() {
         ulti = null;
+        doneSet=false;
         thuyTinh.setTakingHit(false);
         thuyTinh.setFalling(true);
+        thuyTinh.setPlayerAction(thuyTinh.getDirection() == RIGHT ? FALLING_RIGHT : FALLING_LEFT);
         Game.soundPlayer.play(SoundManager.THUYTINHFALL);
     }
     
@@ -225,6 +229,10 @@ public class Combat {
         for (int i = 0; i < 5; i++) {
             hog[i] = null;
         }
+    }
+    public boolean ultiIsNull(){
+       if(ulti == null) return true;
+       return false;
     }
 }
 

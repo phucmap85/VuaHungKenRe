@@ -86,8 +86,9 @@ public class Character extends Entity {
     }
     public void updateForEnding(){
         updatePosition();
-        updateAnimationTick();
+        updateAnimationTickForEnding();
         effectManager.update();
+        
     }
 
     // === UPDATE METHODS ===
@@ -97,6 +98,14 @@ public class Character extends Entity {
             resetAllStates();
             falling = true;
             playSoundForCharacter(SoundManager.SONTINHFALL, SoundManager.THUYTINHFALL);
+        }
+        if(falling){
+            if (framesIndex >= getFramesAmount(playerAction)) {
+                framesIndex = 0;
+                falling = false;
+                lastTimeFalling = System.currentTimeMillis();
+            }
+            
         }
     }
 
@@ -109,6 +118,12 @@ public class Character extends Entity {
         if (!takingHit) {
             healthTakenPerCombo = 0;
             setThressholdForFalling(100);
+        }
+        if(takingHit){
+            if (framesCounter >= DelayForTakingHit) {
+            resetAnimationTick();
+            takingHit = false;
+        }
         }
     }
     
@@ -353,6 +368,34 @@ public class Character extends Entity {
             updateNormalAnimation();
         }
     }
+
+    public void updateAnimationTickForEnding() {
+        int currentSpeed = normalAniSpeed;
+        framesCounter++;
+
+        if (isFallingAnimation()) {
+            updateFallingAnimationForEnding(currentSpeed);
+        } else if (isTakingHitAnimation()) {
+            updateTakingHitAnimation(currentSpeed);
+        } else if (isDefendAnimation()) {
+            updateDefendAnimation(currentSpeed);
+        } else {
+            updateNormalAnimation();
+        }
+
+    }
+
+    public void updateFallingAnimationForEnding(int currentSpeed){
+        if (framesIndex < 2) {
+            framesIndex = 2;
+        } else if (framesIndex != 6 && framesCounter >= currentSpeed) {
+            framesCounter = 0;
+            framesIndex++;
+        } if (framesIndex == 6){
+            framesCounter = 0;
+            return;
+        }
+    }
     
     private boolean isFallingAnimation() {
         return playerAction == FALLING_LEFT || playerAction == FALLING_RIGHT;
@@ -372,11 +415,6 @@ public class Character extends Entity {
         } else if (framesIndex != 6 && framesCounter >= currentSpeed) {
             framesCounter = 0;
             framesIndex++;
-            if (framesIndex >= getFramesAmount(playerAction)) {
-                framesIndex = 0;
-                falling = false;
-                lastTimeFalling = System.currentTimeMillis();
-            }
         } else if (framesCounter >= DelayForGettingUp) {
             framesCounter = 0;
             framesIndex++;
@@ -387,10 +425,7 @@ public class Character extends Entity {
         if (framesIndex < 2 && framesCounter >= currentSpeed) {
             framesCounter = 0;
             framesIndex++;
-        } else if (framesCounter >= DelayForTakingHit) {
-            resetAnimationTick();
-            takingHit = false;
-        }
+        } 
     }
     
     private void updateDefendAnimation(int currentSpeed) {

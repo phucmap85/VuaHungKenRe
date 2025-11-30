@@ -6,6 +6,7 @@ import static utilz.LoadSave.loadAllAnimations;
 
 import main.Game;
 import map.Map;
+import sound.SoundManager;
 import ui.PauseOverlay;
 import ui.PlayerUI;
 import utilz.LoadSave;
@@ -32,8 +33,8 @@ public class Playing extends State implements Statemethods {
 
     int selectedMapIndex;
 
-    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 50;
-    boolean switchEnding;
+    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 450;
+    boolean switchEnding = false;
     BufferedImage[] ko = null;
     int countUpdate = 0;
     int thresholdUpdate = 2;
@@ -48,8 +49,8 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game, selectedMapIndex);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        playerUI1 = new PlayerUI(20000, true);
-        playerUI2 = new PlayerUI(20000, false);
+        playerUI1 = new PlayerUI(50000, true);
+        playerUI2 = new PlayerUI(50000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         pauseOverlay = new PauseOverlay(this);
@@ -79,6 +80,10 @@ public class Playing extends State implements Statemethods {
         playerUI2.resetAll();
         combat1.resetCombat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2.resetCombat(thuyTinh, sonTinh, playerUI1, playerUI2);
+        switchEnding = false;
+        framesIndex = 0;
+        framesCounter = 0;
+        framesSpeed = 20;
     }
 
     public void windowFocusLost() {
@@ -90,7 +95,19 @@ public class Playing extends State implements Statemethods {
     public void update() {
         if (!paused) {
             if (playerUI1.getHealth() <= 0) {
-                if (!switchEnding) switchEnding = true;
+                if (!switchEnding) {
+                    Game.soundPlayer.play(SoundManager.KO);
+                    switchEnding = true;
+                }
+                
+                // Chỉ cho ngã khi không đang dính ulti và chưa ngã
+                if(!thuyTinh.falling() && combat1.ultiIsNull()){
+                    thuyTinh.resetAnimationTick();
+                    thuyTinh.setFalling(true);
+                    thuyTinh.setPlayerAction(thuyTinh.getDirection() == RIGHT ?  FALLING_RIGHT : FALLING_LEFT );
+                    Game.soundPlayer.play(SoundManager.THUYTINHFALL);
+                }
+                
                 countUpdate++;
                 if (countUpdate >= thresholdUpdate) {
                     countUpdate = 0;
@@ -99,6 +116,9 @@ public class Playing extends State implements Statemethods {
                     combat1.update();
                     combat2.update();
                 }
+            
+                
+                
                 framesCounter++;
                 if(framesIndex == maxFrames - 1) {
                     framesSpeed = delayForLastFrame;
@@ -115,7 +135,20 @@ public class Playing extends State implements Statemethods {
                     }
                 }
             } else if (playerUI2.getHealth() <= 0) {
-                if (!switchEnding) switchEnding = true;
+                if (!switchEnding) {
+                    Game.soundPlayer.play(SoundManager.KO);
+                    switchEnding = true;
+                }
+                
+                // Chỉ cho ngã khi không đang dính ulti và chưa ngã
+                if(!sonTinh.falling() && combat2.ultiIsNull()){
+                    sonTinh.resetAnimationTick();
+                    sonTinh.setFalling(true);
+                    sonTinh.setPlayerAction(sonTinh.getDirection() == RIGHT ?  FALLING_RIGHT : FALLING_LEFT );
+                    Game.soundPlayer.play(SoundManager.SONTINHFALL);
+                }
+               
+               
                 countUpdate++;
                 if (countUpdate >= thresholdUpdate) {
                     countUpdate = 0;
@@ -124,6 +157,8 @@ public class Playing extends State implements Statemethods {
                     combat1.update();
                     combat2.update();
                 }
+                
+                
                 framesCounter++;
                  if(framesIndex == maxFrames - 1) {
                     framesSpeed = delayForLastFrame;
@@ -136,6 +171,7 @@ public class Playing extends State implements Statemethods {
                         switchEnding = false;
                         framesSpeed = 20;
                         game.getEnding().setMap(1);
+                    
                         Gamestate.state = Gamestate.ENDING;
                     }
                 }

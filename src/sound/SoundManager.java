@@ -33,8 +33,9 @@ public enum SoundManager {
     LIGHTNING(26, "/sound/audio/lightning.wav"),
     BOMB(27, "/sound/audio/bomb.wav"),
 
-    CLICKBUTTON(28, "/sound/audio/button.wav");
+    CLICKBUTTON(28, "/sound/audio/button.wav"),
 
+    KO(29, "/sound/audio/ko.wav");
     private final int index;
     private final String path;
 
