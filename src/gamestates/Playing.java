@@ -49,8 +49,8 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game, selectedMapIndex);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        playerUI1 = new PlayerUI(150000, true);
-        playerUI2 = new PlayerUI(150000, false);
+        playerUI1 = new PlayerUI(50000, true);
+        playerUI2 = new PlayerUI(50000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         pauseOverlay = new PauseOverlay(this);

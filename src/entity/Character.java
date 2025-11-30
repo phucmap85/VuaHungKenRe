@@ -627,6 +627,8 @@ public class Character extends Entity {
         falling = false;
         dashing = false;
         ulting = false;
+        inAir = false;
+        velocityY = 0;
     }
     
     public boolean isLeft() {
