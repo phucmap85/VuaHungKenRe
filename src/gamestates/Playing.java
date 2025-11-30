@@ -37,7 +37,7 @@ public class Playing extends State implements Statemethods {
     boolean switchEnding = false;
     BufferedImage[] ko = null;
     int countUpdate = 0;
-    int thresholdUpdate = 2;
+    int thresholdUpdate = 3;
 
     public Playing(Game game) {
         super(game);
@@ -49,8 +49,8 @@ public class Playing extends State implements Statemethods {
 		map = new Map(game, selectedMapIndex);
 		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        playerUI1 = new PlayerUI(50000, true);
-        playerUI2 = new PlayerUI(50000, false);
+        playerUI1 = new PlayerUI(150000, true);
+        playerUI2 = new PlayerUI(150000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         pauseOverlay = new PauseOverlay(this);
@@ -101,10 +101,11 @@ public class Playing extends State implements Statemethods {
                 }
                 
                 // Chỉ cho ngã khi không đang dính ulti và chưa ngã
+                // (Tránh conflict với deactivateUlti() sẽ tự set falling)
                 if(!thuyTinh.falling() && combat1.ultiIsNull()){
                     thuyTinh.resetAnimationTick();
                     thuyTinh.setFalling(true);
-                    thuyTinh.setPlayerAction(thuyTinh.getDirection() == RIGHT ?  FALLING_RIGHT : FALLING_LEFT );
+                    thuyTinh.setPlayerAction(thuyTinh.getDirectionTakenHit() == RIGHT ?  FALLING_LEFT : FALLING_RIGHT );
                     Game.soundPlayer.play(SoundManager.THUYTINHFALL);
                 }
                 
@@ -115,6 +116,8 @@ public class Playing extends State implements Statemethods {
                     sonTinh.update();
                     combat1.update();
                     combat2.update();
+                    playerUI1.update();
+                    playerUI2.update();
                 }
             
                 
@@ -144,7 +147,7 @@ public class Playing extends State implements Statemethods {
                 if(!sonTinh.falling() && combat2.ultiIsNull()){
                     sonTinh.resetAnimationTick();
                     sonTinh.setFalling(true);
-                    sonTinh.setPlayerAction(sonTinh.getDirection() == RIGHT ?  FALLING_RIGHT : FALLING_LEFT );
+                    sonTinh.setPlayerAction(sonTinh.getDirectionTakenHit() == RIGHT ?  FALLING_LEFT : FALLING_RIGHT );
                     Game.soundPlayer.play(SoundManager.SONTINHFALL);
                 }
                
@@ -156,6 +159,8 @@ public class Playing extends State implements Statemethods {
                     thuyTinh.update();
                     combat1.update();
                     combat2.update();
+                    playerUI1.update();
+                    playerUI2.update();
                 }
                 
                 

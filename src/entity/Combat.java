@@ -24,7 +24,7 @@ public class Combat {
         this.thuyTinh = thuyTinh;
         this.sonTinhUI = sonTinhUI;
         this.thuyTinhUI = thuyTinhUI;
-        hog = new SummonSkill[6];
+        hog = new SummonSkill[5];
         effectManager = new EffectManager(1);
     }
 
@@ -120,7 +120,7 @@ public class Combat {
         thuyTinh.setTakingHit(true);
         thuyTinh.setHealthTakenPerCombo(1);
         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
-        thuyTinhUI.takeDamage(149);
+        thuyTinhUI.takeDamage(147);
         sonTinhUI.regenMana(300);
         
         if (thuyTinh.getDirection() != sonTinh.getDirection()) {
@@ -135,7 +135,8 @@ public class Combat {
         
         ulti.update(thuyTinh.getX(), thuyTinh.getY());
         
-        if (ulti.lightningAppeared() && !thuyTinh.falling()) {
+        // Không apply damage nếu victim đã chết (HP <= 0)
+        if (ulti.lightningAppeared() && !thuyTinh.falling() && thuyTinhUI.getHealth() > 0) {
             applyUltiDamage();
         }
         
@@ -154,23 +155,26 @@ public class Combat {
     
     private void applyUltiDamage() {
         thuyTinh.setTakingHit(true);
-        thuyTinh.setDirectionTakenHit(ulti.getDirection());
+        if(!doneSet){
+            thuyTinh.setDirectionTakenHit(ulti.getDirection());
+            if ("SonTinh".equals(sonTinh.getName()) && !doneSet) {
+            thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
+            
+        }
+        doneSet = true;
+        }
         
         int damage = "SonTinh".equals(sonTinh.getCharacterName()) ? 199 : 269;
         thuyTinhUI.takeDamage(damage);
-        
-        if ("SonTinh".equals(sonTinh.getName()) && !doneSet) {
-            thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
-            doneSet = true;
-        }
+    
     }
     
     private void deactivateUlti() {
         ulti = null;
-        doneSet=false;
+        doneSet = false;
         thuyTinh.setTakingHit(false);
         thuyTinh.setFalling(true);
-        thuyTinh.setPlayerAction(thuyTinh.getDirection() == RIGHT ? FALLING_RIGHT : FALLING_LEFT);
+        thuyTinh.setPlayerAction(thuyTinh.getDirectionTakenHit() == RIGHT ? FALLING_LEFT : FALLING_RIGHT);
         Game.soundPlayer.play(SoundManager.THUYTINHFALL);
     }
     

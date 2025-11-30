@@ -5,12 +5,11 @@ import map.Map;
 import ui.EndingOverlay;
 import utilz.LoadSave;
 
-import static utilz.Constants.PlayerConstants.IDLE_LEFT;
-import static utilz.Constants.PlayerConstants.IDLE_RIGHT;
+
 import static utilz.Constants.PlayerConstants.IDLE_SOUTH;
 import static utilz.Constants.PlayerConstants.LEFT;
 import static utilz.Constants.PlayerConstants.RIGHT;
-import static utilz.LoadSave.GetSpriteAtlas;
+
 import static utilz.LoadSave.loadAllAnimations;
 
 import java.awt.Graphics;
@@ -18,7 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import entity.Character;
-import entity.Combat;
+
 
 public class Ending extends State implements Statemethods {
     Map map;

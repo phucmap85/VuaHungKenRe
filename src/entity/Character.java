@@ -100,6 +100,7 @@ public class Character extends Entity {
             playSoundForCharacter(SoundManager.SONTINHFALL, SoundManager.THUYTINHFALL);
         }
         if(falling){
+            direction = (directionTakenHit == RIGHT) ? LEFT : RIGHT;
             if (framesIndex >= getFramesAmount(playerAction)) {
                 framesIndex = 0;
                 falling = false;
@@ -114,18 +115,18 @@ public class Character extends Entity {
             resetAllStates();
             takingHit = true;
             direction = (directionTakenHit == RIGHT) ? LEFT : RIGHT;
+            if (framesCounter >= DelayForTakingHit) {
+                resetAnimationTick();
+                takingHit = false;
+        }
         }
         if (!takingHit) {
             healthTakenPerCombo = 0;
             setThressholdForFalling(100);
         }
-        if(takingHit){
-            if (framesCounter >= DelayForTakingHit) {
-            resetAnimationTick();
-            takingHit = false;
+        
         }
-        }
-    }
+
     
     public void updateUlti() {
         if (ulti && !ulting && !jumping && !takingHit && !falling && !inAir && mana == maxMana) {
@@ -717,6 +718,9 @@ public class Character extends Entity {
     }
     public void setPlayerAction(int action){
         this.playerAction = action;
+    }
+    public int getDirectionTakenHit(){
+        return this.directionTakenHit;
     }
 }
 
