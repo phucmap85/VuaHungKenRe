@@ -67,22 +67,19 @@ public class GameOption {
     }
 
     public void mousePressed(MouseEvent e) {
-        if(isIn(e, menuB)) {
+        if (isIn(e, menuB)) {
             menuB.setMousePressed(true);
             Game.soundPlayer.play(SoundManager.CLICKBUTTON);
-        }
-        else {
+        } else {
             audioOption.mousePressed(e);
         }
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(isIn(e, menuB)) {
-            if(menuB.isMousePressed()) menu.setOption(false);
-
+        if (isIn(e, menuB)) {
+            if (menuB.isMousePressed()) menu.setOption(false);
             menuB.setMousePressed(false);
-        }
-        else {
+        } else {
             audioOption.mouseReleased(e);
         }
 
@@ -92,10 +89,9 @@ public class GameOption {
     public void mouseMoved(MouseEvent e) {
         menuB.setMouseOver(isIn(e, menuB));
 
-        if(isIn(e, menuB)) {
+        if (isIn(e, menuB)) {
             menuB.setMouseOver(true);
-        }
-        else {
+        } else {
             audioOption.mouseMoved(e);
         }
     }

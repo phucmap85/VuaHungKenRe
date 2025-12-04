@@ -54,29 +54,25 @@ public class AudioOption {
     }
 
     public void mouseDragged(MouseEvent e) {
-        if(volumeButton.isMousePressed()) {
+        if (volumeButton.isMousePressed()) {
             volumeButton.changeVolume(e.getX());
             float newVolume = volumeButton.getVolumeLevel();
-            if(musicButton.isMuted()) {
+            if (musicButton.isMuted()) {
                 lastMusicVolume = newVolume;
-            }
-            else {
+            } else {
                 Game.soundPlayer.setMusicVolume(newVolume);
             }
-            
         }
     }
 
     public void mousePressed(MouseEvent e) {
-        if(isIn(e, musicButton)) {
+        if (isIn(e, musicButton)) {
             musicButton.setMousePressed(true);
             Game.soundPlayer.play(SoundManager.CLICKBUTTON);
-        } 
-        else if(isIn(e, sfxButton)) {
+        } else if (isIn(e, sfxButton)) {
             sfxButton.setMousePressed(true);
             Game.soundPlayer.play(SoundManager.CLICKBUTTON);
-        }
-        else if(isIn(e, volumeButton)) {
+        } else if (isIn(e, volumeButton)) {
             volumeButton.setMousePressed(true);
             Game.soundPlayer.play(SoundManager.CLICKBUTTON);
             volumeButton.changeVolume(e.getX());
@@ -85,15 +81,14 @@ public class AudioOption {
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(isIn(e, musicButton)) {
-            if(musicButton.isMousePressed()) {
+        if (isIn(e, musicButton)) {
+            if (musicButton.isMousePressed()) {
                 musicButton.setMuted(!musicButton.isMuted());
                 Game.soundPlayer.setMusicVolume(musicButton.isMuted() ? 0 : lastMusicVolume);
             }
             musicButton.setMousePressed(false);
-        } 
-        else if(isIn(e, sfxButton)) {
-            if(sfxButton.isMousePressed()) {
+        } else if (isIn(e, sfxButton)) {
+            if (sfxButton.isMousePressed()) {
                 sfxButton.setMuted(!sfxButton.isMuted());
                 Game.soundPlayer.setSfxVolume(sfxButton.isMuted() ? 0 : lastSfxVolume);
             }
@@ -110,13 +105,11 @@ public class AudioOption {
         sfxButton.setMouseOver(isIn(e, sfxButton));
         volumeButton.setMouseOver(isIn(e, volumeButton));
 
-        if(isIn(e, musicButton)) {
+        if (isIn(e, musicButton)) {
             musicButton.setMouseOver(true);
-        } 
-        else if(isIn(e, sfxButton)) {
+        } else if (isIn(e, sfxButton)) {
             sfxButton.setMouseOver(true);
-        }
-        else if(isIn(e, volumeButton)) {
+        } else if (isIn(e, volumeButton)) {
             volumeButton.setMouseOver(true);
         }
     }

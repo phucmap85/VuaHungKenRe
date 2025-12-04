@@ -26,22 +26,20 @@ public class GamePanel extends JPanel {
 		addMouseListener(mouseHandler);
 		addMouseMotionListener(mouseHandler);
 		
-		
 		setFocusable(true);
-        requestFocusInWindow();
+		requestFocusInWindow();
 	}
 
 	private void setPanelSize() {
 		Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
 		setPreferredSize(size);
-        setBackground(Color.black);
-        setDoubleBuffered(true);
+		setBackground(Color.black);
+		setDoubleBuffered(true);
 	}
 
 	public void updateGame() {
-        
+		
 	}
-
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		game.render(g);

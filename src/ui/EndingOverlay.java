@@ -37,15 +37,15 @@ public class EndingOverlay {
     }
 
     public void mousePressed(MouseEvent e) {
-        if(isIn(e, menuB)) {
+        if (isIn(e, menuB)) {
             menuB.setMousePressed(true);
             Game.soundPlayer.play(SoundManager.CLICKBUTTON);
         }
     }
 
     public void mouseReleased(MouseEvent e) {
-        if(isIn(e, menuB)) {
-            if(menuB.isMousePressed()) {
+        if (isIn(e, menuB)) {
+            if (menuB.isMousePressed()) {
                 Gamestate.state = Gamestate.MENU;
                 ending.resetAllStates();
             }
@@ -58,7 +58,7 @@ public class EndingOverlay {
     public void mouseMoved(MouseEvent e) {
         menuB.setMouseOver(isIn(e, menuB));
 
-        if(isIn(e, menuB)) {
+        if (isIn(e, menuB)) {
             menuB.setMouseOver(true);
         }
     }

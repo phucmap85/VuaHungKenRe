@@ -121,7 +121,7 @@ public class Combat {
         thuyTinh.setHealthTakenPerCombo(1);
         thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
         thuyTinhUI.takeDamage(147);
-        sonTinhUI.regenMana(300);
+        sonTinhUI.regenMana(7);
         
         if (thuyTinh.getDirection() != sonTinh.getDirection()) {
             addImpactEffect(thuyTinh);
@@ -155,13 +155,12 @@ public class Combat {
     
     private void applyUltiDamage() {
         thuyTinh.setTakingHit(true);
-        if(!doneSet){
+        if (!doneSet) {
             thuyTinh.setDirectionTakenHit(ulti.getDirection());
             if ("SonTinh".equals(sonTinh.getName()) && !doneSet) {
-            thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
-            
-        }
-        doneSet = true;
+                thuyTinh.setDirectionTakenHit(sonTinh.getDirection());
+            }
+            doneSet = true;
         }
         
         int damage = "SonTinh".equals(sonTinh.getCharacterName()) ? 199 : 269;
@@ -234,9 +233,9 @@ public class Combat {
             hog[i] = null;
         }
     }
-    public boolean ultiIsNull(){
-       if(ulti == null) return true;
-       return false;
+    public boolean ultiIsNull() {
+        if (ulti == null) return true;
+        return false;
     }
 }
 

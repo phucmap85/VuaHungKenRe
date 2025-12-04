@@ -59,16 +59,16 @@ public class Game implements Runnable {
 		if (oldState != Gamestate.state) {
 			Game.soundPlayer.play(SoundManager.CLICKBUTTON);
 			soundPlayer.stopMusic(); // Dừng nhạc cũ
-            switch (Gamestate.state) {
-                case MENU:
+			switch (Gamestate.state) {
+				case MENU:
 					soundPlayer.loop(SoundManager.MENU);
-                    break;
-                case PLAYING:
-                    soundPlayer.loop(SoundManager.PLAYING);
-                    break;
+					break;
+				case PLAYING:
+					soundPlayer.loop(SoundManager.PLAYING);
+					break;
 				case MANUAL:
-                    soundPlayer.loop(SoundManager.PLAYING);
-                    break;
+					soundPlayer.loop(SoundManager.PLAYING);
+					break;
 				case ENDING:
 					soundPlayer.loop(SoundManager.ENDING);
 					break;
@@ -77,9 +77,9 @@ public class Game implements Runnable {
 					break;
 				default:
 					break;
-            }
-            oldState = Gamestate.state; // Cập nhật state cũ
-        }
+			}
+			oldState = Gamestate.state; // Cập nhật state cũ
+		}
 		switch (Gamestate.state) {
 			case MENU:
 				menu.update();
@@ -118,7 +118,7 @@ public class Game implements Runnable {
 				ending.draw(g);
 				break;
 			case MATCH_SETUP:
-				matchSetup.draw(g);	
+				matchSetup.draw(g);
 				break;
 			default:
 				break;
@@ -160,7 +160,7 @@ public class Game implements Runnable {
 
 			if (System.currentTimeMillis() - lastCheck >= 1000) {
 				lastCheck = System.currentTimeMillis();
-				System.out.println("FPS: " + frames + " | UPS: " + updates);
+				// System.out.println("FPS: " + frames + " | UPS: " + updates);
 				frames = 0;
 				updates = 0;
 			}
@@ -181,18 +181,23 @@ public class Game implements Runnable {
 	public Playing getPlaying() {
 		return playing;
 	}
-	public Manual getManual(){
+
+	public Manual getManual() {
 		return manual;
 	}
+
 	public Ending getEnding() {
 		return ending;
 	}
+
 	public MatchSetup getMatchSetup() {
-        return matchSetup;
-    }
+		return matchSetup;
+	}
+
 	public static SoundPlayer getSoundPlayer() {
-        return soundPlayer;
-    }
+		return soundPlayer;
+	}
+
 	public AudioOption getAudioOption() {
 		return audioOption;
 	}

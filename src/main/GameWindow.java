@@ -12,10 +12,10 @@ public class GameWindow {
 		jframe = new JFrame();
 
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jframe.setTitle("VUA HUNG KEN RE");
+		jframe.setTitle("VUA HUNG KEN RE");
 		jframe.add(gamePanel);
-		jframe.pack(); // pack trước 
-        jframe.setLocationRelativeTo(null);
+		jframe.pack(); // pack trước
+		jframe.setLocationRelativeTo(null);
 		jframe.setResizable(false);
 		jframe.setVisible(true);
 

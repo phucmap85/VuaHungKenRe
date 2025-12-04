@@ -79,11 +79,10 @@ public class Manual extends Playing{
     @Override
     public void draw(Graphics g) {
         //map.draw(g);
-        if(sonTinh.punching()) {
+        if (sonTinh.punching()) {
             thuyTinh.render(g);
             sonTinh.render(g);
-        }
-        else if(thuyTinh.punching()) {
+        } else if (thuyTinh.punching()) {
             sonTinh.render(g);
             thuyTinh.render(g);
         } else {
@@ -95,7 +94,7 @@ public class Manual extends Playing{
         combat1.render(g);
         combat2.render(g);
 
-        if(paused) pauseOverlay.draw(g);
+        if (paused) pauseOverlay.draw(g);
         for (KeyButton kb : keyButtons) {
             kb.draw(g);
         }

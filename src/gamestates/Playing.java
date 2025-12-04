@@ -33,11 +33,11 @@ public class Playing extends State implements Statemethods {
 
     int selectedMapIndex;
 
-    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 1000;
+    int framesIndex = 0, framesCounter = 0, maxFrames = 11, framesSpeed = 20, delayForLastFrame = 600;
     boolean switchEnding = false;
     BufferedImage[] ko = null;
     int countUpdate = 0;
-    int thresholdUpdate = 3;
+    int thresholdUpdate = 2;
     boolean sonTinhWin = false, doneCheck = false;
 
     public Playing(Game game) {
@@ -47,17 +47,17 @@ public class Playing extends State implements Statemethods {
 
     void initClasses() {
         loadAllAnimations();
-		map = new Map(game, selectedMapIndex);
-		thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
+        map = new Map(game, selectedMapIndex);
+        thuyTinh = new Character(200f, 535f, 80f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "ThuyTinh", RIGHT, map);
         sonTinh = new Character(800f, 535f, 15f, 40f, 30f, 50f, 35f, 20f, 55f, 85f, "SonTinh", LEFT, map);
-        playerUI1 = new PlayerUI(50000, true);
-        playerUI2 = new PlayerUI(50000, false);
+        playerUI1 = new PlayerUI(150000, true);
+        playerUI2 = new PlayerUI(150000, false);
         combat1 = new Combat(sonTinh, thuyTinh, playerUI2, playerUI1);
         combat2 = new Combat(thuyTinh, sonTinh, playerUI1, playerUI2);
         pauseOverlay = new PauseOverlay(this);
         ko = LoadSave.getKOAnimation();
         switchEnding = false;
-	}
+    }
 
     public void setMatchSettings(int mapID) {
         this.selectedMapIndex = mapID;
@@ -89,24 +89,21 @@ public class Playing extends State implements Statemethods {
     }
 
     public void windowFocusLost() {
-		sonTinh.resetAllBools();
-        thuyTinh.resetAllBools();
+		paused = true;
 	}
 
     @Override
     public void update() {
         if (!paused) {
-            if(!doneCheck){
-            if(playerUI1.getHealth() <= 0) {
-                sonTinhWin = true;
-                doneCheck = true;
+            if (!doneCheck) {
+                if (playerUI1.getHealth() <= 0) {
+                    sonTinhWin = true;
+                    doneCheck = true;
+                } else if (playerUI2.getHealth() <= 0) {
+                    sonTinhWin = false;
+                    doneCheck = true;
+                }
             }
-            else if(playerUI2.getHealth() <= 0) {
-                sonTinhWin = false;
-                doneCheck = true;
-            }
-        
-        }
             if (doneCheck && sonTinhWin) {
                 if (!switchEnding) {
                     Game.soundPlayer.play(SoundManager.KO);
@@ -115,10 +112,10 @@ public class Playing extends State implements Statemethods {
                 
                 // Chỉ cho ngã khi không đang dính ulti và chưa ngã
                 // (Tránh conflict với deactivateUlti() sẽ tự set falling)
-                if(!thuyTinh.falling() && combat1.ultiIsNull()){
+                if (!thuyTinh.falling() && combat1.ultiIsNull()) {
                     thuyTinh.resetAnimationTick();
                     thuyTinh.setFalling(true);
-                    thuyTinh.setPlayerAction(thuyTinh.getDirectionTakenHit() == RIGHT ?  FALLING_LEFT : FALLING_RIGHT );
+                    thuyTinh.setPlayerAction(thuyTinh.getDirectionTakenHit() == RIGHT ? FALLING_LEFT : FALLING_RIGHT);
                     Game.soundPlayer.play(SoundManager.THUYTINHFALL);
                 }
                 
@@ -129,13 +126,10 @@ public class Playing extends State implements Statemethods {
                     sonTinh.update();
                     combat1.update();
                     combat2.update();
-                
                 }
-            
-                
                 
                 framesCounter++;
-                if(framesIndex == maxFrames - 1) {
+                if (framesIndex == maxFrames - 1) {
                     framesSpeed = delayForLastFrame;
                 }
                 if (framesCounter >= framesSpeed) {
@@ -150,21 +144,20 @@ public class Playing extends State implements Statemethods {
                         Gamestate.state = Gamestate.ENDING;
                     }
                 }
-            } else if(doneCheck && !sonTinhWin) {
+            } else if (doneCheck && !sonTinhWin) {
                 if (!switchEnding) {
                     Game.soundPlayer.play(SoundManager.KO);
                     switchEnding = true;
                 }
                 
                 // Chỉ cho ngã khi không đang dính ulti và chưa ngã
-                if(!sonTinh.falling() && combat2.ultiIsNull()){
+                if (!sonTinh.falling() && combat2.ultiIsNull()) {
                     sonTinh.resetAnimationTick();
                     sonTinh.setFalling(true);
-                    sonTinh.setPlayerAction(sonTinh.getDirectionTakenHit() == RIGHT ?  FALLING_LEFT : FALLING_RIGHT );
+                    sonTinh.setPlayerAction(sonTinh.getDirectionTakenHit() == RIGHT ? FALLING_LEFT : FALLING_RIGHT);
                     Game.soundPlayer.play(SoundManager.SONTINHFALL);
                 }
-               
-               
+                
                 countUpdate++;
                 if (countUpdate >= thresholdUpdate) {
                     countUpdate = 0;
@@ -172,12 +165,10 @@ public class Playing extends State implements Statemethods {
                     thuyTinh.update();
                     combat1.update();
                     combat2.update();
-                   
                 }
                 
-                
                 framesCounter++;
-                 if(framesIndex == maxFrames - 1) {
+                if (framesIndex == maxFrames - 1) {
                     framesSpeed = delayForLastFrame;
                 }
                 if (framesCounter >= framesSpeed) {
@@ -189,7 +180,6 @@ public class Playing extends State implements Statemethods {
                         framesSpeed = 20;
                         doneCheck = false;
                         game.getEnding().setMap(1);
-                    
                         Gamestate.state = Gamestate.ENDING;
                     }
                 }
@@ -200,7 +190,6 @@ public class Playing extends State implements Statemethods {
                 combat2.update();
                 playerUI1.update();
                 playerUI2.update();
-               
             }
         } else {
             pauseOverlay.update();
@@ -214,11 +203,10 @@ public class Playing extends State implements Statemethods {
     @Override
     public void draw(Graphics g) {
         map.draw(g);
-        if(sonTinh.punching()) {
+        if (sonTinh.punching()) {
             thuyTinh.render(g);
             sonTinh.render(g);
-        }
-        else if(thuyTinh.punching()) {
+        } else if (thuyTinh.punching()) {
             sonTinh.render(g);
             thuyTinh.render(g);
         } else {
@@ -229,8 +217,8 @@ public class Playing extends State implements Statemethods {
         playerUI2.draw(g, GAME_WIDTH);
         combat1.render(g);
         combat2.render(g);
-        if(switchEnding) renderKo(g);
-        if(paused) pauseOverlay.draw(g);
+        if (switchEnding) renderKo(g);
+        if (paused) pauseOverlay.draw(g);
     }
 
     public void unpauseGame() {
@@ -244,28 +232,28 @@ public class Playing extends State implements Statemethods {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(paused) {
+        if (paused) {
             pauseOverlay.mouseDragged(e);
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(paused) {
+        if (paused) {
             pauseOverlay.mousePressed(e);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(paused) {
+        if (paused) {
             pauseOverlay.mouseReleased(e);
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if(paused) {
+        if (paused) {
             pauseOverlay.mouseMoved(e);
         }
     }
