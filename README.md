@@ -12,10 +12,13 @@ Trò chơi tái hiện lại trận chiến hào hùng và kịch tính giữa *
 
 ### Yêu cầu hệ thống
 
+- **Java Runtime Environment (JRE):** Khuyến nghị phiên bản 8 trở lên.
 - **Java Development Kit (JDK):** Khuyến nghị phiên bản 8 trở lên.
 - **IDE (Tùy chọn):** IntelliJ IDEA, Eclipse hoặc NetBeans.
 
 ### Cách chạy game
+
+#### Chạy từ mã nguồn
 
 1.  **Tải mã nguồn:**
 
@@ -38,6 +41,16 @@ Trò chơi tái hiện lại trận chiến hào hùng và kịch tính giữa *
 4.  **Chạy game:**
     ```bash
     java main.Main
+    ```
+
+#### Chạy từ file
+
+1.  **Tải game:** Truy cập mục **Releases** trên repository này và tải file `VuaHungKenRe.jar` về máy.
+2.  **Mở Terminal:** Mở Command Prompt (Windows) hoặc Terminal (macOS/Linux) tại thư mục chứa file vừa tải.
+3.  **Chạy lệnh:**
+
+    ```bash
+    java -jar VuaHungKenRe.jar
     ```
 
 ## Cấu trúc Dự án
