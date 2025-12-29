@@ -25,7 +25,3 @@ replay_pid*
 
 out/
 .idea/
-
-
-# build directory
-build/
